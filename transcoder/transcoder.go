@@ -188,6 +188,7 @@ func (t Transcoder) Output() (<-chan models.Progress, error) {
 			}
 
 			scanner := bufio.NewScanner(stderr)
+			filetype := utils.CheckFileType(t.MediaFile().Metadata().Streams)
 
 			split := func(data []byte, atEOF bool) (advance int, token []byte, spliterror error) {
 
@@ -195,10 +196,17 @@ func (t Transcoder) Output() (<-chan models.Progress, error) {
 					return 0, nil, nil
 				}
 
-				fr := strings.Index(string(data), "frame=")
+				Iframe := strings.Index(string(data), "frame=")
 
-				if fr > 0 {
-					return fr + 1, data[fr:], nil
+				if filetype == "video" {
+					if Iframe > 0 {
+						return Iframe + 1, data[Iframe:], nil
+					}
+				} else {
+					if i := bytes.IndexByte(data, '\n'); i >= 0 {
+						// We have a full newline-terminated line.
+						return i + 1, data[0:i], nil
+					}
 				}
 
 				if atEOF {
@@ -213,7 +221,6 @@ func (t Transcoder) Output() (<-chan models.Progress, error) {
 			scanner.Buffer(buf, bufio.MaxScanTokenSize)
 
 			var lastProgress float64
-			var lastFrames string
 			for scanner.Scan() {
 				Progress := new(models.Progress)
 				line := scanner.Text()
@@ -224,27 +231,44 @@ func (t Transcoder) Output() (<-chan models.Progress, error) {
 
 					f := strings.Fields(st)
 
-					// Frames processed
-					framesProcessed := strings.Split(f[0], "=")[1]
+					var framesProcessed string
+					var currentTime string
+					var currentBitrate string
 
-					// Current time processed
-					time := strings.Split(f[4], "=")[1]
-					timesec := utils.DurToSec(time)
+					for j := 0; j < len(f); j++ {
+						field := f[j]
+						fieldSplit := strings.Split(field, "=")
+
+						if len(fieldSplit) > 0 {
+							fieldname := strings.Split(field, "=")[0]
+							fieldvalue := strings.Split(field, "=")[1]
+
+							if fieldname == "frame" {
+								framesProcessed = fieldvalue
+							}
+
+							if fieldname == "time" {
+								currentTime = fieldvalue
+							}
+
+							if fieldname == "bitrate" {
+								currentBitrate = fieldvalue
+							}
+						}
+					}
+
+					timesec := utils.DurToSec(currentTime)
 					dursec, _ := strconv.ParseFloat(t.MediaFile().Metadata().Format.Duration, 64)
 					// Progress calculation
 					progress := (timesec * 100) / dursec
 
-					// Current bitrate
-					currentBitrate := strings.Split(f[5], "=")[1]
-
 					Progress.Progress = progress
 					Progress.CurrentBitrate = currentBitrate
 					Progress.FramesProcessed = framesProcessed
-					Progress.CurrentTime = time
+					Progress.CurrentTime = currentTime
 
-					if progress != lastProgress && framesProcessed != lastFrames{
+					if progress != lastProgress {
 						lastProgress = progress
-						lastFrames = framesProcessed
 						out <- *Progress
 					}
 				}

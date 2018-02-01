@@ -3,6 +3,7 @@ package utils
 import (
 	"strings"
 	"strconv"
+	"goffmpeg/models"
 )
 
 func DurToSec(dur string) (sec float64) {
@@ -18,6 +19,18 @@ func DurToSec(dur string) (sec float64) {
 	second, _ := strconv.ParseFloat(durAry[2], 64)
 	secs += second
 	return secs
+}
+
+func CheckFileType(streams []models.Streams) string {
+	for i := 0; i < len(streams); i++ {
+		st := streams[i]
+		if st.CodecType == "video" {
+			return "video"
+			break
+		}
+	}
+
+	return "audio"
 }
 
 
