@@ -89,13 +89,19 @@ func (t Transcoder) GetCommand() string {
 
 /*** FUNCTIONS ***/
 
-func (t *Transcoder) Initialize(inputPath string, outputPath string, configuration *ffmpeg.Configuration) (error) {
+func (t *Transcoder) Initialize(inputPath string, outputPath string) (error) {
+
+	configuration, err := ffmpeg.Configure()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
 
 	if inputPath == "" {
     	return errors.New("error: transcoder.Initialize -> inputPath missing")
 	}
 
-	_, err := os.Stat(inputPath)
+	_, err = os.Stat(inputPath)
 	if os.IsNotExist(err) {
 		return errors.New("error: transcoder.Initialize -> input file not found")
 	}
@@ -104,24 +110,26 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string, configurati
 
 	cmd := exec.Command("/bin/sh", "-c", command)
 
+	fmt.Println(cmd)
+
 	var out bytes.Buffer
 
 	cmd.Stdout = &out
 
-	cmdErr := cmd.Start()
+	err = cmd.Start()
 
-	if cmdErr != nil {
-		return cmdErr
+	if err != nil {
+		return err
 	}
 
-	_, errProc := cmd.Process.Wait()
-	if errProc != nil {
-		return errProc
+	_, err = cmd.Process.Wait()
+	if err != nil {
+		return err
 	}
 
 	var Metadata models.Metadata
 
-	if err := json.Unmarshal([]byte(out.String()), &Metadata); err != nil {
+	if err = json.Unmarshal([]byte(out.String()), &Metadata); err != nil {
 		return err
 	}
 
@@ -133,7 +141,7 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string, configurati
     t.SetInputPath(inputPath)
     t.SetOutputPath(outputPath)
     t.SetMediaFile(MediaFile)
-    t.SetConfiguration(*configuration)
+	t.SetConfiguration(configuration)
 
     return nil
 
