@@ -14,7 +14,6 @@ import (
 	"strings"
 	"regexp"
 	"strconv"
-	"log"
 )
 
 type Transcoder struct {
@@ -140,8 +139,10 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string, configurati
 
 }
 
-func (t *Transcoder) Run() (<-chan bool)  {
+func (t *Transcoder) Run() (<-chan bool, error) {
 	done := make(chan bool)
+	var err error
+
 	command := t.GetCommand()
 
 	proc := exec.Command("/bin/sh", "-c", command)
@@ -149,41 +150,38 @@ func (t *Transcoder) Run() (<-chan bool)  {
 	t.SetProccess(proc)
 
 	go func() {
-		perror := proc.Start()
-		if perror != nil {
-			log.Fatal(perror)
+		err := proc.Start()
+		if err != nil {
 			return
 		}
 
 		proc.Wait()
 
 		done <- true
+		close(done)
 	}()
 
-	return done
+	return done, err
 
 }
 
 // TODO: ONLY WORKS FOR VIDEO FILES
-func (t Transcoder) Output() (chan models.Progress) {
+func (t Transcoder) Output() (<-chan models.Progress, error) {
 	out := make(chan models.Progress)
+	var err error
 
 		go func() {
+			defer close(out)
 
-			stderr, serr := t.Process().StderrPipe()
-			if serr != nil {
-				log.Fatal(serr)
+			stderr, stderror := t.Process().StderrPipe()
+			if err != nil {
+				err = stderror
 				return
 			}
 
 			scanner := bufio.NewScanner(stderr)
 
-			split := func(data []byte, atEOF bool) (advance int, token []byte, err error) {
-
-				if err != nil {
-					log.Fatal(err)
-					return 0, nil, nil
-				}
+			split := func(data []byte, atEOF bool) (advance int, token []byte, spliterror error) {
 
 				if atEOF && len(data) == 0 {
 					return 0, nil, nil
@@ -244,12 +242,10 @@ func (t Transcoder) Output() (chan models.Progress) {
 				}
 			}
 
-			defer close(out)
-
-			if err := scanner.Err(); err != nil {
-				log.Fatal(err)
+			if scerror := scanner.Err(); err != nil {
+				err = scerror
 			}
 		}()
 
-	return out
+	return out, err
 }
