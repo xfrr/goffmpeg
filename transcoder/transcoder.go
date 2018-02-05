@@ -81,8 +81,6 @@ func (t Transcoder) GetCommand() string {
 
 	rcommand += " " + t.outputPath
 
-	fmt.Println(rcommand)
-
 	return rcommand
 
 }
@@ -110,7 +108,7 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) (error) {
 
 	cmd := exec.Command("/bin/sh", "-c", command)
 
-	fmt.Println(cmd)
+	fmt.Println("FFprobe command: " + command)
 
 	var out bytes.Buffer
 
@@ -153,6 +151,8 @@ func (t *Transcoder) Run() (<-chan bool, error) {
 
 	command := t.GetCommand()
 
+	fmt.Println("FFmpeg command: " + command)
+
 	proc := exec.Command("/bin/sh", "-c", command)
 
 	t.SetProccess(proc)
@@ -173,7 +173,6 @@ func (t *Transcoder) Run() (<-chan bool, error) {
 
 }
 
-// TODO: ONLY WORKS FOR VIDEO FILES
 func (t Transcoder) Output() (<-chan models.Progress, error) {
 	out := make(chan models.Progress)
 	var err error
@@ -239,7 +238,7 @@ func (t Transcoder) Output() (<-chan models.Progress, error) {
 						field := f[j]
 						fieldSplit := strings.Split(field, "=")
 
-						if len(fieldSplit) > 0 {
+						if len(fieldSplit) > 1 {
 							fieldname := strings.Split(field, "=")[0]
 							fieldvalue := strings.Split(field, "=")[1]
 

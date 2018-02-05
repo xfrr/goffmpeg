@@ -24,6 +24,7 @@ type Mediafile struct {
     audioChannels         int
     bufferSize            int
     threads               int
+	preset                string
     target                string
     duration              string
     seekTime              string
@@ -95,6 +96,10 @@ func (m *Mediafile) SetBufferSize(v int) {
 
 func (m *Mediafile) SetThreads(v int) {
 	m.threads = v
+}
+
+func (m *Mediafile) SetPreset(v string) {
+	m.preset = v
 }
 
 func (m *Mediafile) SetDuration(v string) {
@@ -203,7 +208,7 @@ func (m Mediafile) Metadata() Metadata {
 func (m Mediafile) ToStrCommand() string {
 	var strCommand string
 
-	opts := []string{"Aspect", "VideoCodec", "FrameRate", "Resolution", "VideoBitRate", "VideoBitRateTolerance", "AudioCodec", "AudioBitRate", "AudioChannels", "VideoMaxBitRate", "VideoMinBitRate", "BufferSize", "Threads", "Target", "Duration", "KeyframeInterval", "SeekTime", "Quality"}
+	opts := []string{"Aspect", "VideoCodec", "FrameRate", "Resolution", "VideoBitRate", "VideoBitRateTolerance", "AudioCodec", "AudioBitRate", "AudioChannels", "VideoMaxBitRate", "VideoMinBitRate", "BufferSize", "Threads", "Preset", "Target", "Duration", "KeyframeInterval", "SeekTime", "Quality"}
 	for _, name := range opts {
 		opt :=  reflect.ValueOf(&m).MethodByName(fmt.Sprintf("Obtain%s", name))
 		if (opt != reflect.Value{}) {
@@ -350,10 +355,9 @@ func (m *Mediafile) ObtainSeekTime() string {
 	return ""
 }
 
-
-func (m *Mediafile) ObtainQuality() string {
-	if m.quality != 0 {
-		return fmt.Sprintf("-q:v %d", m.quality)
+func (m *Mediafile) ObtainPreset() string {
+	if m.preset != "" {
+		return fmt.Sprintf("-preset %s", m.preset)
 	}
 	return ""
 }
