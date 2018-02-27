@@ -72,14 +72,14 @@ func main() {
 ```golang
 type Progress struct {
 	FramesProcessed			string
-	CurrentTime				string
+	CurrentTime			string
 	CurrentBitrate			string
-	Progress				float64
+	Progress			float64
 }
 ```
 # Media setters
 Those options can be set before starting the transcoding.
-> 
+```js
 SetAspect
 SetResolution
 SetVideoBitRate
@@ -100,7 +100,7 @@ SetPreset
 SetDuration
 SetSeekTime
 SetQuality
->
+```
 
 ----
 > Building...
