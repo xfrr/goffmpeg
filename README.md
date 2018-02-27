@@ -112,7 +112,9 @@ func main() {
     	err := trans.Initialize( inputPath, outputPath )
     	// Handle error...
 	
+	// SET FRAME RATE TO MEDIAFILE
 	trans.MediaFile().SetFrameRate(70)
+	// SET ULTRAFAST PRESET TO MEDIAFILE
 	trans.MediaFile().SetPreset("ultrafast")
 
 	// Start transcoder process
