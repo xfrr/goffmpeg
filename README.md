@@ -1,9 +1,15 @@
-# Goffmpeg
+﻿# Goffmpeg
 FFMPEG wrapper written in GO
 
 
 # Dependencies
 - [FFmpeg](https://www.ffmpeg.org/)
+
+# Supported platforms
+
+ - Linux
+ - OS X
+ - **Windows not supported yet**
 
 # Getting started
 How to transcode a media file
