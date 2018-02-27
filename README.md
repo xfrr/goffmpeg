@@ -1,6 +1,5 @@
 ﻿# Goffmpeg
-FFMPEG wrapper written in GO
-
+FFMPEG wrapper written in GO which allows to obtain the progress.
 
 # Dependencies
 - [FFmpeg](https://www.ffmpeg.org/)
@@ -69,5 +68,39 @@ func main() {
 
 }
 ```
-Manipulating media file
-> Building
+# Progress properties
+```golang
+type Progress struct {
+	FramesProcessed			string
+	CurrentTime				string
+	CurrentBitrate			string
+	Progress				float64
+}
+```
+# Media setters
+Those options can be set before starting the transcoding.
+> 
+SetAspect
+SetResolution
+SetVideoBitRate
+SetVideoBitRateTolerance
+SetVideoMaxBitrate
+SetVideoMinBitRate
+SetVideoCodec
+SetFrameRate
+SetMaxKeyFrame
+SetMinKeyFrame
+SetKeyframeInterval
+SetAudioCodec
+SetAudioBitRate
+SetAudioChannels
+SetBufferSize
+SetThreads
+SetPreset
+SetDuration
+SetSeekTime
+SetQuality
+>
+
+----
+> Building...
