@@ -4,19 +4,27 @@ import (
 	"os/exec"
 	"bytes"
 	"strings"
+	"goffmpeg/utils"
 )
 
 type Configuration struct {
-    FfmpegBin string
+	FfmpegBin  string
     FfprobeBin string
+	ExecCmd    string
+	ExecArgs   string
 }
 
 func Configure() (Configuration, error) {
 	var outFFmpeg bytes.Buffer
 	var outProbe bytes.Buffer
 
-	cmdFFmpeg := exec.Command("/bin/sh", "-c", "which ffmpeg")
-	cmdProbe := exec.Command("/bin/sh", "-c", "which ffprobe")
+	execCmd := utils.GetExec()
+	execFFmpegCommand := utils.GetFFmpegExec()
+	execFFprobeCommand := utils.GetFFprobeExec()
+	execArgs := utils.GetExecArgs()
+
+	cmdFFmpeg := exec.Command(execCmd, execArgs, execFFmpegCommand)
+	cmdProbe := exec.Command(execCmd, execArgs, execFFprobeCommand)
 
 	cmdFFmpeg.Stdout = &outFFmpeg
 	cmdProbe.Stdout = &outProbe
@@ -44,7 +52,7 @@ func Configure() (Configuration, error) {
 	ffmpeg := strings.Replace(outFFmpeg.String(), "\n", "", -1)
 	fprobe := strings.Replace(outProbe.String(), "\n", "", -1)
 
-	cnf := Configuration{ffmpeg, fprobe}
+	cnf := Configuration{ffmpeg, fprobe, execCmd, execArgs}
 
 	return cnf, nil
 }

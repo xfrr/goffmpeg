@@ -106,7 +106,7 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) (error) {
 
 	command := fmt.Sprintf("%s -i %s -print_format json -show_format -show_streams -show_error", configuration.FfprobeBin, inputPath)
 
-	cmd := exec.Command("/bin/sh", "-c", command)
+	cmd := exec.Command(configuration.ExecCmd, configuration.ExecArgs, command)
 
 	fmt.Println("FFprobe command: " + command)
 
@@ -153,7 +153,7 @@ func (t *Transcoder) Run() (<-chan bool, error) {
 
 	fmt.Println("FFmpeg command: " + command)
 
-	proc := exec.Command("/bin/sh", "-c", command)
+	proc := exec.Command(t.configuration.ExecCmd, t.configuration.ExecArgs, command)
 
 	t.SetProccess(proc)
 
