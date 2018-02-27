@@ -26,11 +26,11 @@ var outputPath = "/data/testmp4.mp4"
 func main() {
 
 	// Create new instance of transcoder
-    trans := new(transcoder.Transcoder)
+    	trans := new(transcoder.Transcoder)
 	
 	// Initialize transcoder passing the input file path and output file path
-    err := trans.Initialize( inputPath, outputPath )
-    // Handle error...
+    	err := trans.Initialize( inputPath, outputPath )
+    	// Handle error...
 
 	// Start transcoder process
 	done, err := trans.Run()
