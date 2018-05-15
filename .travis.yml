@@ -1,12 +1,4 @@
 language: go
 go:
   - 1.9
-  - master 
-install: true
-matrix:
-  allow_failures:
-    - go: master
-  fast_finish: true
-
-notifications:
-  email: true
+  - master
