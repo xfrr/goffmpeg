@@ -73,13 +73,13 @@ func (t Transcoder) FFprobeExec() string {
 func (t Transcoder) GetCommand() string {
 	var rcommand string
 
-	rcommand = fmt.Sprintf("%s -y -i %s ", t.configuration.FfmpegBin, t.inputPath)
+	rcommand = fmt.Sprintf("%s -y -i \"%s\" ", t.configuration.FfmpegBin, t.inputPath)
 
 	media := t.mediafile
 
 	rcommand += media.ToStrCommand()
 
-	rcommand += " " + t.outputPath
+	rcommand += " \"" + t.outputPath + "\""
 
 	return rcommand
 
@@ -104,7 +104,7 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) (error) {
 		return errors.New("error: transcoder.Initialize -> input file not found")
 	}
 
-	command := fmt.Sprintf("%s -i %s -print_format json -show_format -show_streams -show_error", configuration.FfprobeBin, inputPath)
+	command := fmt.Sprintf("%s -i \"%s\" -print_format json -show_format -show_streams -show_error", configuration.FfprobeBin, inputPath)
 
 	cmd := exec.Command(configuration.ExecCmd, configuration.ExecArgs, command)
 
