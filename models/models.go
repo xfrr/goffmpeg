@@ -38,6 +38,7 @@ type Streams struct {
 	DurationTs 		 	  	int				`json:"duration_ts"`
 	Duration 			  	string			`json:"duration"`
 	Disposition           	Disposition		`json:"disposition"`
+	BitRate					string			`json:"bit_rate"`
 }
 
 type Disposition struct {
