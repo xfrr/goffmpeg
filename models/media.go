@@ -27,11 +27,13 @@ type Mediafile struct {
     preset                string
     target                string
     duration              string
+    durationInput         string
     seekTime              string
     quality               int
     metadata              Metadata
     muxDelay              int
     seekUsingTsInput      bool
+    seekTimeInput         string
     inputPath             string
 }
 
@@ -109,8 +111,16 @@ func (m *Mediafile) SetDuration(v string) {
   m.duration = v
 }
 
+func (m *Mediafile) SetDurationInput(v string) {
+  m.durationInput = v
+}
+
 func (m *Mediafile) SetSeekTime(v string) {
   m.seekTime = v
+}
+
+func (m *Mediafile) SetSeekTimeInput(v string) {
+  m.seekTimeInput = v
 }
 
 func (m *Mediafile) SetQuality(v int) {
@@ -203,8 +213,16 @@ func (m Mediafile) Duration() string {
   return m.duration
 }
 
+func (m Mediafile) DurationInput() string {
+  return m.durationInput
+}
+
 func (m Mediafile) SeekTime() string {
   return m.seekTime
+}
+
+func (m Mediafile) SeekTimeInput() string {
+  return m.seekTimeInput
 }
 
 func (m Mediafile) Quality() int {
@@ -231,7 +249,7 @@ func (m Mediafile) Metadata() Metadata {
 func (m Mediafile) ToStrCommand() string {
   var strCommand string
 
-  opts := []string{"SeekUsingTsInput", "InputPath", "Aspect", "VideoCodec", "FrameRate", "Resolution", "VideoBitRate", "VideoBitRateTolerance", "AudioCodec", "AudioBitRate", "AudioChannels", "VideoMaxBitRate", "VideoMinBitRate", "BufferSize", "Threads", "Preset", "Target", "Duration", "KeyframeInterval", "SeekTime", "Quality", "ObtainMuxDelay"}
+  opts := []string{"SeekTimeInput", "DurationInput", "SeekUsingTsInput", "InputPath", "Aspect", "VideoCodec", "FrameRate", "Resolution", "VideoBitRate", "VideoBitRateTolerance", "AudioCodec", "AudioBitRate", "AudioChannels", "VideoMaxBitRate", "VideoMinBitRate", "BufferSize", "Threads", "Preset", "Target", "Duration", "KeyframeInterval", "SeekTime", "Quality", "ObtainMuxDelay"}
   for _, name := range opts {
     opt :=  reflect.ValueOf(&m).MethodByName(fmt.Sprintf("Obtain%s", name))
     if (opt != reflect.Value{}) {
@@ -368,6 +386,13 @@ func (m *Mediafile) ObtainDuration() string {
   return ""
 }
 
+func (m *Mediafile) ObtainDurationInput() string {
+  if m.durationInput != "" {
+    return fmt.Sprintf("-t %s", m.durationInput)
+  }
+  return ""
+}
+
 func (m *Mediafile) ObtainKeyframeInterval() string {
   if m.keyframeInterval != 0 {
     return fmt.Sprintf("-g %d", m.keyframeInterval)
@@ -378,6 +403,13 @@ func (m *Mediafile) ObtainKeyframeInterval() string {
 func (m *Mediafile) ObtainSeekTime() string {
   if m.seekTime != "" {
     return fmt.Sprintf("-ss %s", m.seekTime)
+  }
+  return ""
+}
+
+func (m *Mediafile) ObtainSeekTimeInput() string {
+  if m.seekTimeInput != "" {
+    return fmt.Sprintf("-ss %s", m.seekTimeInput)
   }
   return ""
 }
