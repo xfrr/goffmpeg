@@ -35,6 +35,7 @@ type Mediafile struct {
     seekUsingTsInput      bool
     seekTimeInput         string
     inputPath             string
+    copyTs                bool
 }
 
 /*** SETTERS ***/
@@ -129,6 +130,10 @@ func (m *Mediafile) SetQuality(v int) {
 
 func (m *Mediafile) SetSeekUsingTsInput(val bool) {
   m.seekUsingTsInput = val
+}
+
+func (m *Mediafile) SetCopyTs(val bool) {
+  m.copyTs = val
 }
 
 func (m *Mediafile) SetInputPath(val string) {
@@ -237,6 +242,10 @@ func (m Mediafile) SeekUsingTsInput() bool {
   return m.seekUsingTsInput
 }
 
+func (m Mediafile) CopyTs() bool {
+  return m.copyTs
+}
+
 func (m Mediafile) InputPath() string {
   return m.inputPath
 }
@@ -249,7 +258,7 @@ func (m Mediafile) Metadata() Metadata {
 func (m Mediafile) ToStrCommand() string {
   var strCommand string
 
-  opts := []string{"SeekTimeInput", "DurationInput", "SeekUsingTsInput", "InputPath", "Aspect", "VideoCodec", "FrameRate", "Resolution", "VideoBitRate", "VideoBitRateTolerance", "AudioCodec", "AudioBitRate", "AudioChannels", "VideoMaxBitRate", "VideoMinBitRate", "BufferSize", "Threads", "Preset", "Target", "Duration", "KeyframeInterval", "SeekTime", "Quality", "ObtainMuxDelay"}
+  opts := []string{"SeekTimeInput", "DurationInput", "SeekUsingTsInput", "InputPath", "Aspect", "VideoCodec", "FrameRate", "Resolution", "VideoBitRate", "VideoBitRateTolerance", "AudioCodec", "AudioBitRate", "AudioChannels", "VideoMaxBitRate", "VideoMinBitRate", "BufferSize", "Threads", "Preset", "Target", "Duration", "KeyframeInterval", "SeekTime", "Quality", "MuxDelay", "CopyTs"}
   for _, name := range opts {
     opt :=  reflect.ValueOf(&m).MethodByName(fmt.Sprintf("Obtain%s", name))
     if (opt != reflect.Value{}) {
@@ -417,6 +426,13 @@ func (m *Mediafile) ObtainSeekTimeInput() string {
 func (m *Mediafile) ObtainPreset() string {
   if m.preset != "" {
     return fmt.Sprintf("-preset %s", m.preset)
+  }
+  return ""
+}
+
+func (m *Mediafile) ObtainCopyTs() string {
+  if m.copyTs {
+    return "-copyts"
   }
   return ""
 }
