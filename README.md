@@ -13,11 +13,15 @@ FFMPEG wrapper written in GO which allows to obtain the progress.
 
 # Getting started
 How to transcode a media file
+```shell
+go get github.com/xfrr/goffmpeg
+```
+
 ```go
 package main
 
 import (
-    "goffmpeg/transcoder"
+    "github.com/xfrr/goffmpeg/transcoder"
 )
 
 var inputPath = "/data/testmov"
@@ -27,14 +31,14 @@ func main() {
 
 	// Create new instance of transcoder
     	trans := new(transcoder.Transcoder)
-	
+
 	// Initialize transcoder passing the input file path and output file path
     	err := trans.Initialize( inputPath, outputPath )
     	// Handle error...
 
 	// Start transcoder process
 	done, err := trans.Run()
-	
+
 	// This channel is used to wait for the process to end
 	<-done
 
@@ -47,14 +51,14 @@ func main() {
 
 	// Create new instance of transcoder
     	trans := new(transcoder.Transcoder)
-	
+
 	// Initialize transcoder passing the input file path and output file path
     	err := trans.Initialize( inputPath, outputPath )
     	// Handle error...
 
 	// Start transcoder process
 	done, err := trans.Run()
-	
+
 	// Returns a channel to get the transcoding progress
 	progress, err := trans.Output()
 
@@ -62,7 +66,7 @@ func main() {
 	for msg := range progress {
 		fmt.Println(msg)
 	}
-	
+
 	// This channel is used to wait for the transcoding process to end
 	<-done
 
@@ -98,8 +102,14 @@ SetBufferSize
 SetThreads
 SetPreset
 SetDuration
+SetDurationInput
 SetSeekTime
+SetSeekTimeInput
+SetSeekUsingTsInput
 SetQuality
+SetCopyTs
+SetInputPath
+SetOutputPath
 ```
 Example
 ```golang
@@ -107,11 +117,11 @@ func main() {
 
 	// Create new instance of transcoder
     	trans := new(transcoder.Transcoder)
-	
+
 	// Initialize transcoder passing the input file path and output file path
     	err := trans.Initialize( inputPath, outputPath )
     	// Handle error...
-	
+
 	// SET FRAME RATE TO MEDIAFILE
 	trans.MediaFile().SetFrameRate(70)
 	// SET ULTRAFAST PRESET TO MEDIAFILE
@@ -119,7 +129,7 @@ func main() {
 
 	// Start transcoder process
 	done, err := trans.Run()
-	
+
 	// Returns a channel to get the transcoding progress
 	progress, err := trans.Output()
 
@@ -127,7 +137,7 @@ func main() {
 	for msg := range progress {
 		fmt.Println(msg)
 	}
-	
+
 	// This channel is used to wait for the transcoding process to end
 	<-done
 

@@ -3,11 +3,11 @@ package transcoder
 import (
   "errors"
   "os"
-  "goffmpeg/models"
+  "github.com/xfrr/goffmpeg/models"
   "os/exec"
   "fmt"
-  "goffmpeg/ffmpeg"
-  "goffmpeg/utils"
+  "github.com/xfrr/goffmpeg/ffmpeg"
+  "github.com/xfrr/goffmpeg/utils"
   "bytes"
   "encoding/json"
   "bufio"
@@ -18,17 +18,12 @@ import (
 
 type Transcoder struct {
   process               *exec.Cmd
-  outputPath            string
   mediafile             *models.Mediafile
   configuration         ffmpeg.Configuration
 }
 
 func (t *Transcoder) SetProccess(v *exec.Cmd) {
   t.process = v
-}
-
-func (t *Transcoder) SetOutputPath(v string) {
-  t.outputPath = v
 }
 
 func (t *Transcoder) SetMediaFile(v *models.Mediafile) {
@@ -43,10 +38,6 @@ func (t *Transcoder) SetConfiguration(v ffmpeg.Configuration) {
 
 func (t Transcoder) Process() *exec.Cmd {
   return t.process
-}
-
-func (t Transcoder) OutputPath() string {
-  return t.outputPath
 }
 
 func (t Transcoder) MediaFile() *models.Mediafile {
@@ -69,8 +60,6 @@ func (t Transcoder) GetCommand() string {
   media := t.mediafile
 
   rcommand += media.ToStrCommand()
-
-  rcommand += " \"" + t.outputPath + "\""
 
   return rcommand
 
@@ -126,9 +115,9 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) (error) {
     MediaFile := new(models.Mediafile)
     MediaFile.SetMetadata(Metadata)
     MediaFile.SetInputPath(inputPath)
+    MediaFile.SetOutputPath(outputPath)
     // Set transcoder configuration
 
-    t.SetOutputPath(outputPath)
     t.SetMediaFile(MediaFile)
     t.SetConfiguration(configuration)
 

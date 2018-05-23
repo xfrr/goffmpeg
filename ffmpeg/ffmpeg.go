@@ -4,7 +4,7 @@ import (
   "os/exec"
   "bytes"
   "strings"
-  "goffmpeg/utils"
+  "github.com/xfrr/goffmpeg/utils"
 )
 
 type Configuration struct {
