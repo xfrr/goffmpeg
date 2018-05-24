@@ -35,6 +35,7 @@ type Mediafile struct {
     seekUsingTsInput      bool
     seekTimeInput         string
     inputPath             string
+    outputPath            string
     copyTs                bool
 }
 
@@ -138,6 +139,10 @@ func (m *Mediafile) SetCopyTs(val bool) {
 
 func (m *Mediafile) SetInputPath(val string) {
   m.inputPath = val
+}
+
+func (m *Mediafile) SetOutputPath(val string) {
+  m.outputPath = val
 }
 
 func (m *Mediafile) SetMetadata(v Metadata) {
@@ -250,6 +255,10 @@ func (m Mediafile) InputPath() string {
   return m.inputPath
 }
 
+func (m *Mediafile) OutputPath() string {
+  return m.outputPath
+}
+
 func (m Mediafile) Metadata() Metadata {
   return m.metadata
 }
@@ -258,7 +267,7 @@ func (m Mediafile) Metadata() Metadata {
 func (m Mediafile) ToStrCommand() string {
   var strCommand string
 
-  opts := []string{"SeekTimeInput", "DurationInput", "SeekUsingTsInput", "InputPath", "Aspect", "VideoCodec", "FrameRate", "Resolution", "VideoBitRate", "VideoBitRateTolerance", "AudioCodec", "AudioBitRate", "AudioChannels", "VideoMaxBitRate", "VideoMinBitRate", "BufferSize", "Threads", "Preset", "Target", "Duration", "KeyframeInterval", "SeekTime", "Quality", "MuxDelay", "CopyTs"}
+  opts := []string{"SeekTimeInput", "DurationInput", "SeekUsingTsInput", "InputPath", "Aspect", "VideoCodec", "FrameRate", "Resolution", "VideoBitRate", "VideoBitRateTolerance", "AudioCodec", "AudioBitRate", "AudioChannels", "VideoMaxBitRate", "VideoMinBitRate", "BufferSize", "Threads", "Preset", "Target", "Duration", "KeyframeInterval", "SeekTime", "Quality", "MuxDelay", "CopyTs", "OutputPath"}
   for _, name := range opts {
     opt :=  reflect.ValueOf(&m).MethodByName(fmt.Sprintf("Obtain%s", name))
     if (opt != reflect.Value{}) {
@@ -298,12 +307,17 @@ func (m *Mediafile) ObtainInputPath() string {
   return fmt.Sprintf("-i \"%s\"", m.inputPath)
 }
 
+func (m *Mediafile) ObtainOutputPath() string {
+  return fmt.Sprintf("\"%s\"", m.outputPath)
+}
+
 func (m *Mediafile) ObtainVideoCodec() string {
   if m.videoCodec != "" {
     return fmt.Sprintf("-vcodec %s", m.videoCodec)
   }
   return ""
 }
+
 func (m *Mediafile) ObtainFrameRate() string {
   if m.frameRate != 0 {
     return fmt.Sprintf("-r %d", m.frameRate)
