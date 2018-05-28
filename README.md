@@ -110,6 +110,7 @@ SetQuality
 SetCopyTs
 SetInputPath
 SetOutputPath
+SetOutputFormat
 ```
 Example
 ```golang
