@@ -338,7 +338,7 @@ func (m *Mediafile) ObtainOutputPath() string {
 
 func (m *Mediafile) ObtainVideoCodec() string {
   if m.videoCodec != "" {
-    return fmt.Sprintf("-vcodec %s", m.videoCodec)
+    return fmt.Sprintf("-c:v %s", m.videoCodec)
   }
   return ""
 }
@@ -366,7 +366,7 @@ func (m *Mediafile) ObtainVideoBitRate() string {
 
 func (m *Mediafile) ObtainAudioCodec() string {
   if m.audioCodec != "" {
-    return fmt.Sprintf("-acodec %s", m.audioCodec)
+    return fmt.Sprintf("-c:a %s", m.audioCodec)
   }
   return ""
 }
