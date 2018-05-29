@@ -109,6 +109,7 @@ SetSeekUsingTsInput
 SetQuality
 SetCopyTs
 SetInputPath
+SetNativeFramerateInput
 SetOutputPath
 SetOutputFormat
 ```

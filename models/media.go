@@ -38,6 +38,7 @@ type Mediafile struct {
     outputPath            string
     outputFormat          string
     copyTs                bool
+    nativeFramerateInput  bool
 }
 
 /*** SETTERS ***/
@@ -148,6 +149,10 @@ func (m *Mediafile) SetOutputPath(val string) {
 
 func (m *Mediafile) SetOutputFormat(val string) {
   m.outputFormat = val
+}
+
+func (m *Mediafile) SetNativeFramerateInput(val bool) {
+  m.nativeFramerateInput = val
 }
 
 func (m *Mediafile) SetMetadata(v Metadata) {
@@ -268,6 +273,10 @@ func (m *Mediafile) OutputFormat() string {
   return m.outputFormat
 }
 
+func (m *Mediafile) NativeFramerateInput() bool {
+  return m.nativeFramerateInput
+}
+
 func (m Mediafile) Metadata() Metadata {
   return m.metadata
 }
@@ -276,7 +285,7 @@ func (m Mediafile) Metadata() Metadata {
 func (m Mediafile) ToStrCommand() string {
   var strCommand string
 
-  opts := []string{"SeekTimeInput", "DurationInput", "SeekUsingTsInput", "InputPath", "Aspect", "VideoCodec", "FrameRate", "Resolution", "VideoBitRate", "VideoBitRateTolerance", "AudioCodec", "AudioBitRate", "AudioChannels", "VideoMaxBitRate", "VideoMinBitRate", "BufferSize", "Threads", "Preset", "Target", "Duration", "KeyframeInterval", "SeekTime", "Quality", "MuxDelay", "CopyTs", "OutputFormat", "OutputPath"}
+  opts := []string{"SeekTimeInput", "DurationInput", "SeekUsingTsInput", "NativeFramerateInput", "InputPath", "Aspect", "VideoCodec", "FrameRate", "Resolution", "VideoBitRate", "VideoBitRateTolerance", "AudioCodec", "AudioBitRate", "AudioChannels", "VideoMaxBitRate", "VideoMinBitRate", "BufferSize", "Threads", "Preset", "Target", "Duration", "KeyframeInterval", "SeekTime", "Quality", "MuxDelay", "CopyTs", "OutputFormat", "OutputPath"}
   for _, name := range opts {
     opt :=  reflect.ValueOf(&m).MethodByName(fmt.Sprintf("Obtain%s", name))
     if (opt != reflect.Value{}) {
@@ -316,13 +325,20 @@ func (m *Mediafile) ObtainInputPath() string {
   return fmt.Sprintf("-i \"%s\"", m.inputPath)
 }
 
+func (m *Mediafile) ObtainNativeFramerateInput() string {
+  if m.nativeFramerateInput {
+    return "-re"
+  }
+  return ""
+}
+
 func (m *Mediafile) ObtainOutputPath() string {
   return fmt.Sprintf("\"%s\"", m.outputPath)
 }
 
 func (m *Mediafile) ObtainVideoCodec() string {
   if m.videoCodec != "" {
-    return fmt.Sprintf("-vcodec %s", m.videoCodec)
+    return fmt.Sprintf("-c:v %s", m.videoCodec)
   }
   return ""
 }
@@ -350,7 +366,7 @@ func (m *Mediafile) ObtainVideoBitRate() string {
 
 func (m *Mediafile) ObtainAudioCodec() string {
   if m.audioCodec != "" {
-    return fmt.Sprintf("-acodec %s", m.audioCodec)
+    return fmt.Sprintf("-c:a %s", m.audioCodec)
   }
   return ""
 }
