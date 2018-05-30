@@ -25,13 +25,15 @@ type Mediafile struct {
     bufferSize            int
     threads               int
     preset                string
+    tune                  string
+    audioProfile          string
+    videoProfile          string
     target                string
     duration              string
     durationInput         string
     seekTime              string
     quality               int
-    metadata              Metadata
-    muxDelay              int
+    muxDelay              string
     seekUsingTsInput      bool
     seekTimeInput         string
     inputPath             string
@@ -39,6 +41,7 @@ type Mediafile struct {
     outputFormat          string
     copyTs                bool
     nativeFramerateInput  bool
+    metadata              Metadata
 }
 
 /*** SETTERS ***/
@@ -111,6 +114,18 @@ func (m *Mediafile) SetPreset(v string) {
   m.preset = v
 }
 
+func (m *Mediafile) SetTune(v string) {
+  m.tune = v
+}
+
+func (m *Mediafile) SetAudioProfile(v string) {
+  m.audioProfile = v
+}
+
+func (m *Mediafile) SetVideoProfile(v string) {
+  m.videoProfile = v
+}
+
 func (m *Mediafile) SetDuration(v string) {
   m.duration = v
 }
@@ -141,6 +156,10 @@ func (m *Mediafile) SetCopyTs(val bool) {
 
 func (m *Mediafile) SetInputPath(val string) {
   m.inputPath = val
+}
+
+func (m *Mediafile) SetMuxDelay(val string) {
+  m.muxDelay = val
 }
 
 func (m *Mediafile) SetOutputPath(val string) {
@@ -241,6 +260,22 @@ func (m Mediafile) SeekTime() string {
   return m.seekTime
 }
 
+func (m Mediafile) Preset() string {
+  return m.preset
+}
+
+func (m Mediafile) AudioProfile() string {
+  return m.audioProfile
+}
+
+func (m Mediafile) VideoProfile() string {
+  return m.videoProfile
+}
+
+func (m Mediafile) Tune() string {
+  return m.tune
+}
+
 func (m Mediafile) SeekTimeInput() string {
   return m.seekTimeInput
 }
@@ -249,7 +284,7 @@ func (m Mediafile) Quality() int {
   return m.quality
 }
 
-func (m Mediafile) MuxDelay() int {
+func (m Mediafile) MuxDelay() string {
   return m.muxDelay
 }
 
@@ -285,7 +320,7 @@ func (m Mediafile) Metadata() Metadata {
 func (m Mediafile) ToStrCommand() string {
   var strCommand string
 
-  opts := []string{"SeekTimeInput", "DurationInput", "SeekUsingTsInput", "NativeFramerateInput", "InputPath", "Aspect", "VideoCodec", "FrameRate", "Resolution", "VideoBitRate", "VideoBitRateTolerance", "AudioCodec", "AudioBitRate", "AudioChannels", "VideoMaxBitRate", "VideoMinBitRate", "BufferSize", "Threads", "Preset", "Target", "Duration", "KeyframeInterval", "SeekTime", "Quality", "MuxDelay", "CopyTs", "OutputFormat", "OutputPath"}
+  opts := []string{"SeekTimeInput", "DurationInput", "SeekUsingTsInput", "NativeFramerateInput", "InputPath", "Aspect", "VideoCodec", "FrameRate", "Resolution", "VideoBitRate", "VideoBitRateTolerance", "AudioCodec", "AudioBitRate", "AudioChannels", "VideoMaxBitRate", "VideoMinBitRate", "BufferSize", "Threads", "Preset", "Tune", "VideoProfile", "AudioProfile", "Target", "Duration", "KeyframeInterval", "SeekTime", "Quality", "MuxDelay", "CopyTs", "OutputFormat", "OutputPath"}
   for _, name := range opts {
     opt :=  reflect.ValueOf(&m).MethodByName(fmt.Sprintf("Obtain%s", name))
     if (opt != reflect.Value{}) {
@@ -469,6 +504,27 @@ func (m *Mediafile) ObtainPreset() string {
   return ""
 }
 
+func (m *Mediafile) ObtainTune() string {
+  if m.tune != "" {
+    return fmt.Sprintf("-tune %s", m.tune)
+  }
+  return ""
+}
+
+func (m *Mediafile) ObtainVideoProfile() string {
+  if m.videoProfile != "" {
+    return fmt.Sprintf("-profile:v %s", m.videoProfile)
+  }
+  return ""
+}
+
+func (m *Mediafile) ObtainAudioProfile() string {
+  if m.audioProfile != "" {
+    return fmt.Sprintf("-profile:a %s", m.audioProfile)
+  }
+  return ""
+}
+
 func (m *Mediafile) ObtainCopyTs() string {
   if m.copyTs {
     return "-copyts"
@@ -484,7 +540,10 @@ func (m *Mediafile) ObtainOutputFormat() string {
 }
 
 func (m *Mediafile) ObtainMuxDelay() string {
-  return fmt.Sprintf("-muxdelay %d", m.muxDelay)
+  if m.muxDelay != "" {
+    return fmt.Sprintf("-muxdelay %s", m.muxDelay)
+  }
+  return ""
 }
 
 func (m *Mediafile) ObtainSeekUsingTsInput() string {

@@ -101,6 +101,9 @@ SetAudioChannels
 SetBufferSize
 SetThreads
 SetPreset
+SetTune
+SetAudioProfile
+SetVideoProfile
 SetDuration
 SetDurationInput
 SetSeekTime
@@ -108,6 +111,7 @@ SetSeekTimeInput
 SetSeekUsingTsInput
 SetQuality
 SetCopyTs
+SetMuxDelay
 SetInputPath
 SetNativeFramerateInput
 SetOutputPath
