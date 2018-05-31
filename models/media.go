@@ -351,9 +351,8 @@ func (m *Mediafile) ObtainAspect() string {
 
   if m.aspect != "" {
     return fmt.Sprintf("-aspect %s", m.aspect)
-  } else {
-    return ""
   }
+	return ""
 }
 
 func (m *Mediafile) ObtainInputPath() string {
@@ -549,7 +548,6 @@ func (m *Mediafile) ObtainMuxDelay() string {
 func (m *Mediafile) ObtainSeekUsingTsInput() string {
   if m.seekUsingTsInput {
     return "-seek_timestamp 1"
-  } else {
-    return ""
   }
+	return ""
 }
