@@ -1,4 +1,7 @@
 ﻿# Goffmpeg
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ee4538c920bf4730969fc63a58cf91d8)](https://app.codacy.com/app/francisco.romero/goffmpeg?utm_source=github.com&utm_medium=referral&utm_content=xfrr/goffmpeg&utm_campaign=badger)
+
 FFMPEG wrapper written in GO which allows to obtain the progress.
 
 # Dependencies
