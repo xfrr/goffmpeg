@@ -1,13 +1,13 @@
 package transcoder
 
 import (
-  "errors"
-  "os"
   "github.com/xfrr/goffmpeg/models"
-  "os/exec"
-  "fmt"
   "github.com/xfrr/goffmpeg/ffmpeg"
   "github.com/xfrr/goffmpeg/utils"
+  "errors"
+  "os"
+  "os/exec"
+  "fmt"
   "bytes"
   "encoding/json"
   "bufio"

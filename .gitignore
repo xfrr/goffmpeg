@@ -18,5 +18,6 @@ main-test.go
 
 # binary
 goffmpeg
+coverage.out
 
 .idea

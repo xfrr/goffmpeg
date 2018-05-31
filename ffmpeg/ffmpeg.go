@@ -1,10 +1,10 @@
 package ffmpeg
 
 import (
+  "github.com/xfrr/goffmpeg/utils"
   "os/exec"
   "bytes"
   "strings"
-  "github.com/xfrr/goffmpeg/utils"
 )
 
 type Configuration struct {
