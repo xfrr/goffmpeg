@@ -510,6 +510,13 @@ func (m *Mediafile) ObtainTune() string {
   return ""
 }
 
+func (m *Mediafile) ObtainQuality() string {
+  if m.quality != 0 {
+    return fmt.Sprintf("-crf %d", m.quality)
+  }
+  return ""
+}
+
 func (m *Mediafile) ObtainVideoProfile() string {
   if m.videoProfile != "" {
     return fmt.Sprintf("-profile:v %s", m.videoProfile)
