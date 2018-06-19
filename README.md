@@ -114,6 +114,9 @@ SetCopyTs
 SetMuxDelay
 SetInputPath
 SetNativeFramerateInput
+SetRtmpLive
+SetHlsSegmentDuration
+SetHlsPlaylistType
 SetOutputPath
 SetOutputFormat
 ```
