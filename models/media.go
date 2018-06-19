@@ -42,6 +42,8 @@ type Mediafile struct {
     copyTs                bool
     nativeFramerateInput  bool
     rtmpLive              string
+    hlsPlaylistType       string
+    hlsSegmentDuration    int
     metadata              Metadata
 }
 
@@ -177,6 +179,14 @@ func (m *Mediafile) SetNativeFramerateInput(val bool) {
 
 func (m *Mediafile) SetRtmpLive(val string) {
   m.rtmpLive = val
+}
+
+func (m *Mediafile) SetHlsSegmentDuration(val int) {
+  m.hlsSegmentDuration = val
+}
+
+func (m *Mediafile) SetHlsPlaylistType(val string) {
+  m.hlsPlaylistType = val
 }
 
 func (m *Mediafile) SetMetadata(v Metadata) {
@@ -321,6 +331,14 @@ func (m *Mediafile) RtmpLive() string {
   return m.rtmpLive
 }
 
+func (m *Mediafile) HlsSegmentDuration() int {
+  return m.hlsSegmentDuration
+}
+
+func (m *Mediafile) HlsPlaylistType() string {
+  return m.hlsPlaylistType
+}
+
 func (m *Mediafile) Metadata() Metadata {
   return m.metadata
 }
@@ -329,7 +347,43 @@ func (m *Mediafile) Metadata() Metadata {
 func (m *Mediafile) ToStrCommand() string {
   var strCommand string
 
-  opts := []string{"SeekTimeInput", "DurationInput", "SeekUsingTsInput", "NativeFramerateInput", "RtmpLive", "InputPath", "Aspect", "VideoCodec", "FrameRate", "Resolution", "VideoBitRate", "VideoBitRateTolerance", "AudioCodec", "AudioBitRate", "AudioChannels", "VideoMaxBitRate", "VideoMinBitRate", "BufferSize", "Threads", "Preset", "Tune", "VideoProfile", "AudioProfile", "Target", "Duration", "KeyframeInterval", "SeekTime", "Quality", "MuxDelay", "CopyTs", "OutputFormat", "OutputPath"}
+  opts := [] string {
+    "SeekTimeInput",
+    "SeekUsingTsInput",
+    "NativeFramerateInput",
+    "DurationInput",
+    "RtmpLive",
+    "InputPath",
+
+    "Aspect",
+    "Resolution",
+    "FrameRate",
+    "VideoCodec",
+    "VideoBitRate",
+    "VideoBitRateTolerance",
+    "VideoMaxBitRate",
+    "VideoMinBitRate",
+    "VideoProfile",
+    "AudioCodec",
+    "AudioBitRate",
+    "AudioChannels",
+    "AudioProfile",
+    "Quality",
+    "BufferSize",
+    "MuxDelay",
+    "Threads",
+    "KeyframeInterval",
+    "Preset",
+    "Tune",
+    "Target",
+    "SeekTime",
+    "Duration",
+    "CopyTs",
+    "OutputFormat",
+    "HlsSegmentDuration",
+    "HlsPlaylistType",
+    "OutputPath",
+  }
   for _, name := range opts {
     opt :=  reflect.ValueOf(&m).MethodByName(fmt.Sprintf("Obtain%s", name))
     if (opt != reflect.Value{}) {
@@ -566,6 +620,22 @@ func (m *Mediafile) ObtainSeekUsingTsInput() string {
 func (m *Mediafile) ObtainRtmpLive() string {
   if m.rtmpLive != "" {
     return fmt.Sprintf("-rtmp_live %s", m.rtmpLive)
+  } else {
+    return ""
+  }
+}
+
+func (m *Mediafile) ObtainHlsPlaylistType() string {
+  if m.hlsPlaylistType != "" {
+    return fmt.Sprintf("-hls_playlist_type %s", m.hlsPlaylistType)
+  } else {
+    return ""
+  }
+}
+
+func (m *Mediafile) ObtainHlsSegmentDuration() string {
+  if m.hlsSegmentDuration != 0 {
+    return fmt.Sprintf("-hls_time %d", m.hlsSegmentDuration)
   } else {
     return ""
   }
