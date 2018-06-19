@@ -385,7 +385,7 @@ func (m *Mediafile) ToStrCommand() string {
     "OutputPath",
   }
   for _, name := range opts {
-    opt :=  reflect.ValueOf(&m).MethodByName(fmt.Sprintf("Obtain%s", name))
+    opt :=  reflect.ValueOf(m).MethodByName(fmt.Sprintf("Obtain%s", name))
     if (opt != reflect.Value{}) {
       result := opt.Call([]reflect.Value{})
 
