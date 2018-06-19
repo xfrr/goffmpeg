@@ -41,6 +41,9 @@ type Mediafile struct {
     outputFormat          string
     copyTs                bool
     nativeFramerateInput  bool
+    rtmpLive              string
+    hlsPlaylistType       string
+    hlsSegmentDuration    int
     metadata              Metadata
 }
 
@@ -174,129 +177,141 @@ func (m *Mediafile) SetNativeFramerateInput(val bool) {
   m.nativeFramerateInput = val
 }
 
+func (m *Mediafile) SetRtmpLive(val string) {
+  m.rtmpLive = val
+}
+
+func (m *Mediafile) SetHlsSegmentDuration(val int) {
+  m.hlsSegmentDuration = val
+}
+
+func (m *Mediafile) SetHlsPlaylistType(val string) {
+  m.hlsPlaylistType = val
+}
+
 func (m *Mediafile) SetMetadata(v Metadata) {
   m.metadata = v
 }
 
 /*** GETTERS ***/
 
-func (m Mediafile) Aspect() string {
+func (m *Mediafile) Aspect() string {
   return m.aspect
 }
 
-func (m Mediafile) Resolution() string {
+func (m *Mediafile) Resolution() string {
   return m.resolution
 }
 
-func (m Mediafile) VideoBitrate() int {
+func (m *Mediafile) VideoBitrate() int {
   return m.videoBitRate
 }
 
-func (m Mediafile) VideoBitRateTolerance() int {
+func (m *Mediafile) VideoBitRateTolerance() int {
   return m.videoBitRateTolerance
 }
 
-func (m Mediafile) VideoMaxBitRate() int {
+func (m *Mediafile) VideoMaxBitRate() int {
   return m.videoMaxBitRate
 }
 
-func (m Mediafile) VideoMinBitRate() int {
+func (m *Mediafile) VideoMinBitRate() int {
   return m.videoMinBitrate
 }
 
-func (m Mediafile) VideoCodec() string {
+func (m *Mediafile) VideoCodec() string {
   return m.videoCodec
 }
 
-func (m Mediafile) FrameRate() int {
+func (m *Mediafile) FrameRate() int {
   return m.frameRate
 }
 
-func (m Mediafile) MaxKeyFrame() int {
+func (m *Mediafile) MaxKeyFrame() int {
   return m.maxKeyframe
 }
 
-func (m Mediafile) MinKeyFrame() int {
+func (m *Mediafile) MinKeyFrame() int {
   return m.minKeyframe
 }
 
-func (m Mediafile) KeyFrameInterval() int {
+func (m *Mediafile) KeyFrameInterval() int {
   return m.keyframeInterval
 }
 
-func (m Mediafile) AudioCodec() string {
+func (m *Mediafile) AudioCodec() string {
   return m.audioCodec
 }
 
-func (m Mediafile) AudioBitrate() int {
+func (m *Mediafile) AudioBitrate() int {
   return m.audioBitrate
 }
 
-func (m Mediafile) AudioChannels() int {
+func (m *Mediafile) AudioChannels() int {
   return m.audioChannels
 }
 
-func (m Mediafile) BufferSize() int {
+func (m *Mediafile) BufferSize() int {
   return m.bufferSize
 }
 
-func (m Mediafile) Threads() int {
+func (m *Mediafile) Threads() int {
   return m.threads
 }
 
-func (m Mediafile) Target() string {
+func (m *Mediafile) Target() string {
   return m.target
 }
 
-func (m Mediafile) Duration() string {
+func (m *Mediafile) Duration() string {
   return m.duration
 }
 
-func (m Mediafile) DurationInput() string {
+func (m *Mediafile) DurationInput() string {
   return m.durationInput
 }
 
-func (m Mediafile) SeekTime() string {
+func (m *Mediafile) SeekTime() string {
   return m.seekTime
 }
 
-func (m Mediafile) Preset() string {
+func (m *Mediafile) Preset() string {
   return m.preset
 }
 
-func (m Mediafile) AudioProfile() string {
+func (m *Mediafile) AudioProfile() string {
   return m.audioProfile
 }
 
-func (m Mediafile) VideoProfile() string {
+func (m *Mediafile) VideoProfile() string {
   return m.videoProfile
 }
 
-func (m Mediafile) Tune() string {
+func (m *Mediafile) Tune() string {
   return m.tune
 }
 
-func (m Mediafile) SeekTimeInput() string {
+func (m *Mediafile) SeekTimeInput() string {
   return m.seekTimeInput
 }
 
-func (m Mediafile) Quality() int {
+func (m *Mediafile) Quality() int {
   return m.quality
 }
 
-func (m Mediafile) MuxDelay() string {
+func (m *Mediafile) MuxDelay() string {
   return m.muxDelay
 }
 
-func (m Mediafile) SeekUsingTsInput() bool {
+func (m *Mediafile) SeekUsingTsInput() bool {
   return m.seekUsingTsInput
 }
 
-func (m Mediafile) CopyTs() bool {
+func (m *Mediafile) CopyTs() bool {
   return m.copyTs
 }
 
-func (m Mediafile) InputPath() string {
+func (m *Mediafile) InputPath() string {
   return m.inputPath
 }
 
@@ -312,15 +327,63 @@ func (m *Mediafile) NativeFramerateInput() bool {
   return m.nativeFramerateInput
 }
 
-func (m Mediafile) Metadata() Metadata {
+func (m *Mediafile) RtmpLive() string {
+  return m.rtmpLive
+}
+
+func (m *Mediafile) HlsSegmentDuration() int {
+  return m.hlsSegmentDuration
+}
+
+func (m *Mediafile) HlsPlaylistType() string {
+  return m.hlsPlaylistType
+}
+
+func (m *Mediafile) Metadata() Metadata {
   return m.metadata
 }
 
 /** OPTS **/
-func (m Mediafile) ToStrCommand() string {
+func (m *Mediafile) ToStrCommand() string {
   var strCommand string
 
-  opts := []string{"SeekTimeInput", "DurationInput", "SeekUsingTsInput", "NativeFramerateInput", "InputPath", "Aspect", "VideoCodec", "FrameRate", "Resolution", "VideoBitRate", "VideoBitRateTolerance", "AudioCodec", "AudioBitRate", "AudioChannels", "VideoMaxBitRate", "VideoMinBitRate", "BufferSize", "Threads", "Preset", "Tune", "VideoProfile", "AudioProfile", "Target", "Duration", "KeyframeInterval", "SeekTime", "Quality", "MuxDelay", "CopyTs", "OutputFormat", "OutputPath"}
+  opts := [] string {
+    "SeekTimeInput",
+    "SeekUsingTsInput",
+    "NativeFramerateInput",
+    "DurationInput",
+    "RtmpLive",
+    "InputPath",
+
+    "Aspect",
+    "Resolution",
+    "FrameRate",
+    "VideoCodec",
+    "VideoBitRate",
+    "VideoBitRateTolerance",
+    "VideoMaxBitRate",
+    "VideoMinBitRate",
+    "VideoProfile",
+    "AudioCodec",
+    "AudioBitRate",
+    "AudioChannels",
+    "AudioProfile",
+    "Quality",
+    "BufferSize",
+    "MuxDelay",
+    "Threads",
+    "KeyframeInterval",
+    "Preset",
+    "Tune",
+    "Target",
+    "SeekTime",
+    "Duration",
+    "CopyTs",
+    "OutputFormat",
+    "HlsSegmentDuration",
+    "HlsPlaylistType",
+    "OutputPath",
+  }
   for _, name := range opts {
     opt :=  reflect.ValueOf(&m).MethodByName(fmt.Sprintf("Obtain%s", name))
     if (opt != reflect.Value{}) {
@@ -557,4 +620,28 @@ func (m *Mediafile) ObtainSeekUsingTsInput() string {
     return "-seek_timestamp 1"
   }
 	return ""
+}
+
+func (m *Mediafile) ObtainRtmpLive() string {
+  if m.rtmpLive != "" {
+    return fmt.Sprintf("-rtmp_live %s", m.rtmpLive)
+  } else {
+    return ""
+  }
+}
+
+func (m *Mediafile) ObtainHlsPlaylistType() string {
+  if m.hlsPlaylistType != "" {
+    return fmt.Sprintf("-hls_playlist_type %s", m.hlsPlaylistType)
+  } else {
+    return ""
+  }
+}
+
+func (m *Mediafile) ObtainHlsSegmentDuration() string {
+  if m.hlsSegmentDuration != 0 {
+    return fmt.Sprintf("-hls_time %d", m.hlsSegmentDuration)
+  } else {
+    return ""
+  }
 }
