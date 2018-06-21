@@ -41,9 +41,11 @@ type Mediafile struct {
     outputFormat          string
     copyTs                bool
     nativeFramerateInput  bool
+    inputInitialOffset    string
     rtmpLive              string
     hlsPlaylistType       string
     hlsSegmentDuration    int
+    streamIds             map[int]string
     metadata              Metadata
 }
 
@@ -187,6 +189,14 @@ func (m *Mediafile) SetHlsSegmentDuration(val int) {
 
 func (m *Mediafile) SetHlsPlaylistType(val string) {
   m.hlsPlaylistType = val
+}
+
+func (m *Mediafile) SetInputInitialOffset(val string) {
+  m.inputInitialOffset = val
+}
+
+func (m *Mediafile) SetStreamIds(val map[int]string) {
+  m.streamIds = val
 }
 
 func (m *Mediafile) SetMetadata(v Metadata) {
@@ -339,6 +349,14 @@ func (m *Mediafile) HlsPlaylistType() string {
   return m.hlsPlaylistType
 }
 
+func (m *Mediafile) InputInitialOffset() string {
+  return m.inputInitialOffset
+}
+
+func (m *Mediafile) StreamIds() map[int]string {
+  return m.streamIds
+}
+
 func (m *Mediafile) Metadata() Metadata {
   return m.metadata
 }
@@ -353,6 +371,7 @@ func (m *Mediafile) ToStrCommand() string {
     "NativeFramerateInput",
     "DurationInput",
     "RtmpLive",
+    "InputInitialOffset",
     "InputPath",
 
     "Aspect",
@@ -379,6 +398,7 @@ func (m *Mediafile) ToStrCommand() string {
     "SeekTime",
     "Duration",
     "CopyTs",
+    "StreamIds",
     "OutputFormat",
     "HlsSegmentDuration",
     "HlsPlaylistType",
@@ -638,10 +658,29 @@ func (m *Mediafile) ObtainHlsPlaylistType() string {
   }
 }
 
+func (m *Mediafile) ObtainInputInitialOffset() string {
+  if m.inputInitialOffset != "" {
+    return fmt.Sprintf("-itsoffset %s", m.inputInitialOffset)
+  } else {
+    return ""
+  }
+}
+
 func (m *Mediafile) ObtainHlsSegmentDuration() string {
   if m.hlsSegmentDuration != 0 {
     return fmt.Sprintf("-hls_time %d", m.hlsSegmentDuration)
   } else {
     return ""
   }
+}
+
+func (m *Mediafile) ObtainStreamIds() string {
+  if m.streamIds != nil && len(m.streamIds) != 0 {
+    result := []string{}
+    for i, val := range m.streamIds {
+      result = append(result, fmt.Sprintf("-streamid %d:%s", i, val))
+    }
+    return strings.Join(result, " ")
+  }
+  return ""
 }

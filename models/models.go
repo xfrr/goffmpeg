@@ -12,6 +12,7 @@ type Metadata struct {
 
 type Streams struct {
   Index                   int
+  Id                      string      `json:"id"`
   CodecName               string      `json:"codec_name"`
   CodecLongName           string      `json:"codec_long_name"`
   Profile                 string       `json:"profile"`
