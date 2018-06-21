@@ -47,9 +47,13 @@ type Mediafile struct {
     hlsSegmentDuration    int
     streamIds             map[int]string
     metadata              Metadata
+    filter                string
 }
 
 /*** SETTERS ***/
+func (m *Mediafile) SetFilter(v string){
+  m.filter = v
+}
 
 func (m *Mediafile) SetAspect(v string) {
   m.aspect = v
@@ -204,6 +208,10 @@ func (m *Mediafile) SetMetadata(v Metadata) {
 }
 
 /*** GETTERS ***/
+
+func (m *Mediafile) Filter() string {
+  return m.filter
+}
 
 func (m *Mediafile) Aspect() string {
   return m.aspect
@@ -402,6 +410,7 @@ func (m *Mediafile) ToStrCommand() string {
     "OutputFormat",
     "HlsSegmentDuration",
     "HlsPlaylistType",
+    "Filter",
     "OutputPath",
   }
   for _, name := range opts {
@@ -420,6 +429,12 @@ func (m *Mediafile) ToStrCommand() string {
 
 }
 
+func (m *Mediafile) ObtainFilter() string{
+  if m.filter != "" {
+    return fmt.Sprintf("-vf \"%s\"", m.filter)
+  }
+  return ""
+}
 
 func (m *Mediafile) ObtainAspect() string {
   // Set aspect
