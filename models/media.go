@@ -427,11 +427,11 @@ func (m *Mediafile) ToStrCommand() []string {
   return strCommand
 }
 
-func (m *Mediafile) ObtainFilter() string{
+func (m *Mediafile) ObtainFilter() []string{
   if m.filter != "" {
-    return fmt.Sprintf("-vf \"%s\"", m.filter)
+    return []string{"-vf", m.filter}
   }
-  return ""
+  return nil
 }
 
 func (m *Mediafile) ObtainAspect() []string {
