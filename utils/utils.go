@@ -22,67 +22,34 @@ func DurToSec(dur string) (sec float64) {
 	return secs
 }
 
-func GetExec() string {
+func GetFFmpegExec() []string {
 	var platform = runtime.GOOS
-	var command = ""
+	var command = []string{"", "ffmpeg"}
 
 	switch platform {
 	case "windows":
-		command = "cmd"
+		command[0] = "where"
 		break
 	default:
-		command = "/bin/sh"
+		command[0] = "which"
 		break
 	}
 
 	return command
 }
 
-func GetExecArgs() string {
+func GetFFprobeExec() []string {
 	var platform = runtime.GOOS
-	var args = ""
+	var command = []string{"", "ffprobe"}
 
 	switch platform {
 	case "windows":
-		args = "/C"
+		command[0] = "where"
 		break
 	default:
-		args = "-c"
+		command[0] = "which"
 		break
 	}
-
-	return args
-}
-
-func GetFFmpegExec() string {
-	var platform = runtime.GOOS
-	var command = ""
-
-	switch platform {
-	case "windows":
-		command = "where ffmpeg"
-		break
-	default:
-		command = "which ffmpeg"
-		break
-	}
-
-	return command
-}
-
-func GetFFprobeExec() string {
-	var platform = runtime.GOOS
-	var command = ""
-
-	switch platform {
-	case "windows":
-		command = "where ffprobe"
-		break
-	default:
-		command = "which ffprobe"
-		break
-	}
-
 	return command
 }
 
@@ -98,5 +65,11 @@ func CheckFileType(streams []models.Streams) string {
 	return "audio"
 }
 
-
-
+func LineSeparator() string {
+	switch runtime.GOOS {
+	case "windows":
+		return "\r\n"
+	default:
+		return "\n"
+	}
+}

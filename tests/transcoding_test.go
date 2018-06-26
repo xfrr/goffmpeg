@@ -2,7 +2,7 @@ package test
 
 import (
 	"testing"
-	"goffmpeg/transcoder"
+	"github.com/xfrr/goffmpeg/transcoder"
 )
 
 func TestInputNotFound(t *testing.T) {
@@ -31,13 +31,12 @@ func TestTranscoding3GP(t *testing.T) {
 		return
 	}
 
-	done, err := trans.Run()
+	done := trans.Run()
+	err = <- done
 	if err != nil {
 		t.Error(err)
 		return
 	}
-
-	<-done
 }
 
 func TestTranscodingAVI(t *testing.T) {
@@ -53,13 +52,12 @@ func TestTranscodingAVI(t *testing.T) {
 		return
 	}
 
-	done, err := trans.Run()
+	done := trans.Run()
+	err = <- done
 	if err != nil {
 		t.Error(err)
 		return
 	}
-
-	<-done
 }
 
 func TestTranscodingFLV(t *testing.T) {
@@ -75,13 +73,12 @@ func TestTranscodingFLV(t *testing.T) {
 		return
 	}
 
-	done, err := trans.Run()
+	done := trans.Run()
+	err = <- done
 	if err != nil {
 		t.Error(err)
 		return
 	}
-
-	<-done
 }
 
 func TestTranscodingMKV(t *testing.T) {
@@ -97,13 +94,12 @@ func TestTranscodingMKV(t *testing.T) {
 		return
 	}
 
-	done, err := trans.Run()
+	done := trans.Run()
+	err = <-done
 	if err != nil {
 		t.Error(err)
 		return
 	}
-
-	<-done
 }
 
 func TestTranscodingMOV(t *testing.T) {
@@ -119,13 +115,12 @@ func TestTranscodingMOV(t *testing.T) {
 		return
 	}
 
-	done, err := trans.Run()
+	done := trans.Run()
+	err = <-done
 	if err != nil {
 		t.Error(err)
 		return
 	}
-
-	<-done
 }
 
 func TestTranscodingMPEG(t *testing.T) {
@@ -141,13 +136,12 @@ func TestTranscodingMPEG(t *testing.T) {
 		return
 	}
 
-	done, err := trans.Run()
+	done := trans.Run()
+	err = <-done
 	if err != nil {
 		t.Error(err)
 		return
 	}
-
-	<-done
 }
 
 func TestTranscodingOGG(t *testing.T) {
@@ -163,13 +157,12 @@ func TestTranscodingOGG(t *testing.T) {
 		return
 	}
 
-	done, err := trans.Run()
+	done := trans.Run()
+	err = <- done
 	if err != nil {
 		t.Error(err)
 		return
 	}
-
-	<-done
 }
 
 func TestTranscodingWAV(t *testing.T) {
@@ -185,13 +178,12 @@ func TestTranscodingWAV(t *testing.T) {
 		return
 	}
 
-	done, err := trans.Run()
+	done := trans.Run()
+	err = <- done
 	if err != nil {
 		t.Error(err)
 		return
 	}
-
-	<-done
 }
 
 func TestTranscodingWEBM(t *testing.T) {
@@ -207,13 +199,12 @@ func TestTranscodingWEBM(t *testing.T) {
 		return
 	}
 
-	done, err := trans.Run()
+	done := trans.Run()
+	err = <- done
 	if err != nil {
 		t.Error(err)
 		return
 	}
-
-	<-done
 }
 
 func TestTranscodingWMV(t *testing.T) {
@@ -229,11 +220,10 @@ func TestTranscodingWMV(t *testing.T) {
 		return
 	}
 
-	done, err := trans.Run()
+	done := trans.Run()
+	err = <- done
 	if err != nil {
 		t.Error(err)
 		return
 	}
-
-	<-done
 }

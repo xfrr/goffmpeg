@@ -362,10 +362,10 @@ func (m *Mediafile) Metadata() Metadata {
 }
 
 /** OPTS **/
-func (m *Mediafile) ToStrCommand() string {
-  var strCommand string
+func (m *Mediafile) ToStrCommand() []string {
+  var strCommand []string
 
-  opts := [] string {
+  opts := []string {
     "SeekTimeInput",
     "SeekUsingTsInput",
     "NativeFramerateInput",
@@ -409,278 +409,276 @@ func (m *Mediafile) ToStrCommand() string {
     if (opt != reflect.Value{}) {
       result := opt.Call([]reflect.Value{})
 
-      if result[0].String() != "" {
-        strCommand += " "
-        strCommand += result[0].String()
+      if val, ok := result[0].Interface().([]string); ok {
+        strCommand = append(strCommand, val...)
       }
     }
   }
 
   return strCommand
-
 }
 
 
-func (m *Mediafile) ObtainAspect() string {
+func (m *Mediafile) ObtainAspect() []string {
   // Set aspect
   if m.resolution != "" {
     resolution := strings.Split(m.resolution, "x")
     if len(resolution) != 0 {
       width, _ := strconv.ParseFloat(resolution[0], 64)
       height, _ := strconv.ParseFloat(resolution[1], 64)
-      return fmt.Sprintf("-aspect %f", width/height)
+      return []string{"-aspect", fmt.Sprintf("%f", width/height)}
     }
   }
 
   if m.aspect != "" {
-    return fmt.Sprintf("-aspect %s", m.aspect)
+    return []string{"-aspect", m.aspect}
   }
-	return ""
+	return nil
 }
 
-func (m *Mediafile) ObtainInputPath() string {
-  return fmt.Sprintf("-i \"%s\"", m.inputPath)
+func (m *Mediafile) ObtainInputPath() []string {
+  return []string{"-i", m.inputPath}
 }
 
-func (m *Mediafile) ObtainNativeFramerateInput() string {
+func (m *Mediafile) ObtainNativeFramerateInput() []string {
   if m.nativeFramerateInput {
-    return "-re"
+    return []string{"-re"}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainOutputPath() string {
-  return fmt.Sprintf("\"%s\"", m.outputPath)
+func (m *Mediafile) ObtainOutputPath() []string {
+  return []string{m.outputPath}
 }
 
-func (m *Mediafile) ObtainVideoCodec() string {
+func (m *Mediafile) ObtainVideoCodec() []string {
   if m.videoCodec != "" {
-    return fmt.Sprintf("-c:v %s", m.videoCodec)
+    return []string{"-c:v", m.videoCodec}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainFrameRate() string {
+func (m *Mediafile) ObtainFrameRate() []string {
   if m.frameRate != 0 {
-    return fmt.Sprintf("-r %d", m.frameRate)
+    return []string{"-r",fmt.Sprintf("%d", m.frameRate)}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainResolution() string {
+func (m *Mediafile) ObtainResolution() []string {
   if m.resolution != "" {
-    return fmt.Sprintf("-s %s", m.resolution)
+    return []string{"-s", m.resolution}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainVideoBitRate() string {
+func (m *Mediafile) ObtainVideoBitRate() []string {
   if m.videoBitRate != 0 {
-    return fmt.Sprintf("-b:v %d", m.videoBitRate)
+    return []string{"-b:v", fmt.Sprintf("%d", m.videoBitRate)}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainAudioCodec() string {
+func (m *Mediafile) ObtainAudioCodec() []string {
   if m.audioCodec != "" {
-    return fmt.Sprintf("-c:a %s", m.audioCodec)
+    return []string{"-c:a", m.audioCodec}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainAudioBitRate() string {
+func (m *Mediafile) ObtainAudioBitRate() []string {
   if m.audioBitrate != 0 {
-    return fmt.Sprintf("-b:a %d", m.audioBitrate)
+    return []string{"-b:a", fmt.Sprintf("%d", m.audioBitrate)}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainAudioChannels() string {
+func (m *Mediafile) ObtainAudioChannels() []string {
   if m.audioChannels != 0 {
-    return fmt.Sprintf("-ac %d", m.audioChannels)
+    return []string{"-ac",fmt.Sprintf("%d", m.audioChannels)}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainVideoMaxBitRate() string {
+func (m *Mediafile) ObtainVideoMaxBitRate() []string {
   if m.videoMaxBitRate != 0 {
-    return fmt.Sprintf("-maxrate %dk", m.videoMaxBitRate)
+    return []string{"-maxrate",fmt.Sprintf("%dk", m.videoMaxBitRate)}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainVideoMinBitRate() string {
+func (m *Mediafile) ObtainVideoMinBitRate() []string {
   if m.videoMinBitrate != 0 {
-    return fmt.Sprintf("-minrate %dk", m.videoMinBitrate)
+    return []string{"-minrate",fmt.Sprintf("%dk", m.videoMinBitrate)}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainBufferSize() string {
+func (m *Mediafile) ObtainBufferSize() []string {
   if m.bufferSize != 0 {
-    return fmt.Sprintf("-bufsize %dk", m.bufferSize)
+    return []string{"-bufsize",fmt.Sprintf("%dk", m.bufferSize)}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainVideoBitRateTolerance() string {
+func (m *Mediafile) ObtainVideoBitRateTolerance() []string {
   if m.videoBitRateTolerance != 0 {
-    return fmt.Sprintf("-bt %dk", m.videoBitRateTolerance)
+    return []string{"-bt",fmt.Sprintf("%dk", m.videoBitRateTolerance)}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainThreads() string {
+func (m *Mediafile) ObtainThreads() []string {
   if m.threads != 0 {
-    return fmt.Sprintf("-threads %d", m.threads)
+    return []string{"-threads",fmt.Sprintf("%d", m.threads)}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainTarget() string {
+func (m *Mediafile) ObtainTarget() []string {
   if m.target != "" {
-    return fmt.Sprintf("-target %s", m.target)
+    return []string{"-target",m.target}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainDuration() string {
+func (m *Mediafile) ObtainDuration() []string {
   if m.duration != "" {
-    return fmt.Sprintf("-t %s", m.duration)
+    return []string{"-t",m.duration}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainDurationInput() string {
+func (m *Mediafile) ObtainDurationInput() []string {
   if m.durationInput != "" {
-    return fmt.Sprintf("-t %s", m.durationInput)
+    return []string{"-t",m.durationInput}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainKeyframeInterval() string {
+func (m *Mediafile) ObtainKeyframeInterval() []string {
   if m.keyframeInterval != 0 {
-    return fmt.Sprintf("-g %d", m.keyframeInterval)
+    return []string{"-g",fmt.Sprintf("%d", m.keyframeInterval)}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainSeekTime() string {
+func (m *Mediafile) ObtainSeekTime() []string {
   if m.seekTime != "" {
-    return fmt.Sprintf("-ss %s", m.seekTime)
+    return []string{"-ss",m.seekTime}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainSeekTimeInput() string {
+func (m *Mediafile) ObtainSeekTimeInput() []string {
   if m.seekTimeInput != "" {
-    return fmt.Sprintf("-ss %s", m.seekTimeInput)
+    return []string{"-ss",m.seekTimeInput}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainPreset() string {
+func (m *Mediafile) ObtainPreset() []string {
   if m.preset != "" {
-    return fmt.Sprintf("-preset %s", m.preset)
+    return []string{"-preset",m.preset}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainTune() string {
+func (m *Mediafile) ObtainTune() []string {
   if m.tune != "" {
-    return fmt.Sprintf("-tune %s", m.tune)
+    return []string{"-tune",m.tune}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainQuality() string {
+func (m *Mediafile) ObtainQuality() []string {
   if m.quality != 0 {
-    return fmt.Sprintf("-crf %d", m.quality)
+    return []string{"-crf",fmt.Sprintf("%d", m.quality)}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainVideoProfile() string {
+func (m *Mediafile) ObtainVideoProfile() []string {
   if m.videoProfile != "" {
-    return fmt.Sprintf("-profile:v %s", m.videoProfile)
+    return []string{"-profile:v",m.videoProfile}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainAudioProfile() string {
+func (m *Mediafile) ObtainAudioProfile() []string {
   if m.audioProfile != "" {
-    return fmt.Sprintf("-profile:a %s", m.audioProfile)
+    return []string{"-profile:a", m.audioProfile}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainCopyTs() string {
+func (m *Mediafile) ObtainCopyTs() []string {
   if m.copyTs {
-    return "-copyts"
+    return []string{"-copyts"}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainOutputFormat() string {
+func (m *Mediafile) ObtainOutputFormat() []string {
   if m.outputFormat != "" {
-    return fmt.Sprintf("-f %s", m.outputFormat)
+    return []string{"-f",m.outputFormat}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainMuxDelay() string {
+func (m *Mediafile) ObtainMuxDelay() []string {
   if m.muxDelay != "" {
-    return fmt.Sprintf("-muxdelay %s", m.muxDelay)
+    return []string{"-muxdelay",m.muxDelay}
   }
-  return ""
+  return nil
 }
 
-func (m *Mediafile) ObtainSeekUsingTsInput() string {
+func (m *Mediafile) ObtainSeekUsingTsInput() []string {
   if m.seekUsingTsInput {
-    return "-seek_timestamp 1"
+    return []string{"-seek_timestamp", "1"}
   }
-	return ""
+	return nil
 }
 
-func (m *Mediafile) ObtainRtmpLive() string {
+func (m *Mediafile) ObtainRtmpLive() []string {
   if m.rtmpLive != "" {
-    return fmt.Sprintf("-rtmp_live %s", m.rtmpLive)
+    return []string{"-rtmp_live",m.rtmpLive}
   } else {
-    return ""
+    return nil
   }
 }
 
-func (m *Mediafile) ObtainHlsPlaylistType() string {
+func (m *Mediafile) ObtainHlsPlaylistType() []string {
   if m.hlsPlaylistType != "" {
-    return fmt.Sprintf("-hls_playlist_type %s", m.hlsPlaylistType)
+    return []string{"-hls_playlist_type",m.hlsPlaylistType}
   } else {
-    return ""
+    return nil
   }
 }
 
-func (m *Mediafile) ObtainInputInitialOffset() string {
+func (m *Mediafile) ObtainInputInitialOffset() []string {
   if m.inputInitialOffset != "" {
-    return fmt.Sprintf("-itsoffset %s", m.inputInitialOffset)
+    return []string{"-itsoffset",m.inputInitialOffset}
   } else {
-    return ""
+    return nil
   }
 }
 
-func (m *Mediafile) ObtainHlsSegmentDuration() string {
+func (m *Mediafile) ObtainHlsSegmentDuration() []string {
   if m.hlsSegmentDuration != 0 {
-    return fmt.Sprintf("-hls_time %d", m.hlsSegmentDuration)
+    return []string{"-hls_time",fmt.Sprintf("%d", m.hlsSegmentDuration)}
   } else {
-    return ""
+    return nil
   }
 }
 
-func (m *Mediafile) ObtainStreamIds() string {
+func (m *Mediafile) ObtainStreamIds() []string {
   if m.streamIds != nil && len(m.streamIds) != 0 {
     result := []string{}
     for i, val := range m.streamIds {
-      result = append(result, fmt.Sprintf("-streamid %d:%s", i, val))
+      result = append(result, []string{"-streamid", fmt.Sprintf("%d:%s", i, val)}...)
     }
-    return strings.Join(result, " ")
+    return result
   }
-  return ""
+  return nil
 }
