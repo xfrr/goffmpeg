@@ -19,12 +19,17 @@ import (
 
 type Transcoder struct {
   stdErrPipe            io.ReadCloser
+  process               *exec.Cmd
   mediafile             *models.Mediafile
   configuration         ffmpeg.Configuration
 }
 
 func (t *Transcoder) SetProcessStderrPipe(v io.ReadCloser) {
   t.stdErrPipe = v
+}
+
+func (t *Transcoder) SetProcess(cmd *exec.Cmd) {
+  t.process = cmd
 }
 
 func (t *Transcoder) SetMediaFile(v *models.Mediafile) {
@@ -36,6 +41,9 @@ func (t *Transcoder) SetConfiguration(v ffmpeg.Configuration) {
 }
 
 /*** GETTERS ***/
+func (t Transcoder) Process() *exec.Cmd{
+  return t.process
+}
 
 func (t Transcoder) MediaFile() *models.Mediafile {
   return t.mediafile
@@ -123,7 +131,7 @@ func (t *Transcoder) Run() <-chan error {
   proc.Stdout = out
 
   err = proc.Start()
-
+  t.SetProcess(proc)
   go func(err error, out *bytes.Buffer, errStream io.ReadCloser) {
     defer func() {
       if errStream != nil {
