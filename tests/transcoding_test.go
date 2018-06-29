@@ -31,7 +31,7 @@ func TestTranscoding3GP(t *testing.T) {
 		return
 	}
 
-	done := trans.Run()
+	done := trans.Run(false)
 	err = <- done
 	if err != nil {
 		t.Error(err)
@@ -52,7 +52,7 @@ func TestTranscodingAVI(t *testing.T) {
 		return
 	}
 
-	done := trans.Run()
+	done := trans.Run(false)
 	err = <- done
 	if err != nil {
 		t.Error(err)
@@ -73,7 +73,7 @@ func TestTranscodingFLV(t *testing.T) {
 		return
 	}
 
-	done := trans.Run()
+	done := trans.Run(false)
 	err = <- done
 	if err != nil {
 		t.Error(err)
@@ -94,7 +94,7 @@ func TestTranscodingMKV(t *testing.T) {
 		return
 	}
 
-	done := trans.Run()
+	done := trans.Run(false)
 	err = <-done
 	if err != nil {
 		t.Error(err)
@@ -115,7 +115,7 @@ func TestTranscodingMOV(t *testing.T) {
 		return
 	}
 
-	done := trans.Run()
+	done := trans.Run(false)
 	err = <-done
 	if err != nil {
 		t.Error(err)
@@ -136,7 +136,7 @@ func TestTranscodingMPEG(t *testing.T) {
 		return
 	}
 
-	done := trans.Run()
+	done := trans.Run(false)
 	err = <-done
 	if err != nil {
 		t.Error(err)
@@ -157,7 +157,7 @@ func TestTranscodingOGG(t *testing.T) {
 		return
 	}
 
-	done := trans.Run()
+	done := trans.Run(false)
 	err = <- done
 	if err != nil {
 		t.Error(err)
@@ -178,7 +178,7 @@ func TestTranscodingWAV(t *testing.T) {
 		return
 	}
 
-	done := trans.Run()
+	done := trans.Run(false)
 	err = <- done
 	if err != nil {
 		t.Error(err)
@@ -199,7 +199,7 @@ func TestTranscodingWEBM(t *testing.T) {
 		return
 	}
 
-	done := trans.Run()
+	done := trans.Run(false)
 	err = <- done
 	if err != nil {
 		t.Error(err)
@@ -220,7 +220,7 @@ func TestTranscodingWMV(t *testing.T) {
 		return
 	}
 
-	done := trans.Run()
+	done := trans.Run(false)
 	err = <- done
 	if err != nil {
 		t.Error(err)

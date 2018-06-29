@@ -78,10 +78,11 @@ func main() {
 # Progress properties
 ```golang
 type Progress struct {
-	FramesProcessed			string
-	CurrentTime			string
-	CurrentBitrate			string
-	Progress			float64
+	FramesProcessed string
+	CurrentTime     string
+	CurrentBitrate  string
+	Progress        float64
+	Speed           string
 }
 ```
 # Media setters

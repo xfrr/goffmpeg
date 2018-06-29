@@ -73,6 +73,7 @@ type Progress struct {
   CurrentTime       string
   CurrentBitrate    string
   Progress          float64
+  Speed             string
 }
 
 type Tags struct {

@@ -114,30 +114,26 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) (error) {
 
 }
 
-func (t *Transcoder) Run() <-chan error {
+func (t *Transcoder) Run(progress bool) <-chan error {
   done := make(chan error)
   command := t.GetCommand()
 
   proc := exec.Command(t.configuration.FfmpegBin, command...)
-
-  errStream, err := proc.StderrPipe()
-  if err != nil {
-    fmt.Println("Progress not available: "+ err.Error())
-  } else {
-    t.SetProcessStderrPipe(errStream)
+  if progress {
+    errStream, err := proc.StderrPipe()
+    if err != nil {
+      fmt.Println("Progress not available: "+ err.Error())
+    } else {
+      t.SetProcessStderrPipe(errStream)
+    }
   }
 
   out := &bytes.Buffer{}
   proc.Stdout = out
 
-  err = proc.Start()
+  err := proc.Start()
   t.SetProcess(proc)
-  go func(err error, out *bytes.Buffer, errStream io.ReadCloser) {
-    defer func() {
-      if errStream != nil {
-        errStream.Close()
-      }
-    }()
+  go func(err error, out *bytes.Buffer) {
     if err != nil {
       done <- fmt.Errorf("Failed Start FFMPEG (%s) with %s, message %s", command, err, out.String())
       close(done)
@@ -149,7 +145,7 @@ func (t *Transcoder) Run() <-chan error {
     }
     done <- err
     close(done)
-  }(err, out, errStream)
+  }(err, out)
 
   return done
 }
@@ -160,30 +156,25 @@ func (t Transcoder) Output() <-chan models.Progress {
   go func() {
     defer close(out)
     if t.stdErrPipe == nil {
+      out <- models.Progress{}
       return
+    } else {
+      defer t.stdErrPipe.Close()
     }
     scanner := bufio.NewScanner(t.stdErrPipe)
-    filetype := utils.CheckFileType(t.MediaFile().Metadata().Streams)
 
     split := func(data []byte, atEOF bool) (advance int, token []byte, spliterror error) {
-
       if atEOF && len(data) == 0 {
         return 0, nil, nil
       }
-
-      Iframe := strings.Index(string(data), "frame=")
-
-      if filetype == "video" {
-        if Iframe > 0 {
-          return Iframe + 1, data[Iframe:], nil
-        }
-      } else {
-        if i := bytes.IndexByte(data, '\n'); i >= 0 {
-          // We have a full newline-terminated line.
-          return i + 1, data[0:i], nil
-        }
+      if i := bytes.IndexByte(data, '\n'); i >= 0 {
+        // We have a full newline-terminated line.
+        return i + 1, data[0:i], nil
       }
-
+      if i := bytes.IndexByte(data, '\r'); i >= 0 {
+        // We have a cr terminated line
+        return i + 1, data[0:i], nil
+      }
       if atEOF {
         return len(data), data, nil
       }
@@ -195,20 +186,18 @@ func (t Transcoder) Output() <-chan models.Progress {
     buf := make([]byte, 2)
     scanner.Buffer(buf, bufio.MaxScanTokenSize)
 
-    var lastProgress float64
     for scanner.Scan() {
       Progress := new(models.Progress)
       line := scanner.Text()
-      // fmt.Println(line)
-      if strings.Contains(line, "time=") && strings.Contains(line, "bitrate=") {
+      if strings.Contains(line, "frame=") && strings.Contains(line, "time=") && strings.Contains(line, "bitrate=") {
         var re= regexp.MustCompile(`=\s+`)
         st := re.ReplaceAllString(line, `=`)
 
         f := strings.Fields(st)
-
         var framesProcessed string
         var currentTime string
         var currentBitrate string
+        var currentSpeed string
 
         for j := 0; j < len(f); j++ {
           field := f[j]
@@ -229,23 +218,25 @@ func (t Transcoder) Output() <-chan models.Progress {
             if fieldname == "bitrate" {
               currentBitrate = fieldvalue
             }
+            if fieldname == "speed" {
+              currentSpeed = fieldvalue
+            }
           }
         }
 
         timesec := utils.DurToSec(currentTime)
         dursec, _ := strconv.ParseFloat(t.MediaFile().Metadata().Format.Duration, 64)
-        // Progress calculation
-        progress := (timesec * 100) / dursec
-
-        Progress.Progress = progress
+        //live stream check
+        if dursec != 0 {
+          // Progress calculation
+          progress := (timesec * 100) / dursec
+          Progress.Progress = progress
+        }
         Progress.CurrentBitrate = currentBitrate
         Progress.FramesProcessed = framesProcessed
         Progress.CurrentTime = currentTime
-
-        if progress != lastProgress {
-          lastProgress = progress
-          out <- *Progress
-        }
+        Progress.Speed = currentSpeed
+        out <- *Progress
       }
     }
   }()
