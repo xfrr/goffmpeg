@@ -39,10 +39,11 @@ func main() {
     	// Handle error...
 
 	// Start transcoder process
-	done, err := trans.Run()
+	done := trans.Run()
 
 	// This channel is used to wait for the process to end
-	<-done
+	err = <-done
+	// Handle error...
 
 }
 ```
@@ -59,10 +60,10 @@ func main() {
     	// Handle error...
 
 	// Start transcoder process
-	done, err := trans.Run()
+	done := trans.Run()
 
 	// Returns a channel to get the transcoding progress
-	progress, err := trans.Output()
+	progress := trans.Output()
 
 	// Example of printing transcoding progress
 	for msg := range progress {
@@ -70,17 +71,18 @@ func main() {
 	}
 
 	// This channel is used to wait for the transcoding process to end
-	<-done
+	err = <-done
 
 }
 ```
 # Progress properties
 ```golang
 type Progress struct {
-	FramesProcessed			string
-	CurrentTime			string
-	CurrentBitrate			string
-	Progress			float64
+	FramesProcessed string
+	CurrentTime     string
+	CurrentBitrate  string
+	Progress        float64
+	Speed           string
 }
 ```
 # Media setters
@@ -139,10 +141,10 @@ func main() {
 	trans.MediaFile().SetPreset("ultrafast")
 
 	// Start transcoder process
-	done, err := trans.Run()
+	done := trans.Run()
 
 	// Returns a channel to get the transcoding progress
-	progress, err := trans.Output()
+	progress := trans.Output()
 
 	// Example of printing transcoding progress
 	for msg := range progress {
@@ -150,7 +152,7 @@ func main() {
 	}
 
 	// This channel is used to wait for the transcoding process to end
-	<-done
+	err = <-done
 
 }
 ```
