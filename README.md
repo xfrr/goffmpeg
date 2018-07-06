@@ -38,8 +38,8 @@ func main() {
     	err := trans.Initialize( inputPath, outputPath )
     	// Handle error...
 
-	// Start transcoder process
-	done := trans.Run()
+	// Start transcoder process without checking progress
+	done := trans.Run(false)
 
 	// This channel is used to wait for the process to end
 	err = <-done
@@ -59,8 +59,8 @@ func main() {
     	err := trans.Initialize( inputPath, outputPath )
     	// Handle error...
 
-	// Start transcoder process
-	done := trans.Run()
+	// Start transcoder process with progress checking
+	done := trans.Run(true)
 
 	// Returns a channel to get the transcoding progress
 	progress := trans.Output()
@@ -121,6 +121,8 @@ SetNativeFramerateInput
 SetRtmpLive
 SetHlsSegmentDuration
 SetHlsPlaylistType
+SetHttpMethod
+SetHttpKeepAlive
 SetOutputPath
 SetOutputFormat
 ```
@@ -129,19 +131,19 @@ Example
 func main() {
 
 	// Create new instance of transcoder
-    	trans := new(transcoder.Transcoder)
+	trans := new(transcoder.Transcoder)
 
 	// Initialize transcoder passing the input file path and output file path
-    	err := trans.Initialize( inputPath, outputPath )
-    	// Handle error...
+	err := trans.Initialize( inputPath, outputPath )
+	// Handle error...
 
 	// SET FRAME RATE TO MEDIAFILE
 	trans.MediaFile().SetFrameRate(70)
 	// SET ULTRAFAST PRESET TO MEDIAFILE
 	trans.MediaFile().SetPreset("ultrafast")
 
-	// Start transcoder process
-	done := trans.Run()
+	// Start transcoder process to check progress
+	done := trans.Run(true)
 
 	// Returns a channel to get the transcoding progress
 	progress := trans.Output()

@@ -45,6 +45,8 @@ type Mediafile struct {
     rtmpLive              string
     hlsPlaylistType       string
     hlsSegmentDuration    int
+    httpMethod            string
+    httpKeepAlive         bool
     streamIds             map[int]string
     metadata              Metadata
     filter                string
@@ -193,6 +195,14 @@ func (m *Mediafile) SetHlsSegmentDuration(val int) {
 
 func (m *Mediafile) SetHlsPlaylistType(val string) {
   m.hlsPlaylistType = val
+}
+
+func (m *Mediafile) SetHttpMethod(val string) {
+  m.httpMethod = val
+}
+
+func (m *Mediafile) SetHttpKeepAlive(val bool) {
+  m.httpKeepAlive = val
 }
 
 func (m *Mediafile) SetInputInitialOffset(val string) {
@@ -361,6 +371,14 @@ func (m *Mediafile) InputInitialOffset() string {
   return m.inputInitialOffset
 }
 
+func (m *Mediafile) HttpMethod() string {
+  return m.httpMethod
+}
+
+func (m *Mediafile) HttpKeepAlive() bool {
+  return m.httpKeepAlive
+}
+
 func (m *Mediafile) StreamIds() map[int]string {
   return m.streamIds
 }
@@ -411,6 +429,8 @@ func (m *Mediafile) ToStrCommand() []string {
     "HlsSegmentDuration",
     "HlsPlaylistType",
     "Filter",
+    "HttpMethod",
+    "HttpKeepAlive",
     "OutputPath",
   }
   for _, name := range opts {
@@ -682,6 +702,22 @@ func (m *Mediafile) ObtainInputInitialOffset() []string {
 func (m *Mediafile) ObtainHlsSegmentDuration() []string {
   if m.hlsSegmentDuration != 0 {
     return []string{"-hls_time",fmt.Sprintf("%d", m.hlsSegmentDuration)}
+  } else {
+    return nil
+  }
+}
+
+func (m *Mediafile) ObtainHttpMethod() []string {
+  if m.httpMethod != "" {
+    return []string{"-method",m.httpMethod}
+  } else {
+    return nil
+  }
+}
+
+func (m *Mediafile) ObtainHttpKeepAlive() []string {
+  if m.httpKeepAlive {
+    return []string{"-multiple_requests","1"}
   } else {
     return nil
   }
