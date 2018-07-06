@@ -3,6 +3,7 @@ package test
 import (
 	"testing"
 	"github.com/xfrr/goffmpeg/transcoder"
+	"fmt"
 )
 
 func TestInputNotFound(t *testing.T) {
@@ -221,6 +222,30 @@ func TestTranscodingWMV(t *testing.T) {
 	}
 
 	done := trans.Run(false)
+	err = <- done
+	if err != nil {
+		t.Error(err)
+		return
+	}
+}
+
+func TestTranscodingProgress(t *testing.T) {
+
+	var inputPath = "/data/test.mp4"
+	var outputPath = "/data/testmp4.mp4"
+
+	trans := new(transcoder.Transcoder)
+
+	err := trans.Initialize(inputPath, outputPath)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	done := trans.Run(true)
+	for val := range trans.Output() {
+		fmt.Printf("%+v\n", val)
+	}
 	err = <- done
 	if err != nil {
 		t.Error(err)

@@ -117,7 +117,9 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) (error) {
 func (t *Transcoder) Run(progress bool) <-chan error {
   done := make(chan error)
   command := t.GetCommand()
-
+  if !progress {
+    command = append([]string{"-nostats", "-loglevel", "0"}, command...)
+  }
   proc := exec.Command(t.configuration.FfmpegBin, command...)
   if progress {
     errStream, err := proc.StderrPipe()
