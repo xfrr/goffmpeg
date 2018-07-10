@@ -16,6 +16,7 @@ type Mediafile struct {
     videoMinBitrate       int
     videoCodec            string
     frameRate             int
+    audioRate             int
     maxKeyframe           int
     minKeyframe           int
     keyframeInterval      int
@@ -87,6 +88,10 @@ func (m *Mediafile) SetVideoCodec(v string) {
 
 func (m *Mediafile) SetFrameRate(v int) {
   m.frameRate = v
+}
+
+func (m *Mediafile) SetAudioRate(v int) {
+  m.audioRate = v
 }
 
 func (m *Mediafile) SetMaxKeyFrame(v int) {
@@ -255,6 +260,10 @@ func (m *Mediafile) FrameRate() int {
   return m.frameRate
 }
 
+func (m *Mediafile) AudioRate() int {
+  return m.audioRate
+}
+
 func (m *Mediafile) MaxKeyFrame() int {
   return m.maxKeyframe
 }
@@ -403,6 +412,7 @@ func (m *Mediafile) ToStrCommand() []string {
     "Aspect",
     "Resolution",
     "FrameRate",
+    "AudioRate",
     "VideoCodec",
     "VideoBitRate",
     "VideoBitRateTolerance",
@@ -496,6 +506,13 @@ func (m *Mediafile) ObtainVideoCodec() []string {
 func (m *Mediafile) ObtainFrameRate() []string {
   if m.frameRate != 0 {
     return []string{"-r",fmt.Sprintf("%d", m.frameRate)}
+  }
+  return nil
+}
+
+func (m *Mediafile) ObtainAudioRate() []string {
+  if m.audioRate != 0 {
+    return []string{"-ar",fmt.Sprintf("%d", m.audioRate)}
   }
   return nil
 }

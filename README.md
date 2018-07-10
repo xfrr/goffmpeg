@@ -96,6 +96,7 @@ SetVideoMaxBitrate
 SetVideoMinBitRate
 SetVideoCodec
 SetFrameRate
+SetAudioRate
 SetMaxKeyFrame
 SetMinKeyFrame
 SetKeyframeInterval
