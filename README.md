@@ -115,6 +115,7 @@ SetSeekTime
 SetSeekTimeInput
 SetSeekUsingTsInput
 SetQuality
+SetStrict
 SetCopyTs
 SetMuxDelay
 SetInputPath
