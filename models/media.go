@@ -688,7 +688,7 @@ func (m *Mediafile) ObtainQuality() []string {
 }
 
 func (m *Mediafile) ObtainStrict() []string {
-  if m.bufferSize != 0 {
+  if m.strict != 0 {
     return []string{"-strict",fmt.Sprintf("%d", m.strict)}
   }
   return nil
