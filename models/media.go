@@ -15,6 +15,7 @@ type Mediafile struct {
     videoMaxBitRate       int
     videoMinBitrate       int
     videoCodec            string
+    vframes               int
     frameRate             int
     audioRate             int
     maxKeyframe           int
@@ -86,6 +87,10 @@ func (m *Mediafile) SetVideoMinBitRate(v int) {
 
 func (m *Mediafile) SetVideoCodec(v string) {
   m.videoCodec = v
+}
+
+func (m *Mediafile) SetVframes(v int) {
+  m.vframes = v
 }
 
 func (m *Mediafile) SetFrameRate(v int) {
@@ -266,6 +271,10 @@ func (m *Mediafile) VideoCodec() string {
   return m.videoCodec
 }
 
+func (m *Mediafile) Vframes() int {
+  return m.vframes
+}
+
 func (m *Mediafile) FrameRate() int {
   return m.frameRate
 }
@@ -432,6 +441,7 @@ func (m *Mediafile) ToStrCommand() []string {
     "FrameRate",
     "AudioRate",
     "VideoCodec",
+    "Vframes",
     "VideoBitRate",
     "VideoBitRateTolerance",
     "VideoMaxBitRate",
@@ -519,6 +529,13 @@ func (m *Mediafile) ObtainOutputPath() []string {
 func (m *Mediafile) ObtainVideoCodec() []string {
   if m.videoCodec != "" {
     return []string{"-c:v", m.videoCodec}
+  }
+  return nil
+}
+
+func (m *Mediafile) ObtainVframes() []string {
+  if m.vframes != 0 {
+    return []string{"-vframes",fmt.Sprintf("%d", m.vframes)}
   }
   return nil
 }
