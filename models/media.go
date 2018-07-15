@@ -46,6 +46,7 @@ type Mediafile struct {
     inputInitialOffset    string
     rtmpLive              string
     hlsPlaylistType       string
+    hlsListSize           int
     hlsSegmentDuration    int
     httpMethod            string
     httpKeepAlive         bool
@@ -197,6 +198,10 @@ func (m *Mediafile) SetNativeFramerateInput(val bool) {
 
 func (m *Mediafile) SetRtmpLive(val string) {
   m.rtmpLive = val
+}
+
+func (m *Mediafile) SetHlsListSize(val int) {
+  m.hlsListSize = val
 }
 
 func (m *Mediafile) SetHlsSegmentDuration(val int) {
@@ -377,6 +382,10 @@ func (m *Mediafile) RtmpLive() string {
   return m.rtmpLive
 }
 
+func (m *Mediafile) HlsListSize() int {
+  return m.hlsListSize
+}
+
 func (m *Mediafile) HlsSegmentDuration() int {
   return m.hlsSegmentDuration
 }
@@ -446,6 +455,7 @@ func (m *Mediafile) ToStrCommand() []string {
     "CopyTs",
     "StreamIds",
     "OutputFormat",
+    "HlsListSize",
     "HlsSegmentDuration",
     "HlsPlaylistType",
     "Filter",
@@ -728,6 +738,14 @@ func (m *Mediafile) ObtainHlsPlaylistType() []string {
 func (m *Mediafile) ObtainInputInitialOffset() []string {
   if m.inputInitialOffset != "" {
     return []string{"-itsoffset",m.inputInitialOffset}
+  } else {
+    return nil
+  }
+}
+
+func (m *Mediafile) ObtainHlsListSize() []string {
+  if m.hlsSegmentDuration != 0 {
+    return []string{"-hls_list_size",fmt.Sprintf("%d", m.hlsListSize)}
   } else {
     return nil
   }

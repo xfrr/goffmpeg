@@ -121,6 +121,7 @@ SetMuxDelay
 SetInputPath
 SetNativeFramerateInput
 SetRtmpLive
+SetHlsListSize
 SetHlsSegmentDuration
 SetHlsPlaylistType
 SetHttpMethod
