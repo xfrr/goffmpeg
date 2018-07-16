@@ -1,9 +1,9 @@
 package test
 
 import (
-	"testing"
-	"github.com/xfrr/goffmpeg/transcoder"
 	"fmt"
+	"github.com/xfrr/goffmpeg/transcoder"
+	"testing"
 )
 
 func TestInputNotFound(t *testing.T) {
@@ -33,7 +33,7 @@ func TestTranscoding3GP(t *testing.T) {
 	}
 
 	done := trans.Run(false)
-	err = <- done
+	err = <-done
 	if err != nil {
 		t.Error(err)
 		return
@@ -54,7 +54,7 @@ func TestTranscodingAVI(t *testing.T) {
 	}
 
 	done := trans.Run(false)
-	err = <- done
+	err = <-done
 	if err != nil {
 		t.Error(err)
 		return
@@ -75,7 +75,7 @@ func TestTranscodingFLV(t *testing.T) {
 	}
 
 	done := trans.Run(false)
-	err = <- done
+	err = <-done
 	if err != nil {
 		t.Error(err)
 		return
@@ -159,7 +159,7 @@ func TestTranscodingOGG(t *testing.T) {
 	}
 
 	done := trans.Run(false)
-	err = <- done
+	err = <-done
 	if err != nil {
 		t.Error(err)
 		return
@@ -180,7 +180,7 @@ func TestTranscodingWAV(t *testing.T) {
 	}
 
 	done := trans.Run(false)
-	err = <- done
+	err = <-done
 	if err != nil {
 		t.Error(err)
 		return
@@ -201,7 +201,7 @@ func TestTranscodingWEBM(t *testing.T) {
 	}
 
 	done := trans.Run(false)
-	err = <- done
+	err = <-done
 	if err != nil {
 		t.Error(err)
 		return
@@ -222,7 +222,7 @@ func TestTranscodingWMV(t *testing.T) {
 	}
 
 	done := trans.Run(false)
-	err = <- done
+	err = <-done
 	if err != nil {
 		t.Error(err)
 		return
@@ -246,7 +246,7 @@ func TestTranscodingProgress(t *testing.T) {
 	for val := range trans.Output() {
 		fmt.Printf("%+v\n", val)
 	}
-	err = <- done
+	err = <-done
 	if err != nil {
 		t.Error(err)
 		return

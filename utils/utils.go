@@ -1,10 +1,10 @@
 package utils
 
 import (
-	"strings"
-	"strconv"
 	"github.com/xfrr/goffmpeg/models"
 	"runtime"
+	"strconv"
+	"strings"
 )
 
 func DurToSec(dur string) (sec float64) {
@@ -58,7 +58,6 @@ func CheckFileType(streams []models.Streams) string {
 		st := streams[i]
 		if st.CodecType == "video" {
 			return "video"
-			break
 		}
 	}
 

@@ -98,6 +98,8 @@ SetVideoCodec
 SetVframes
 SetFrameRate
 SetAudioRate
+SetSkipAudio
+SetSkipVideo
 SetMaxKeyFrame
 SetMinKeyFrame
 SetKeyframeInterval
