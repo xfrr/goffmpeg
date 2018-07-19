@@ -40,6 +40,7 @@ type Mediafile struct {
     seekUsingTsInput      bool
     seekTimeInput         string
     inputPath             string
+    hideBanner            bool
     outputPath            string
     outputFormat          string
     copyTs                bool
@@ -183,6 +184,10 @@ func (m *Mediafile) SetCopyTs(val bool) {
 
 func (m *Mediafile) SetInputPath(val string) {
   m.inputPath = val
+}
+
+func (m *Mediafile) SetHideBanner(val bool) {
+  m.hideBanner = val
 }
 
 func (m *Mediafile) SetMuxDelay(val string) {
@@ -375,6 +380,10 @@ func (m *Mediafile) InputPath() string {
   return m.inputPath
 }
 
+func (m *Mediafile) HideBanner() bool {
+  return m.hideBanner
+}
+
 func (m *Mediafile) OutputPath() string {
   return m.outputPath
 }
@@ -435,6 +444,7 @@ func (m *Mediafile) ToStrCommand() []string {
     "RtmpLive",
     "InputInitialOffset",
     "InputPath",
+    "HideBanner",
 
     "Aspect",
     "Resolution",
@@ -513,6 +523,13 @@ func (m *Mediafile) ObtainAspect() []string {
 
 func (m *Mediafile) ObtainInputPath() []string {
   return []string{"-i", m.inputPath}
+}
+
+func (m *Mediafile) ObtainHideBanner() []string {
+  if m.hideBanner {
+    return []string{"-hide_banner"}
+  }
+  return nil
 }
 
 func (m *Mediafile) ObtainNativeFramerateInput() []string {

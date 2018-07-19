@@ -119,6 +119,7 @@ SetQuality
 SetStrict
 SetCopyTs
 SetMuxDelay
+SetHideBanner
 SetInputPath
 SetNativeFramerateInput
 SetRtmpLive
