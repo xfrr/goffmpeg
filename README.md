@@ -95,6 +95,7 @@ SetVideoBitRateTolerance
 SetVideoMaxBitrate
 SetVideoMinBitRate
 SetVideoCodec
+SetVframes
 SetFrameRate
 SetAudioRate
 SetMaxKeyFrame
@@ -115,11 +116,14 @@ SetSeekTime
 SetSeekTimeInput
 SetSeekUsingTsInput
 SetQuality
+SetStrict
 SetCopyTs
 SetMuxDelay
+SetHideBanner
 SetInputPath
 SetNativeFramerateInput
 SetRtmpLive
+SetHlsListSize
 SetHlsSegmentDuration
 SetHlsPlaylistType
 SetHttpMethod

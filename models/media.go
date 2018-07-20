@@ -15,6 +15,7 @@ type Mediafile struct {
     videoMaxBitRate       int
     videoMinBitrate       int
     videoCodec            string
+    vframes               int
     frameRate             int
     audioRate             int
     maxKeyframe           int
@@ -34,10 +35,12 @@ type Mediafile struct {
     durationInput         string
     seekTime              string
     quality               int
+    strict                int
     muxDelay              string
     seekUsingTsInput      bool
     seekTimeInput         string
     inputPath             string
+    hideBanner            bool
     outputPath            string
     outputFormat          string
     copyTs                bool
@@ -45,6 +48,7 @@ type Mediafile struct {
     inputInitialOffset    string
     rtmpLive              string
     hlsPlaylistType       string
+    hlsListSize           int
     hlsSegmentDuration    int
     httpMethod            string
     httpKeepAlive         bool
@@ -84,6 +88,10 @@ func (m *Mediafile) SetVideoMinBitRate(v int) {
 
 func (m *Mediafile) SetVideoCodec(v string) {
   m.videoCodec = v
+}
+
+func (m *Mediafile) SetVframes(v int) {
+  m.vframes = v
 }
 
 func (m *Mediafile) SetFrameRate(v int) {
@@ -162,6 +170,10 @@ func (m *Mediafile) SetQuality(v int) {
   m.quality = v
 }
 
+func (m *Mediafile) SetStrict(v int) {
+	m.strict = v
+}
+
 func (m *Mediafile) SetSeekUsingTsInput(val bool) {
   m.seekUsingTsInput = val
 }
@@ -172,6 +184,10 @@ func (m *Mediafile) SetCopyTs(val bool) {
 
 func (m *Mediafile) SetInputPath(val string) {
   m.inputPath = val
+}
+
+func (m *Mediafile) SetHideBanner(val bool) {
+  m.hideBanner = val
 }
 
 func (m *Mediafile) SetMuxDelay(val string) {
@@ -192,6 +208,10 @@ func (m *Mediafile) SetNativeFramerateInput(val bool) {
 
 func (m *Mediafile) SetRtmpLive(val string) {
   m.rtmpLive = val
+}
+
+func (m *Mediafile) SetHlsListSize(val int) {
+  m.hlsListSize = val
 }
 
 func (m *Mediafile) SetHlsSegmentDuration(val int) {
@@ -254,6 +274,10 @@ func (m *Mediafile) VideoMinBitRate() int {
 
 func (m *Mediafile) VideoCodec() string {
   return m.videoCodec
+}
+
+func (m *Mediafile) Vframes() int {
+  return m.vframes
 }
 
 func (m *Mediafile) FrameRate() int {
@@ -336,6 +360,10 @@ func (m *Mediafile) Quality() int {
   return m.quality
 }
 
+func (m *Mediafile) Strict() int {
+  return m.strict
+}
+
 func (m *Mediafile) MuxDelay() string {
   return m.muxDelay
 }
@@ -352,6 +380,10 @@ func (m *Mediafile) InputPath() string {
   return m.inputPath
 }
 
+func (m *Mediafile) HideBanner() bool {
+  return m.hideBanner
+}
+
 func (m *Mediafile) OutputPath() string {
   return m.outputPath
 }
@@ -366,6 +398,10 @@ func (m *Mediafile) NativeFramerateInput() bool {
 
 func (m *Mediafile) RtmpLive() string {
   return m.rtmpLive
+}
+
+func (m *Mediafile) HlsListSize() int {
+  return m.hlsListSize
 }
 
 func (m *Mediafile) HlsSegmentDuration() int {
@@ -408,12 +444,14 @@ func (m *Mediafile) ToStrCommand() []string {
     "RtmpLive",
     "InputInitialOffset",
     "InputPath",
+    "HideBanner",
 
     "Aspect",
     "Resolution",
     "FrameRate",
     "AudioRate",
     "VideoCodec",
+    "Vframes",
     "VideoBitRate",
     "VideoBitRateTolerance",
     "VideoMaxBitRate",
@@ -424,6 +462,7 @@ func (m *Mediafile) ToStrCommand() []string {
     "AudioChannels",
     "AudioProfile",
     "Quality",
+    "Strict",
     "BufferSize",
     "MuxDelay",
     "Threads",
@@ -436,6 +475,7 @@ func (m *Mediafile) ToStrCommand() []string {
     "CopyTs",
     "StreamIds",
     "OutputFormat",
+    "HlsListSize",
     "HlsSegmentDuration",
     "HlsPlaylistType",
     "Filter",
@@ -485,6 +525,13 @@ func (m *Mediafile) ObtainInputPath() []string {
   return []string{"-i", m.inputPath}
 }
 
+func (m *Mediafile) ObtainHideBanner() []string {
+  if m.hideBanner {
+    return []string{"-hide_banner"}
+  }
+  return nil
+}
+
 func (m *Mediafile) ObtainNativeFramerateInput() []string {
   if m.nativeFramerateInput {
     return []string{"-re"}
@@ -499,6 +546,13 @@ func (m *Mediafile) ObtainOutputPath() []string {
 func (m *Mediafile) ObtainVideoCodec() []string {
   if m.videoCodec != "" {
     return []string{"-c:v", m.videoCodec}
+  }
+  return nil
+}
+
+func (m *Mediafile) ObtainVframes() []string {
+  if m.vframes != 0 {
+    return []string{"-vframes",fmt.Sprintf("%d", m.vframes)}
   }
   return nil
 }
@@ -650,6 +704,13 @@ func (m *Mediafile) ObtainQuality() []string {
   return nil
 }
 
+func (m *Mediafile) ObtainStrict() []string {
+  if m.strict != 0 {
+    return []string{"-strict",fmt.Sprintf("%d", m.strict)}
+  }
+  return nil
+}
+
 func (m *Mediafile) ObtainVideoProfile() []string {
   if m.videoProfile != "" {
     return []string{"-profile:v",m.videoProfile}
@@ -714,6 +775,10 @@ func (m *Mediafile) ObtainInputInitialOffset() []string {
   } else {
     return nil
   }
+}
+
+func (m *Mediafile) ObtainHlsListSize() []string {
+  return []string{"-hls_list_size",fmt.Sprintf("%d", m.hlsListSize)}
 }
 
 func (m *Mediafile) ObtainHlsSegmentDuration() []string {
