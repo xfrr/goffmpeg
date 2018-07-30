@@ -1,173 +1,175 @@
 package models
 
 import (
-  "strings"
-  "strconv"
-  "fmt"
-  "reflect"
+	"fmt"
+	"reflect"
+	"strconv"
+	"strings"
 )
 
 type Mediafile struct {
-    aspect                string
-    resolution            string
-    videoBitRate          int
-    videoBitRateTolerance int
-    videoMaxBitRate       int
-    videoMinBitrate       int
-    videoCodec            string
-    vframes               int
-    frameRate             int
-    audioRate             int
-    maxKeyframe           int
-    minKeyframe           int
-    keyframeInterval      int
-    audioCodec            string
-    audioBitrate          int
-    audioChannels         int
-    bufferSize            int
-    threads               int
-    preset                string
-    tune                  string
-    audioProfile          string
-    videoProfile          string
-    target                string
-    duration              string
-    durationInput         string
-    seekTime              string
-    quality               int
-    strict                int
-    muxDelay              string
-    seekUsingTsInput      bool
-    seekTimeInput         string
-    inputPath             string
-    hideBanner            bool
-    outputPath            string
-    outputFormat          string
-    copyTs                bool
-    nativeFramerateInput  bool
-    inputInitialOffset    string
-    rtmpLive              string
-    hlsPlaylistType       string
-    hlsListSize           int
-    hlsSegmentDuration    int
-    httpMethod            string
-    httpKeepAlive         bool
-    streamIds             map[int]string
-    metadata              Metadata
-    filter                string
+	aspect                string
+	resolution            string
+	videoBitRate          int
+	videoBitRateTolerance int
+	videoMaxBitRate       int
+	videoMinBitrate       int
+	videoCodec            string
+	vframes               int
+	frameRate             int
+	audioRate             int
+	maxKeyframe           int
+	minKeyframe           int
+	keyframeInterval      int
+	audioCodec            string
+	audioBitrate          int
+	audioChannels         int
+	bufferSize            int
+	threads               int
+	preset                string
+	tune                  string
+	audioProfile          string
+	videoProfile          string
+	target                string
+	duration              string
+	durationInput         string
+	seekTime              string
+	quality               int
+	strict                int
+	muxDelay              string
+	seekUsingTsInput      bool
+	seekTimeInput         string
+	inputPath             string
+	hideBanner            bool
+	outputPath            string
+	outputFormat          string
+	copyTs                bool
+	nativeFramerateInput  bool
+	inputInitialOffset    string
+	rtmpLive              string
+	hlsPlaylistType       string
+	hlsListSize           int
+	hlsSegmentDuration    int
+	httpMethod            string
+	httpKeepAlive         bool
+	streamIds             map[int]string
+	metadata              Metadata
+	filter                string
+	skipVideo             bool
+	skipAudio             bool
 }
 
 /*** SETTERS ***/
-func (m *Mediafile) SetFilter(v string){
-  m.filter = v
+func (m *Mediafile) SetFilter(v string) {
+	m.filter = v
 }
 
 func (m *Mediafile) SetAspect(v string) {
-  m.aspect = v
+	m.aspect = v
 }
 
 func (m *Mediafile) SetResolution(v string) {
-  m.resolution = v
+	m.resolution = v
 }
 
 func (m *Mediafile) SetVideoBitRate(v int) {
-  m.videoBitRate = v
+	m.videoBitRate = v
 }
 
 func (m *Mediafile) SetVideoBitRateTolerance(v int) {
-  m.videoBitRateTolerance = v
+	m.videoBitRateTolerance = v
 }
 
 func (m *Mediafile) SetVideoMaxBitrate(v int) {
-  m.videoMaxBitRate = v
+	m.videoMaxBitRate = v
 }
 
 func (m *Mediafile) SetVideoMinBitRate(v int) {
-  m.videoMinBitrate = v
+	m.videoMinBitrate = v
 }
 
 func (m *Mediafile) SetVideoCodec(v string) {
-  m.videoCodec = v
+	m.videoCodec = v
 }
 
 func (m *Mediafile) SetVframes(v int) {
-  m.vframes = v
+	m.vframes = v
 }
 
 func (m *Mediafile) SetFrameRate(v int) {
-  m.frameRate = v
+	m.frameRate = v
 }
 
 func (m *Mediafile) SetAudioRate(v int) {
-  m.audioRate = v
+	m.audioRate = v
 }
 
 func (m *Mediafile) SetMaxKeyFrame(v int) {
-  m.maxKeyframe = v
+	m.maxKeyframe = v
 }
 
 func (m *Mediafile) SetMinKeyFrame(v int) {
-  m.minKeyframe = v
+	m.minKeyframe = v
 }
 
 func (m *Mediafile) SetKeyframeInterval(v int) {
-  m.keyframeInterval = v
+	m.keyframeInterval = v
 }
 
 func (m *Mediafile) SetAudioCodec(v string) {
-  m.audioCodec = v
+	m.audioCodec = v
 }
 
 func (m *Mediafile) SetAudioBitRate(v int) {
-  m.audioBitrate = v
+	m.audioBitrate = v
 }
 
 func (m *Mediafile) SetAudioChannels(v int) {
-  m.audioChannels = v
+	m.audioChannels = v
 }
 
 func (m *Mediafile) SetBufferSize(v int) {
-  m.bufferSize = v
+	m.bufferSize = v
 }
 
 func (m *Mediafile) SetThreads(v int) {
-  m.threads = v
+	m.threads = v
 }
 
 func (m *Mediafile) SetPreset(v string) {
-  m.preset = v
+	m.preset = v
 }
 
 func (m *Mediafile) SetTune(v string) {
-  m.tune = v
+	m.tune = v
 }
 
 func (m *Mediafile) SetAudioProfile(v string) {
-  m.audioProfile = v
+	m.audioProfile = v
 }
 
 func (m *Mediafile) SetVideoProfile(v string) {
-  m.videoProfile = v
+	m.videoProfile = v
 }
 
 func (m *Mediafile) SetDuration(v string) {
-  m.duration = v
+	m.duration = v
 }
 
 func (m *Mediafile) SetDurationInput(v string) {
-  m.durationInput = v
+	m.durationInput = v
 }
 
 func (m *Mediafile) SetSeekTime(v string) {
-  m.seekTime = v
+	m.seekTime = v
 }
 
 func (m *Mediafile) SetSeekTimeInput(v string) {
-  m.seekTimeInput = v
+	m.seekTimeInput = v
 }
 
 func (m *Mediafile) SetQuality(v int) {
-  m.quality = v
+	m.quality = v
 }
 
 func (m *Mediafile) SetStrict(v int) {
@@ -175,643 +177,677 @@ func (m *Mediafile) SetStrict(v int) {
 }
 
 func (m *Mediafile) SetSeekUsingTsInput(val bool) {
-  m.seekUsingTsInput = val
+	m.seekUsingTsInput = val
 }
 
 func (m *Mediafile) SetCopyTs(val bool) {
-  m.copyTs = val
+	m.copyTs = val
 }
 
 func (m *Mediafile) SetInputPath(val string) {
-  m.inputPath = val
+	m.inputPath = val
 }
 
 func (m *Mediafile) SetHideBanner(val bool) {
-  m.hideBanner = val
+	m.hideBanner = val
 }
 
 func (m *Mediafile) SetMuxDelay(val string) {
-  m.muxDelay = val
+	m.muxDelay = val
 }
 
 func (m *Mediafile) SetOutputPath(val string) {
-  m.outputPath = val
+	m.outputPath = val
 }
 
 func (m *Mediafile) SetOutputFormat(val string) {
-  m.outputFormat = val
+	m.outputFormat = val
 }
 
 func (m *Mediafile) SetNativeFramerateInput(val bool) {
-  m.nativeFramerateInput = val
+	m.nativeFramerateInput = val
 }
 
 func (m *Mediafile) SetRtmpLive(val string) {
-  m.rtmpLive = val
+	m.rtmpLive = val
 }
 
 func (m *Mediafile) SetHlsListSize(val int) {
-  m.hlsListSize = val
+	m.hlsListSize = val
 }
 
 func (m *Mediafile) SetHlsSegmentDuration(val int) {
-  m.hlsSegmentDuration = val
+	m.hlsSegmentDuration = val
 }
 
 func (m *Mediafile) SetHlsPlaylistType(val string) {
-  m.hlsPlaylistType = val
+	m.hlsPlaylistType = val
 }
 
 func (m *Mediafile) SetHttpMethod(val string) {
-  m.httpMethod = val
+	m.httpMethod = val
 }
 
 func (m *Mediafile) SetHttpKeepAlive(val bool) {
-  m.httpKeepAlive = val
+	m.httpKeepAlive = val
 }
 
 func (m *Mediafile) SetInputInitialOffset(val string) {
-  m.inputInitialOffset = val
+	m.inputInitialOffset = val
 }
 
 func (m *Mediafile) SetStreamIds(val map[int]string) {
-  m.streamIds = val
+	m.streamIds = val
+}
+
+func (m *Mediafile) SetSkipVideo(val bool) {
+	m.skipVideo = val
+}
+
+func (m *Mediafile) SetSkipAudio(val bool) {
+	m.skipAudio = val
 }
 
 func (m *Mediafile) SetMetadata(v Metadata) {
-  m.metadata = v
+	m.metadata = v
 }
 
 /*** GETTERS ***/
 
 func (m *Mediafile) Filter() string {
-  return m.filter
+	return m.filter
 }
 
 func (m *Mediafile) Aspect() string {
-  return m.aspect
+	return m.aspect
 }
 
 func (m *Mediafile) Resolution() string {
-  return m.resolution
+	return m.resolution
 }
 
 func (m *Mediafile) VideoBitrate() int {
-  return m.videoBitRate
+	return m.videoBitRate
 }
 
 func (m *Mediafile) VideoBitRateTolerance() int {
-  return m.videoBitRateTolerance
+	return m.videoBitRateTolerance
 }
 
 func (m *Mediafile) VideoMaxBitRate() int {
-  return m.videoMaxBitRate
+	return m.videoMaxBitRate
 }
 
 func (m *Mediafile) VideoMinBitRate() int {
-  return m.videoMinBitrate
+	return m.videoMinBitrate
 }
 
 func (m *Mediafile) VideoCodec() string {
-  return m.videoCodec
+	return m.videoCodec
 }
 
 func (m *Mediafile) Vframes() int {
-  return m.vframes
+	return m.vframes
 }
 
 func (m *Mediafile) FrameRate() int {
-  return m.frameRate
+	return m.frameRate
 }
 
 func (m *Mediafile) AudioRate() int {
-  return m.audioRate
+	return m.audioRate
 }
 
 func (m *Mediafile) MaxKeyFrame() int {
-  return m.maxKeyframe
+	return m.maxKeyframe
 }
 
 func (m *Mediafile) MinKeyFrame() int {
-  return m.minKeyframe
+	return m.minKeyframe
 }
 
 func (m *Mediafile) KeyFrameInterval() int {
-  return m.keyframeInterval
+	return m.keyframeInterval
 }
 
 func (m *Mediafile) AudioCodec() string {
-  return m.audioCodec
+	return m.audioCodec
 }
 
 func (m *Mediafile) AudioBitrate() int {
-  return m.audioBitrate
+	return m.audioBitrate
 }
 
 func (m *Mediafile) AudioChannels() int {
-  return m.audioChannels
+	return m.audioChannels
 }
 
 func (m *Mediafile) BufferSize() int {
-  return m.bufferSize
+	return m.bufferSize
 }
 
 func (m *Mediafile) Threads() int {
-  return m.threads
+	return m.threads
 }
 
 func (m *Mediafile) Target() string {
-  return m.target
+	return m.target
 }
 
 func (m *Mediafile) Duration() string {
-  return m.duration
+	return m.duration
 }
 
 func (m *Mediafile) DurationInput() string {
-  return m.durationInput
+	return m.durationInput
 }
 
 func (m *Mediafile) SeekTime() string {
-  return m.seekTime
+	return m.seekTime
 }
 
 func (m *Mediafile) Preset() string {
-  return m.preset
+	return m.preset
 }
 
 func (m *Mediafile) AudioProfile() string {
-  return m.audioProfile
+	return m.audioProfile
 }
 
 func (m *Mediafile) VideoProfile() string {
-  return m.videoProfile
+	return m.videoProfile
 }
 
 func (m *Mediafile) Tune() string {
-  return m.tune
+	return m.tune
 }
 
 func (m *Mediafile) SeekTimeInput() string {
-  return m.seekTimeInput
+	return m.seekTimeInput
 }
 
 func (m *Mediafile) Quality() int {
-  return m.quality
+	return m.quality
 }
 
 func (m *Mediafile) Strict() int {
-  return m.strict
+	return m.strict
 }
 
 func (m *Mediafile) MuxDelay() string {
-  return m.muxDelay
+	return m.muxDelay
 }
 
 func (m *Mediafile) SeekUsingTsInput() bool {
-  return m.seekUsingTsInput
+	return m.seekUsingTsInput
 }
 
 func (m *Mediafile) CopyTs() bool {
-  return m.copyTs
+	return m.copyTs
 }
 
 func (m *Mediafile) InputPath() string {
-  return m.inputPath
+	return m.inputPath
 }
 
 func (m *Mediafile) HideBanner() bool {
-  return m.hideBanner
+	return m.hideBanner
 }
 
 func (m *Mediafile) OutputPath() string {
-  return m.outputPath
+	return m.outputPath
 }
 
 func (m *Mediafile) OutputFormat() string {
-  return m.outputFormat
+	return m.outputFormat
 }
 
 func (m *Mediafile) NativeFramerateInput() bool {
-  return m.nativeFramerateInput
+	return m.nativeFramerateInput
 }
 
 func (m *Mediafile) RtmpLive() string {
-  return m.rtmpLive
+	return m.rtmpLive
 }
 
 func (m *Mediafile) HlsListSize() int {
-  return m.hlsListSize
+	return m.hlsListSize
 }
 
 func (m *Mediafile) HlsSegmentDuration() int {
-  return m.hlsSegmentDuration
+	return m.hlsSegmentDuration
 }
 
 func (m *Mediafile) HlsPlaylistType() string {
-  return m.hlsPlaylistType
+	return m.hlsPlaylistType
 }
 
 func (m *Mediafile) InputInitialOffset() string {
-  return m.inputInitialOffset
+	return m.inputInitialOffset
 }
 
 func (m *Mediafile) HttpMethod() string {
-  return m.httpMethod
+	return m.httpMethod
 }
 
 func (m *Mediafile) HttpKeepAlive() bool {
-  return m.httpKeepAlive
+	return m.httpKeepAlive
 }
 
 func (m *Mediafile) StreamIds() map[int]string {
-  return m.streamIds
+	return m.streamIds
+}
+
+func (m *Mediafile) SkipVideo() bool {
+	return m.skipVideo
+}
+
+func (m *Mediafile) SkipAudio() bool {
+	return m.skipAudio
 }
 
 func (m *Mediafile) Metadata() Metadata {
-  return m.metadata
+	return m.metadata
 }
 
 /** OPTS **/
 func (m *Mediafile) ToStrCommand() []string {
-  var strCommand []string
+	var strCommand []string
 
-  opts := []string {
-    "SeekTimeInput",
-    "SeekUsingTsInput",
-    "NativeFramerateInput",
-    "DurationInput",
-    "RtmpLive",
-    "InputInitialOffset",
-    "InputPath",
-    "HideBanner",
+	opts := []string{
+		"SeekTimeInput",
+		"SeekUsingTsInput",
+		"NativeFramerateInput",
+		"DurationInput",
+		"RtmpLive",
+		"InputInitialOffset",
+		"InputPath",
+		"HideBanner",
 
-    "Aspect",
-    "Resolution",
-    "FrameRate",
-    "AudioRate",
-    "VideoCodec",
-    "Vframes",
-    "VideoBitRate",
-    "VideoBitRateTolerance",
-    "VideoMaxBitRate",
-    "VideoMinBitRate",
-    "VideoProfile",
-    "AudioCodec",
-    "AudioBitRate",
-    "AudioChannels",
-    "AudioProfile",
-    "Quality",
-    "Strict",
-    "BufferSize",
-    "MuxDelay",
-    "Threads",
-    "KeyframeInterval",
-    "Preset",
-    "Tune",
-    "Target",
-    "SeekTime",
-    "Duration",
-    "CopyTs",
-    "StreamIds",
-    "OutputFormat",
-    "HlsListSize",
-    "HlsSegmentDuration",
-    "HlsPlaylistType",
-    "Filter",
-    "HttpMethod",
-    "HttpKeepAlive",
-    "OutputPath",
-  }
-  for _, name := range opts {
-    opt :=  reflect.ValueOf(m).MethodByName(fmt.Sprintf("Obtain%s", name))
-    if (opt != reflect.Value{}) {
-      result := opt.Call([]reflect.Value{})
+		"Aspect",
+		"Resolution",
+		"FrameRate",
+		"AudioRate",
+		"VideoCodec",
+		"Vframes",
+		"VideoBitRate",
+		"VideoBitRateTolerance",
+		"VideoMaxBitRate",
+		"VideoMinBitRate",
+		"VideoProfile",
+		"SkipVideo",
+		"AudioCodec",
+		"AudioBitRate",
+		"AudioChannels",
+		"AudioProfile",
+		"SkipAudio",
+		"Quality",
+		"Strict",
+		"BufferSize",
+		"MuxDelay",
+		"Threads",
+		"KeyframeInterval",
+		"Preset",
+		"Tune",
+		"Target",
+		"SeekTime",
+		"Duration",
+		"CopyTs",
+		"StreamIds",
+		"OutputFormat",
+		"HlsListSize",
+		"HlsSegmentDuration",
+		"HlsPlaylistType",
+		"Filter",
+		"HttpMethod",
+		"HttpKeepAlive",
+		"OutputPath",
+	}
+	for _, name := range opts {
+		opt := reflect.ValueOf(m).MethodByName(fmt.Sprintf("Obtain%s", name))
+		if (opt != reflect.Value{}) {
+			result := opt.Call([]reflect.Value{})
 
-      if val, ok := result[0].Interface().([]string); ok {
-        strCommand = append(strCommand, val...)
-      }
-    }
-  }
+			if val, ok := result[0].Interface().([]string); ok {
+				strCommand = append(strCommand, val...)
+			}
+		}
+	}
 
-  return strCommand
+	return strCommand
 }
 
-func (m *Mediafile) ObtainFilter() []string{
-  if m.filter != "" {
-    return []string{"-vf", m.filter}
-  }
-  return nil
+func (m *Mediafile) ObtainFilter() []string {
+	if m.filter != "" {
+		return []string{"-vf", m.filter}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainAspect() []string {
-  // Set aspect
-  if m.resolution != "" {
-    resolution := strings.Split(m.resolution, "x")
-    if len(resolution) != 0 {
-      width, _ := strconv.ParseFloat(resolution[0], 64)
-      height, _ := strconv.ParseFloat(resolution[1], 64)
-      return []string{"-aspect", fmt.Sprintf("%f", width/height)}
-    }
-  }
+	// Set aspect
+	if m.resolution != "" {
+		resolution := strings.Split(m.resolution, "x")
+		if len(resolution) != 0 {
+			width, _ := strconv.ParseFloat(resolution[0], 64)
+			height, _ := strconv.ParseFloat(resolution[1], 64)
+			return []string{"-aspect", fmt.Sprintf("%f", width/height)}
+		}
+	}
 
-  if m.aspect != "" {
-    return []string{"-aspect", m.aspect}
-  }
+	if m.aspect != "" {
+		return []string{"-aspect", m.aspect}
+	}
 	return nil
 }
 
 func (m *Mediafile) ObtainInputPath() []string {
-  return []string{"-i", m.inputPath}
+	return []string{"-i", m.inputPath}
 }
 
 func (m *Mediafile) ObtainHideBanner() []string {
-  if m.hideBanner {
-    return []string{"-hide_banner"}
-  }
-  return nil
+	if m.hideBanner {
+		return []string{"-hide_banner"}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainNativeFramerateInput() []string {
-  if m.nativeFramerateInput {
-    return []string{"-re"}
-  }
-  return nil
+	if m.nativeFramerateInput {
+		return []string{"-re"}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainOutputPath() []string {
-  return []string{m.outputPath}
+	return []string{m.outputPath}
 }
 
 func (m *Mediafile) ObtainVideoCodec() []string {
-  if m.videoCodec != "" {
-    return []string{"-c:v", m.videoCodec}
-  }
-  return nil
+	if m.videoCodec != "" {
+		return []string{"-c:v", m.videoCodec}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainVframes() []string {
-  if m.vframes != 0 {
-    return []string{"-vframes",fmt.Sprintf("%d", m.vframes)}
-  }
-  return nil
+	if m.vframes != 0 {
+		return []string{"-vframes", fmt.Sprintf("%d", m.vframes)}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainFrameRate() []string {
-  if m.frameRate != 0 {
-    return []string{"-r",fmt.Sprintf("%d", m.frameRate)}
-  }
-  return nil
+	if m.frameRate != 0 {
+		return []string{"-r", fmt.Sprintf("%d", m.frameRate)}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainAudioRate() []string {
-  if m.audioRate != 0 {
-    return []string{"-ar",fmt.Sprintf("%d", m.audioRate)}
-  }
-  return nil
+	if m.audioRate != 0 {
+		return []string{"-ar", fmt.Sprintf("%d", m.audioRate)}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainResolution() []string {
-  if m.resolution != "" {
-    return []string{"-s", m.resolution}
-  }
-  return nil
+	if m.resolution != "" {
+		return []string{"-s", m.resolution}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainVideoBitRate() []string {
-  if m.videoBitRate != 0 {
-    return []string{"-b:v", fmt.Sprintf("%d", m.videoBitRate)}
-  }
-  return nil
+	if m.videoBitRate != 0 {
+		return []string{"-b:v", fmt.Sprintf("%d", m.videoBitRate)}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainAudioCodec() []string {
-  if m.audioCodec != "" {
-    return []string{"-c:a", m.audioCodec}
-  }
-  return nil
+	if m.audioCodec != "" {
+		return []string{"-c:a", m.audioCodec}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainAudioBitRate() []string {
-  if m.audioBitrate != 0 {
-    return []string{"-b:a", fmt.Sprintf("%d", m.audioBitrate)}
-  }
-  return nil
+	if m.audioBitrate != 0 {
+		return []string{"-b:a", fmt.Sprintf("%d", m.audioBitrate)}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainAudioChannels() []string {
-  if m.audioChannels != 0 {
-    return []string{"-ac",fmt.Sprintf("%d", m.audioChannels)}
-  }
-  return nil
+	if m.audioChannels != 0 {
+		return []string{"-ac", fmt.Sprintf("%d", m.audioChannels)}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainVideoMaxBitRate() []string {
-  if m.videoMaxBitRate != 0 {
-    return []string{"-maxrate",fmt.Sprintf("%dk", m.videoMaxBitRate)}
-  }
-  return nil
+	if m.videoMaxBitRate != 0 {
+		return []string{"-maxrate", fmt.Sprintf("%dk", m.videoMaxBitRate)}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainVideoMinBitRate() []string {
-  if m.videoMinBitrate != 0 {
-    return []string{"-minrate",fmt.Sprintf("%dk", m.videoMinBitrate)}
-  }
-  return nil
+	if m.videoMinBitrate != 0 {
+		return []string{"-minrate", fmt.Sprintf("%dk", m.videoMinBitrate)}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainBufferSize() []string {
-  if m.bufferSize != 0 {
-    return []string{"-bufsize",fmt.Sprintf("%dk", m.bufferSize)}
-  }
-  return nil
+	if m.bufferSize != 0 {
+		return []string{"-bufsize", fmt.Sprintf("%dk", m.bufferSize)}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainVideoBitRateTolerance() []string {
-  if m.videoBitRateTolerance != 0 {
-    return []string{"-bt",fmt.Sprintf("%dk", m.videoBitRateTolerance)}
-  }
-  return nil
+	if m.videoBitRateTolerance != 0 {
+		return []string{"-bt", fmt.Sprintf("%dk", m.videoBitRateTolerance)}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainThreads() []string {
-  if m.threads != 0 {
-    return []string{"-threads",fmt.Sprintf("%d", m.threads)}
-  }
-  return nil
+	if m.threads != 0 {
+		return []string{"-threads", fmt.Sprintf("%d", m.threads)}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainTarget() []string {
-  if m.target != "" {
-    return []string{"-target",m.target}
-  }
-  return nil
+	if m.target != "" {
+		return []string{"-target", m.target}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainDuration() []string {
-  if m.duration != "" {
-    return []string{"-t",m.duration}
-  }
-  return nil
+	if m.duration != "" {
+		return []string{"-t", m.duration}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainDurationInput() []string {
-  if m.durationInput != "" {
-    return []string{"-t",m.durationInput}
-  }
-  return nil
+	if m.durationInput != "" {
+		return []string{"-t", m.durationInput}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainKeyframeInterval() []string {
-  if m.keyframeInterval != 0 {
-    return []string{"-g",fmt.Sprintf("%d", m.keyframeInterval)}
-  }
-  return nil
+	if m.keyframeInterval != 0 {
+		return []string{"-g", fmt.Sprintf("%d", m.keyframeInterval)}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainSeekTime() []string {
-  if m.seekTime != "" {
-    return []string{"-ss",m.seekTime}
-  }
-  return nil
+	if m.seekTime != "" {
+		return []string{"-ss", m.seekTime}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainSeekTimeInput() []string {
-  if m.seekTimeInput != "" {
-    return []string{"-ss",m.seekTimeInput}
-  }
-  return nil
+	if m.seekTimeInput != "" {
+		return []string{"-ss", m.seekTimeInput}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainPreset() []string {
-  if m.preset != "" {
-    return []string{"-preset",m.preset}
-  }
-  return nil
+	if m.preset != "" {
+		return []string{"-preset", m.preset}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainTune() []string {
-  if m.tune != "" {
-    return []string{"-tune",m.tune}
-  }
-  return nil
+	if m.tune != "" {
+		return []string{"-tune", m.tune}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainQuality() []string {
-  if m.quality != 0 {
-    return []string{"-crf",fmt.Sprintf("%d", m.quality)}
-  }
-  return nil
+	if m.quality != 0 {
+		return []string{"-crf", fmt.Sprintf("%d", m.quality)}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainStrict() []string {
-  if m.strict != 0 {
-    return []string{"-strict",fmt.Sprintf("%d", m.strict)}
-  }
-  return nil
+	if m.strict != 0 {
+		return []string{"-strict", fmt.Sprintf("%d", m.strict)}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainVideoProfile() []string {
-  if m.videoProfile != "" {
-    return []string{"-profile:v",m.videoProfile}
-  }
-  return nil
+	if m.videoProfile != "" {
+		return []string{"-profile:v", m.videoProfile}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainAudioProfile() []string {
-  if m.audioProfile != "" {
-    return []string{"-profile:a", m.audioProfile}
-  }
-  return nil
+	if m.audioProfile != "" {
+		return []string{"-profile:a", m.audioProfile}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainCopyTs() []string {
-  if m.copyTs {
-    return []string{"-copyts"}
-  }
-  return nil
+	if m.copyTs {
+		return []string{"-copyts"}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainOutputFormat() []string {
-  if m.outputFormat != "" {
-    return []string{"-f",m.outputFormat}
-  }
-  return nil
+	if m.outputFormat != "" {
+		return []string{"-f", m.outputFormat}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainMuxDelay() []string {
-  if m.muxDelay != "" {
-    return []string{"-muxdelay",m.muxDelay}
-  }
-  return nil
+	if m.muxDelay != "" {
+		return []string{"-muxdelay", m.muxDelay}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainSeekUsingTsInput() []string {
-  if m.seekUsingTsInput {
-    return []string{"-seek_timestamp", "1"}
-  }
+	if m.seekUsingTsInput {
+		return []string{"-seek_timestamp", "1"}
+	}
 	return nil
 }
 
 func (m *Mediafile) ObtainRtmpLive() []string {
-  if m.rtmpLive != "" {
-    return []string{"-rtmp_live",m.rtmpLive}
-  } else {
-    return nil
-  }
+	if m.rtmpLive != "" {
+		return []string{"-rtmp_live", m.rtmpLive}
+	} else {
+		return nil
+	}
 }
 
 func (m *Mediafile) ObtainHlsPlaylistType() []string {
-  if m.hlsPlaylistType != "" {
-    return []string{"-hls_playlist_type",m.hlsPlaylistType}
-  } else {
-    return nil
-  }
+	if m.hlsPlaylistType != "" {
+		return []string{"-hls_playlist_type", m.hlsPlaylistType}
+	} else {
+		return nil
+	}
 }
 
 func (m *Mediafile) ObtainInputInitialOffset() []string {
-  if m.inputInitialOffset != "" {
-    return []string{"-itsoffset",m.inputInitialOffset}
-  } else {
-    return nil
-  }
+	if m.inputInitialOffset != "" {
+		return []string{"-itsoffset", m.inputInitialOffset}
+	} else {
+		return nil
+	}
 }
 
 func (m *Mediafile) ObtainHlsListSize() []string {
-  return []string{"-hls_list_size",fmt.Sprintf("%d", m.hlsListSize)}
+	return []string{"-hls_list_size", fmt.Sprintf("%d", m.hlsListSize)}
 }
 
 func (m *Mediafile) ObtainHlsSegmentDuration() []string {
-  if m.hlsSegmentDuration != 0 {
-    return []string{"-hls_time",fmt.Sprintf("%d", m.hlsSegmentDuration)}
-  } else {
-    return nil
-  }
+	if m.hlsSegmentDuration != 0 {
+		return []string{"-hls_time", fmt.Sprintf("%d", m.hlsSegmentDuration)}
+	} else {
+		return nil
+	}
 }
 
 func (m *Mediafile) ObtainHttpMethod() []string {
-  if m.httpMethod != "" {
-    return []string{"-method",m.httpMethod}
-  } else {
-    return nil
-  }
+	if m.httpMethod != "" {
+		return []string{"-method", m.httpMethod}
+	} else {
+		return nil
+	}
 }
 
 func (m *Mediafile) ObtainHttpKeepAlive() []string {
-  if m.httpKeepAlive {
-    return []string{"-multiple_requests","1"}
-  } else {
-    return nil
-  }
+	if m.httpKeepAlive {
+		return []string{"-multiple_requests", "1"}
+	} else {
+		return nil
+	}
+}
+
+func (m *Mediafile) ObtainSkipVideo() []string {
+	if m.skipVideo {
+		return []string{"-vn"}
+	} else {
+		return nil
+	}
+}
+
+func (m *Mediafile) ObtainSkipAudio() []string {
+	if m.skipAudio {
+		return []string{"-an"}
+	} else {
+		return nil
+	}
 }
 
 func (m *Mediafile) ObtainStreamIds() []string {
-  if m.streamIds != nil && len(m.streamIds) != 0 {
-    result := []string{}
-    for i, val := range m.streamIds {
-      result = append(result, []string{"-streamid", fmt.Sprintf("%d:%s", i, val)}...)
-    }
-    return result
-  }
-  return nil
+	if m.streamIds != nil && len(m.streamIds) != 0 {
+		result := []string{}
+		for i, val := range m.streamIds {
+			result = append(result, []string{"-streamid", fmt.Sprintf("%d:%s", i, val)}...)
+		}
+		return result
+	}
+	return nil
 }
