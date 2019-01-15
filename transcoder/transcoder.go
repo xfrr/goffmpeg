@@ -90,7 +90,6 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 	if len(cfg.FfmpegBin) == 0 || len(cfg.FfprobeBin) == 0 {
 		cfg, err = ffmpeg.Configure()
 		if err != nil {
-			fmt.Println(err)
 			return err
 		}
 	}
@@ -111,7 +110,7 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 
 	err = cmd.Run()
 	if err != nil {
-		return fmt.Errorf("Failed FFPROBE (%s) with %s, message %s", command, err, out.String())
+		return fmt.Errorf("error executing (%s) | error: %s", command, err)
 	}
 
 	if err = json.Unmarshal([]byte(out.String()), &Metadata); err != nil {

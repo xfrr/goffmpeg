@@ -2,7 +2,6 @@ package ffmpeg
 
 import (
 	"bytes"
-	"os/exec"
 	"strings"
 
 	"github.com/xfrr/goffmpeg/utils"
@@ -22,18 +21,12 @@ func Configure() (Configuration, error) {
 	execFFmpegCommand := utils.GetFFmpegExec()
 	execFFprobeCommand := utils.GetFFprobeExec()
 
-	cmdFFmpeg := exec.Command(execFFmpegCommand[0], execFFmpegCommand[1])
-	cmdProbe := exec.Command(execFFprobeCommand[0], execFFprobeCommand[1])
-
-	cmdFFmpeg.Stdout = &outFFmpeg
-	cmdProbe.Stdout = &outProbe
-
-	err := cmdFFmpeg.Run()
+	outFFmpeg, err := utils.TestCmd(execFFmpegCommand[0], execFFmpegCommand[1])
 	if err != nil {
 		return Configuration{}, err
 	}
 
-	err = cmdProbe.Run()
+	outProbe, err = utils.TestCmd(execFFprobeCommand[0], execFFprobeCommand[1])
 	if err != nil {
 		return Configuration{}, err
 	}

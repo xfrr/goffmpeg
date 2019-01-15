@@ -1,10 +1,13 @@
 package utils
 
 import (
-	"github.com/xfrr/goffmpeg/models"
+	"bytes"
+	"os/exec"
 	"runtime"
 	"strconv"
 	"strings"
+
+	"github.com/xfrr/goffmpeg/models"
 )
 
 func DurToSec(dur string) (sec float64) {
@@ -71,4 +74,20 @@ func LineSeparator() string {
 	default:
 		return "\n"
 	}
+}
+
+// TestCmd ...
+func TestCmd(command string, args string) (bytes.Buffer, error) {
+	var out bytes.Buffer
+
+	cmd := exec.Command(command, args)
+
+	cmd.Stdout = &out
+
+	err := cmd.Run()
+	if err != nil {
+		return out, err
+	}
+
+	return out, nil
 }
