@@ -6,95 +6,113 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/xfrr/goffmpeg/ffmpeg"
-	"github.com/xfrr/goffmpeg/models"
-	"github.com/xfrr/goffmpeg/utils"
 	"io"
 	"os"
 	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/xfrr/goffmpeg/ffmpeg"
+	"github.com/xfrr/goffmpeg/models"
+	"github.com/xfrr/goffmpeg/utils"
 )
 
+// Transcoder Main struct
 type Transcoder struct {
 	stdErrPipe    io.ReadCloser
+	stdStdinPipe  io.WriteCloser
 	process       *exec.Cmd
 	mediafile     *models.Mediafile
 	configuration ffmpeg.Configuration
 }
 
+// SetProcessStderrPipe Set the STDERR pipe
 func (t *Transcoder) SetProcessStderrPipe(v io.ReadCloser) {
 	t.stdErrPipe = v
 }
 
+// SetProcessStdinPipe Set the STDIN pipe
+func (t *Transcoder) SetProcessStdinPipe(v io.WriteCloser) {
+	t.stdStdinPipe = v
+}
+
+// SetProcess Set the transcoding process
 func (t *Transcoder) SetProcess(cmd *exec.Cmd) {
 	t.process = cmd
 }
 
+// SetMediaFile Set the media file
 func (t *Transcoder) SetMediaFile(v *models.Mediafile) {
 	t.mediafile = v
 }
 
+// SetConfiguration Set the transcoding configuration
 func (t *Transcoder) SetConfiguration(v ffmpeg.Configuration) {
 	t.configuration = v
 }
 
-/*** GETTERS ***/
+// Process Get transcoding process
 func (t Transcoder) Process() *exec.Cmd {
 	return t.process
 }
 
+// MediaFile Get the ttranscoding media file.
 func (t Transcoder) MediaFile() *models.Mediafile {
 	return t.mediafile
 }
 
+// FFmpegExec Get FFmpeg Bin path
 func (t Transcoder) FFmpegExec() string {
 	return t.configuration.FfmpegBin
 }
 
+// FFprobeExec Get FFprobe Bin path
 func (t Transcoder) FFprobeExec() string {
 	return t.configuration.FfprobeBin
 }
 
+// GetCommand Build and get command
 func (t Transcoder) GetCommand() []string {
 	media := t.mediafile
 	rcommand := append([]string{"-y"}, media.ToStrCommand()...)
 	return rcommand
 }
 
-/*** FUNCTIONS ***/
-
+// Initialize Init the transcoding process
 func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
+	var err error
+	var out bytes.Buffer
+	var Metadata models.Metadata
 
-	configuration, err := ffmpeg.Configure()
-	if err != nil {
-		fmt.Println(err)
-		return err
+	cfg := t.configuration
+
+	if len(cfg.FfmpegBin) == 0 || len(cfg.FfprobeBin) == 0 {
+		cfg, err = ffmpeg.Configure()
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
 	}
 
 	if inputPath == "" {
-		return errors.New("error: transcoder.Initialize -> inputPath missing")
+		return errors.New("error on transcoder.Initialize: inputPath missing")
 	}
 
 	_, err = os.Stat(inputPath)
 	if os.IsNotExist(err) {
-		return errors.New("error: transcoder.Initialize -> input file not found")
+		return errors.New("error on transcoder.Initialize: input file not found")
 	}
 
 	command := []string{"-i", inputPath, "-print_format", "json", "-show_format", "-show_streams", "-show_error"}
 
-	cmd := exec.Command(configuration.FfprobeBin, command...)
-
-	var out bytes.Buffer
+	cmd := exec.Command(cfg.FfprobeBin, command...)
 	cmd.Stdout = &out
 
 	err = cmd.Run()
 	if err != nil {
 		return fmt.Errorf("Failed FFPROBE (%s) with %s, message %s", command, err, out.String())
 	}
-
-	var Metadata models.Metadata
 
 	if err = json.Unmarshal([]byte(out.String()), &Metadata); err != nil {
 		return err
@@ -108,32 +126,45 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 	// Set transcoder configuration
 
 	t.SetMediaFile(MediaFile)
-	t.SetConfiguration(configuration)
+	t.SetConfiguration(cfg)
 
 	return nil
 
 }
 
+// Run Starts the transcoding process
 func (t *Transcoder) Run(progress bool) <-chan error {
 	done := make(chan error)
 	command := t.GetCommand()
+
 	if !progress {
 		command = append([]string{"-nostats", "-loglevel", "0"}, command...)
 	}
+
 	proc := exec.Command(t.configuration.FfmpegBin, command...)
 	if progress {
 		errStream, err := proc.StderrPipe()
 		if err != nil {
 			fmt.Println("Progress not available: " + err.Error())
 		} else {
-			t.SetProcessStderrPipe(errStream)
+			t.stdErrPipe = errStream
 		}
 	}
 
-	out := &bytes.Buffer{}
-	proc.Stdout = out
+	stdin, err := proc.StdinPipe()
+	if nil != err {
+		fmt.Println("Stdin not available: " + err.Error())
+	}
 
-	err := proc.Start()
+	t.stdStdinPipe = stdin
+
+	out := &bytes.Buffer{}
+	if progress {
+		proc.Stdout = out
+	}
+
+	err = proc.Start()
+
 	t.SetProcess(proc)
 	go func(err error, out *bytes.Buffer) {
 		if err != nil {
@@ -152,6 +183,19 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 	return done
 }
 
+// Stop Ends the transcoding process
+func (t *Transcoder) Stop() error {
+	if t.process != nil {
+
+		stdin := t.stdStdinPipe
+		if stdin != nil {
+			stdin.Write([]byte("q\n"))
+		}
+	}
+	return nil
+}
+
+// Output Returns the transcoding progress channel
 func (t Transcoder) Output() <-chan models.Progress {
 	out := make(chan models.Progress)
 
@@ -160,9 +204,10 @@ func (t Transcoder) Output() <-chan models.Progress {
 		if t.stdErrPipe == nil {
 			out <- models.Progress{}
 			return
-		} else {
-			defer t.stdErrPipe.Close()
 		}
+
+		defer t.stdErrPipe.Close()
+
 		scanner := bufio.NewScanner(t.stdErrPipe)
 
 		split := func(data []byte, atEOF bool) (advance int, token []byte, spliterror error) {

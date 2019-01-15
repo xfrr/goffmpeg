@@ -20,4 +20,6 @@ main-test.go
 goffmpeg
 coverage.out
 
+.DS_Store
+.vscode
 .idea

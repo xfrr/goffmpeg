@@ -2,19 +2,23 @@ package ffmpeg
 
 import (
 	"bytes"
-	"github.com/xfrr/goffmpeg/utils"
 	"os/exec"
 	"strings"
+
+	"github.com/xfrr/goffmpeg/utils"
 )
 
+// Configuration ...
 type Configuration struct {
 	FfmpegBin  string
 	FfprobeBin string
 }
 
+// Configure Get and set FFmpeg and FFprobe bin paths
 func Configure() (Configuration, error) {
 	var outFFmpeg bytes.Buffer
 	var outProbe bytes.Buffer
+
 	execFFmpegCommand := utils.GetFFmpegExec()
 	execFFprobeCommand := utils.GetFFprobeExec()
 
