@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -98,11 +97,6 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 		return errors.New("error on transcoder.Initialize: inputPath missing")
 	}
 
-	_, err = os.Stat(inputPath)
-	if os.IsNotExist(err) {
-		return errors.New("error on transcoder.Initialize: input file not found")
-	}
-
 	command := []string{"-i", inputPath, "-print_format", "json", "-show_format", "-show_streams", "-show_error"}
 
 	cmd := exec.Command(cfg.FfprobeBin, command...)
@@ -122,8 +116,8 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 	MediaFile.SetMetadata(Metadata)
 	MediaFile.SetInputPath(inputPath)
 	MediaFile.SetOutputPath(outputPath)
-	// Set transcoder configuration
 
+	// Set transcoder configuration
 	t.SetMediaFile(MediaFile)
 	t.SetConfiguration(cfg)
 
