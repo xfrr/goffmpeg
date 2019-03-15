@@ -55,11 +55,16 @@ type Mediafile struct {
 	streamIds             map[int]string
 	metadata              Metadata
 	filter                string
+	audioFilter           string
 	skipVideo             bool
 	skipAudio             bool
 }
 
 /*** SETTERS ***/
+func (m *Mediafile) SetAudioFilter(v string) {
+	m.audioFilter = v
+}
+
 func (m *Mediafile) SetFilter(v string) {
 	m.filter = v
 }
@@ -499,6 +504,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"HlsSegmentDuration",
 		"HlsPlaylistType",
 		"Filter",
+		"AudioFilter",
 		"HttpMethod",
 		"HttpKeepAlive",
 		"OutputPath",
@@ -515,6 +521,13 @@ func (m *Mediafile) ToStrCommand() []string {
 	}
 
 	return strCommand
+}
+
+func (m *Mediafile) ObtainAudioFilter() []string {
+	if m.audioFilter != "" {
+		return []string{"-af", m.audioFilter}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainFilter() []string {
