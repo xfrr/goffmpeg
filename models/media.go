@@ -54,7 +54,7 @@ type Mediafile struct {
 	httpKeepAlive         bool
 	streamIds             map[int]string
 	metadata              Metadata
-	filter                string
+	videoFilter           string
 	audioFilter           string
 	skipVideo             bool
 	skipAudio             bool
@@ -65,8 +65,13 @@ func (m *Mediafile) SetAudioFilter(v string) {
 	m.audioFilter = v
 }
 
+func (m *Mediafile) SetVideoFilter(v string) {
+	m.videoFilter = v
+}
+
+// Deprecated: Use SetVideoFilter instead.
 func (m *Mediafile) SetFilter(v string) {
-	m.filter = v
+	m.SetVideoFilter(v)
 }
 
 func (m *Mediafile) SetAspect(v string) {
@@ -259,8 +264,17 @@ func (m *Mediafile) SetMetadata(v Metadata) {
 
 /*** GETTERS ***/
 
+// Deprecated: Use VideoFilter instead.
 func (m *Mediafile) Filter() string {
-	return m.filter
+	return m.VideoFilter()
+}
+
+func (m *Mediafile) VideoFilter() string {
+	return m.videoFilter
+}
+
+func (m *Mediafile) AudioFilter() string {
+	return m.audioFilter
 }
 
 func (m *Mediafile) Aspect() string {
@@ -505,6 +519,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"HlsPlaylistType",
 		"Filter",
 		"AudioFilter",
+		"VideoFilter",
 		"HttpMethod",
 		"HttpKeepAlive",
 		"OutputPath",
@@ -530,9 +545,14 @@ func (m *Mediafile) ObtainAudioFilter() []string {
 	return nil
 }
 
+// Deprecated: Use ObtainVideoFilter instead.
 func (m *Mediafile) ObtainFilter() []string {
-	if m.filter != "" {
-		return []string{"-vf", m.filter}
+	return m.ObtainVideoFilter()
+}
+
+func (m *Mediafile) ObtainVideoFilter() []string {
+	if m.videoFilter != "" {
+		return []string{"-vf", m.videoFilter}
 	}
 	return nil
 }
