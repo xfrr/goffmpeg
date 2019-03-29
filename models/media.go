@@ -517,7 +517,6 @@ func (m *Mediafile) ToStrCommand() []string {
 		"HlsListSize",
 		"HlsSegmentDuration",
 		"HlsPlaylistType",
-		"Filter",
 		"AudioFilter",
 		"VideoFilter",
 		"HttpMethod",
@@ -543,11 +542,6 @@ func (m *Mediafile) ObtainAudioFilter() []string {
 		return []string{"-af", m.audioFilter}
 	}
 	return nil
-}
-
-// Deprecated: Use ObtainVideoFilter instead.
-func (m *Mediafile) ObtainFilter() []string {
-	return m.ObtainVideoFilter()
 }
 
 func (m *Mediafile) ObtainVideoFilter() []string {
