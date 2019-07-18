@@ -23,3 +23,5 @@ coverage.out
 .DS_Store
 .vscode
 .idea
+
+glide.lock

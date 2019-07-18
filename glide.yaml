@@ -1,0 +1,7 @@
+package: goffmpeg
+import:
+- package: github.com/Autherz/goffmpeg
+  subpackages:
+  - ffmpeg
+  - models
+  - utils
