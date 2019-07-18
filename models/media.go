@@ -58,9 +58,25 @@ type Mediafile struct {
 	audioFilter           string
 	skipVideo             bool
 	skipAudio             bool
+	movflags              string
+	bframe                int
+	chromaSubsampling     string
 }
 
 /*** SETTERS ***/
+
+func (m *Mediafile) SetChromaSubsampling(v string) {
+	m.chromaSubsampling = v
+}
+
+func (m *Mediafile) SetBframe(v int) {
+	m.bframe = v
+}
+
+func (m *Mediafile) SetMovFlags(v string) {
+	m.movflags = v
+}
+
 func (m *Mediafile) SetAudioFilter(v string) {
 	m.audioFilter = v
 }
@@ -263,6 +279,17 @@ func (m *Mediafile) SetMetadata(v Metadata) {
 }
 
 /*** GETTERS ***/
+func (m *Mediafile) ChromaSubsampling() string {
+	return m.chromaSubsampling
+}
+
+func (m *Mediafile) Bframe() int {
+	return m.bframe
+}
+
+func (m *Mediafile) MovFlags() string {
+	return m.movflags
+}
 
 // Deprecated: Use VideoFilter instead.
 func (m *Mediafile) Filter() string {
@@ -474,6 +501,8 @@ func (m *Mediafile) ToStrCommand() []string {
 	var strCommand []string
 
 	opts := []string{
+		"Bframe",
+		"MovFlags",
 		"SeekTimeInput",
 		"SeekUsingTsInput",
 		"NativeFramerateInput",
@@ -535,6 +564,27 @@ func (m *Mediafile) ToStrCommand() []string {
 	}
 
 	return strCommand
+}
+
+func (m *Mediafile) ObtainChromaSubsampling() []string {
+	if m.chromaSubsampling != "" {
+		return []string{"-pix_fmt", m.chromaSubsampling}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainBframe() []string {
+	if m.bframe != 0 {
+		return []string{"-bf", fmt.Sprintf("%d", m.bframe)}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainMovFlags() []string {
+	if m.movflags != "" {
+		return []string{"-movflags", m.movflags}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainAudioFilter() []string {
