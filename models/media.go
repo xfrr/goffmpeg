@@ -501,9 +501,6 @@ func (m *Mediafile) ToStrCommand() []string {
 	var strCommand []string
 
 	opts := []string{
-		"ChromaSubsampling",
-		"Bframe",
-		"MovFlags",
 		"SeekTimeInput",
 		"SeekUsingTsInput",
 		"NativeFramerateInput",
@@ -552,6 +549,9 @@ func (m *Mediafile) ToStrCommand() []string {
 		"HttpMethod",
 		"HttpKeepAlive",
 		"OutputPath",
+		"ChromaSubsampling",
+		"Bframe",
+		"MovFlags",
 	}
 	for _, name := range opts {
 		opt := reflect.ValueOf(m).MethodByName(fmt.Sprintf("Obtain%s", name))
