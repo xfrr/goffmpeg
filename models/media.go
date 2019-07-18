@@ -501,6 +501,7 @@ func (m *Mediafile) ToStrCommand() []string {
 	var strCommand []string
 
 	opts := []string{
+		"ChromaSubsampling",
 		"Bframe",
 		"MovFlags",
 		"SeekTimeInput",
