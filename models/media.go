@@ -22,7 +22,7 @@ type Mediafile struct {
 	minKeyframe           int
 	keyframeInterval      int
 	audioCodec            string
-	audioBitrate          int
+	audioBitrate          string
 	audioChannels         int
 	bufferSize            int
 	threads               int
@@ -130,7 +130,7 @@ func (m *Mediafile) SetAudioCodec(v string) {
 	m.audioCodec = v
 }
 
-func (m *Mediafile) SetAudioBitRate(v int) {
+func (m *Mediafile) SetAudioBitRate(v string) {
 	m.audioBitrate = v
 }
 
@@ -333,7 +333,7 @@ func (m *Mediafile) AudioCodec() string {
 	return m.audioCodec
 }
 
-func (m *Mediafile) AudioBitrate() int {
+func (m *Mediafile) AudioBitrate() string {
 	return m.audioBitrate
 }
 
@@ -640,8 +640,8 @@ func (m *Mediafile) ObtainAudioCodec() []string {
 }
 
 func (m *Mediafile) ObtainAudioBitRate() []string {
-	if m.audioBitrate != 0 {
-		return []string{"-b:a", fmt.Sprintf("%d", m.audioBitrate)}
+	if m.audioBitrate != "" {
+		return []string{"-b:a", m.audioBitrate}
 	}
 	return nil
 }
