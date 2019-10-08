@@ -12,9 +12,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/xfrr/goffmpeg/ffmpeg"
-	"github.com/xfrr/goffmpeg/models"
-	"github.com/xfrr/goffmpeg/utils"
+	"github.com/r6c/goffmpeg/ffmpeg"
+	"github.com/r6c/goffmpeg/models"
+	"github.com/r6c/goffmpeg/utils"
 )
 
 // Transcoder Main struct
