@@ -50,6 +50,7 @@ type Mediafile struct {
 	hlsPlaylistType       string
 	hlsListSize           int
 	hlsSegmentDuration    int
+	hlsInitTime           int
 	httpMethod            string
 	httpKeepAlive         bool
 	streamIds             map[int]string
@@ -228,6 +229,10 @@ func (m *Mediafile) SetHlsListSize(val int) {
 
 func (m *Mediafile) SetHlsSegmentDuration(val int) {
 	m.hlsSegmentDuration = val
+}
+
+func (m *Mediafile) SetHlsInitTime(val int) {
+	m.hlsInitTime = val
 }
 
 func (m *Mediafile) SetHlsPlaylistType(val string) {
@@ -437,6 +442,10 @@ func (m *Mediafile) HlsSegmentDuration() int {
 	return m.hlsSegmentDuration
 }
 
+func (m *Mediafile) HlsHlsInitTime() int {
+	return m.hlsInitTime
+}
+
 func (m *Mediafile) HlsPlaylistType() string {
 	return m.hlsPlaylistType
 }
@@ -516,6 +525,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"OutputFormat",
 		"HlsListSize",
 		"HlsSegmentDuration",
+		"HlsInitTime",
 		"HlsPlaylistType",
 		"AudioFilter",
 		"VideoFilter",
@@ -831,6 +841,14 @@ func (m *Mediafile) ObtainHlsListSize() []string {
 func (m *Mediafile) ObtainHlsSegmentDuration() []string {
 	if m.hlsSegmentDuration != 0 {
 		return []string{"-hls_time", fmt.Sprintf("%d", m.hlsSegmentDuration)}
+	} else {
+		return nil
+	}
+}
+
+func (m *Mediafile) ObtainHlsInitTime() []string {
+	if m.hlsInitTime != 0 {
+		return []string{"-hls_init_time", fmt.Sprintf("%d", m.hlsInitTime)}
 	} else {
 		return nil
 	}
