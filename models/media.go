@@ -10,10 +10,10 @@ import (
 type Mediafile struct {
 	aspect                string
 	resolution            string
-	videoBitRate          int
-	videoBitRateTolerance int
-	videoMaxBitRate       int
-	videoMinBitrate       int
+	videoBitRate          string
+	videoBitRateTolerance string
+	videoMaxBitRate       string
+	videoMinBitrate       string
 	videoCodec            string
 	vframes               int
 	frameRate             int
@@ -24,7 +24,7 @@ type Mediafile struct {
 	audioCodec            string
 	audioBitrate          string
 	audioChannels         int
-	bufferSize            int
+	bufferSize            string
 	threads               int
 	preset                string
 	tune                  string
@@ -83,19 +83,19 @@ func (m *Mediafile) SetResolution(v string) {
 	m.resolution = v
 }
 
-func (m *Mediafile) SetVideoBitRate(v int) {
+func (m *Mediafile) SetVideoBitRate(v string) {
 	m.videoBitRate = v
 }
 
-func (m *Mediafile) SetVideoBitRateTolerance(v int) {
+func (m *Mediafile) SetVideoBitRateTolerance(v string) {
 	m.videoBitRateTolerance = v
 }
 
-func (m *Mediafile) SetVideoMaxBitrate(v int) {
+func (m *Mediafile) SetVideoMaxBitrate(v string) {
 	m.videoMaxBitRate = v
 }
 
-func (m *Mediafile) SetVideoMinBitRate(v int) {
+func (m *Mediafile) SetVideoMinBitRate(v string) {
 	m.videoMinBitrate = v
 }
 
@@ -139,7 +139,7 @@ func (m *Mediafile) SetAudioChannels(v int) {
 	m.audioChannels = v
 }
 
-func (m *Mediafile) SetBufferSize(v int) {
+func (m *Mediafile) SetBufferSize(v string) {
 	m.bufferSize = v
 }
 
@@ -290,19 +290,19 @@ func (m *Mediafile) Resolution() string {
 	return m.resolution
 }
 
-func (m *Mediafile) VideoBitrate() int {
+func (m *Mediafile) VideoBitrate() string {
 	return m.videoBitRate
 }
 
-func (m *Mediafile) VideoBitRateTolerance() int {
+func (m *Mediafile) VideoBitRateTolerance() string {
 	return m.videoBitRateTolerance
 }
 
-func (m *Mediafile) VideoMaxBitRate() int {
+func (m *Mediafile) VideoMaxBitRate() string {
 	return m.videoMaxBitRate
 }
 
-func (m *Mediafile) VideoMinBitRate() int {
+func (m *Mediafile) VideoMinBitRate() string {
 	return m.videoMinBitrate
 }
 
@@ -346,7 +346,7 @@ func (m *Mediafile) AudioChannels() int {
 	return m.audioChannels
 }
 
-func (m *Mediafile) BufferSize() int {
+func (m *Mediafile) BufferSize() string {
 	return m.bufferSize
 }
 
@@ -636,8 +636,8 @@ func (m *Mediafile) ObtainResolution() []string {
 }
 
 func (m *Mediafile) ObtainVideoBitRate() []string {
-	if m.videoBitRate != 0 {
-		return []string{"-b:v", fmt.Sprintf("%d", m.videoBitRate)}
+	if m.videoBitRate != "" {
+		return []string{"-b:v", m.videoBitRate}
 	}
 	return nil
 }
@@ -664,29 +664,29 @@ func (m *Mediafile) ObtainAudioChannels() []string {
 }
 
 func (m *Mediafile) ObtainVideoMaxBitRate() []string {
-	if m.videoMaxBitRate != 0 {
-		return []string{"-maxrate", fmt.Sprintf("%dk", m.videoMaxBitRate)}
+	if m.videoMaxBitRate != "" {
+		return []string{"-maxrate", m.videoMaxBitRate}
 	}
 	return nil
 }
 
 func (m *Mediafile) ObtainVideoMinBitRate() []string {
-	if m.videoMinBitrate != 0 {
-		return []string{"-minrate", fmt.Sprintf("%dk", m.videoMinBitrate)}
+	if m.videoMinBitrate != "" {
+		return []string{"-minrate", m.videoMinBitrate}
 	}
 	return nil
 }
 
 func (m *Mediafile) ObtainBufferSize() []string {
-	if m.bufferSize != 0 {
-		return []string{"-bufsize", fmt.Sprintf("%dk", m.bufferSize)}
+	if m.bufferSize != "" {
+		return []string{"-bufsize", m.bufferSize}
 	}
 	return nil
 }
 
 func (m *Mediafile) ObtainVideoBitRateTolerance() []string {
-	if m.videoBitRateTolerance != 0 {
-		return []string{"-bt", fmt.Sprintf("%dk", m.videoBitRateTolerance)}
+	if m.videoBitRateTolerance != "" {
+		return []string{"-bt", m.videoBitRateTolerance}
 	}
 	return nil
 }
@@ -888,7 +888,7 @@ func (m *Mediafile) ObtainSkipAudio() []string {
 
 func (m *Mediafile) ObtainStreamIds() []string {
 	if m.streamIds != nil && len(m.streamIds) != 0 {
-		result := []string{}
+		var result []string
 		for i, val := range m.streamIds {
 			result = append(result, []string{"-streamid", fmt.Sprintf("%d:%s", i, val)}...)
 		}
