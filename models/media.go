@@ -222,6 +222,20 @@ func (m *Mediafile) SetMuxDelay(val string) {
 	m.muxDelay = val
 }
 
+func (m *Mediafile) ObtainBframe() []string {
+	if m.bframe != 0 {
+		return []string{"-bf", fmt.Sprintf("%d", m.bframe)}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainMovFlags() []string {
+	if m.movflags != "" {
+		return []string{"-movflags", m.movflags}
+	}
+	return nil
+}
+
 func (m *Mediafile) SetOutputPath(val string) {
 	m.outputPath = val
 }
@@ -574,19 +588,6 @@ func (m *Mediafile) ObtainChromaSubsampling() []string {
 	return nil
 }
 
-func (m *Mediafile) ObtainBframe() []string {
-	if m.bframe != 0 {
-		return []string{"-bf", fmt.Sprintf("%d", m.bframe)}
-	}
-	return nil
-}
-
-func (m *Mediafile) ObtainMovFlags() []string {
-	if m.movflags != "" {
-		return []string{"-movflags", m.movflags}
-	}
-	return nil
-}
 
 func (m *Mediafile) ObtainAudioFilter() []string {
 	if m.audioFilter != "" {
@@ -929,3 +930,4 @@ func (m *Mediafile) ObtainStreamIds() []string {
 	}
 	return nil
 }
+
