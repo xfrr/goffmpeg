@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/xfrr/goffmpeg/utils"
+	"github.com/r6c/goffmpeg/utils"
 )
 
 // Configuration ...

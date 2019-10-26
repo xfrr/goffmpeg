@@ -866,7 +866,7 @@ func (m *Mediafile) ObtainHlsInitTime() []string {
 
 func (m *Mediafile) ObtainHlsKeyInfoFile() []string {
 	if m.hlsKeyInfoFile != "" {
-		return []string{"-hls_key_info_file", fmt.Sprintf("%d", m.hlsKeyInfoFile)}
+		return []string{"-hls_key_info_file", m.hlsKeyInfoFile}
 	} else {
 		return nil
 	}
