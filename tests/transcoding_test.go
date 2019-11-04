@@ -1,15 +1,16 @@
 package test
 
 import (
+	"os/exec"
 	"testing"
 
-	"github.com/xfrr/goffmpeg/transcoder"
+	"github.com/muhammadharis/goffmpeg/transcoder"
 )
 
 func TestInputNotFound(t *testing.T) {
 
 	var inputPath = "/data/testmkv"
-	var outputPath = "/data/testmp4.mp4"
+	var outputPath = "/data/out/testmp4.mp4"
 
 	trans := new(transcoder.Transcoder)
 
@@ -43,7 +44,7 @@ func TestTranscoding3GP(t *testing.T) {
 func TestTranscodingAVI(t *testing.T) {
 
 	var inputPath = "/data/testavi"
-	var outputPath = "/data/testmp4.mp4"
+	var outputPath = "/data/out/testmp4.mp4"
 
 	trans := new(transcoder.Transcoder)
 
@@ -64,7 +65,7 @@ func TestTranscodingAVI(t *testing.T) {
 func TestTranscodingFLV(t *testing.T) {
 
 	var inputPath = "/data/testflv"
-	var outputPath = "/data/testmp4.mp4"
+	var outputPath = "/data/out/testmp4.mp4"
 
 	trans := new(transcoder.Transcoder)
 
@@ -85,7 +86,7 @@ func TestTranscodingFLV(t *testing.T) {
 func TestTranscodingMKV(t *testing.T) {
 
 	var inputPath = "/data/testmkv"
-	var outputPath = "/data/testmp4.mp4"
+	var outputPath = "/data/out/testmp4.mp4"
 
 	trans := new(transcoder.Transcoder)
 
@@ -106,7 +107,7 @@ func TestTranscodingMKV(t *testing.T) {
 func TestTranscodingMOV(t *testing.T) {
 
 	var inputPath = "/data/testmov"
-	var outputPath = "/data/testmp4.mp4"
+	var outputPath = "/data/out/testmp4.mp4"
 
 	trans := new(transcoder.Transcoder)
 
@@ -127,7 +128,7 @@ func TestTranscodingMOV(t *testing.T) {
 func TestTranscodingMPEG(t *testing.T) {
 
 	var inputPath = "/data/testmpeg"
-	var outputPath = "/data/testmp4.mp4"
+	var outputPath = "/data/out/testmp4.mp4"
 
 	trans := new(transcoder.Transcoder)
 
@@ -148,7 +149,7 @@ func TestTranscodingMPEG(t *testing.T) {
 func TestTranscodingOGG(t *testing.T) {
 
 	var inputPath = "/data/testogg"
-	var outputPath = "/data/testmp4.mp4"
+	var outputPath = "/data/out/testmp4.mp4"
 
 	trans := new(transcoder.Transcoder)
 
@@ -169,7 +170,7 @@ func TestTranscodingOGG(t *testing.T) {
 func TestTranscodingWAV(t *testing.T) {
 
 	var inputPath = "/data/testwav"
-	var outputPath = "/data/testmp4.mp4"
+	var outputPath = "/data/out/testmp4.mp4"
 
 	trans := new(transcoder.Transcoder)
 
@@ -190,7 +191,7 @@ func TestTranscodingWAV(t *testing.T) {
 func TestTranscodingWEBM(t *testing.T) {
 
 	var inputPath = "/data/testwebm"
-	var outputPath = "/data/testmp4.mp4"
+	var outputPath = "/data/out/testmp4.mp4"
 
 	trans := new(transcoder.Transcoder)
 
@@ -211,7 +212,7 @@ func TestTranscodingWEBM(t *testing.T) {
 func TestTranscodingWMV(t *testing.T) {
 
 	var inputPath = "/data/testwmv"
-	var outputPath = "/data/testmp4.mp4"
+	var outputPath = "/data/out/testmp4.mp4"
 
 	trans := new(transcoder.Transcoder)
 
@@ -229,10 +230,33 @@ func TestTranscodingWMV(t *testing.T) {
 	}
 }
 
+func TestTranscodingInputPipe(t *testing.T) {
+
+	// Tests pipe with input mpeg, output mp4 using cat command for pipe-in
+	var outputPath = "/data/out/testmp4.mp4"
+
+	trans := new(transcoder.Transcoder)
+	err := trans.InitializeEmptyTranscoder()
+	trans.SetOutputPath(outputPath)
+	trans.CreateInputPipe(exec.Command("cat", "/data/testmpeg"))
+
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	done := trans.Run(false)
+	err = <-done
+	if err != nil {
+		t.Error(err)
+		return
+	}
+}
+
 func TestTranscodingProgress(t *testing.T) {
 
 	var inputPath = "/data/testavi"
-	var outputPath = "/data/testmp4.mp4"
+	var outputPath = "/data/out/testmp4.mp4"
 
 	trans := new(transcoder.Transcoder)
 

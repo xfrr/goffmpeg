@@ -79,8 +79,8 @@ func (t Transcoder) GetCommand() []string {
 	return rcommand
 }
 
-// InitializeTranscoder initializes the fields necessary for a blank transcoder
-func (t *Transcoder) InitializeTranscoder() error {
+// InitializeEmptyTranscoder initializes the fields necessary for a blank transcoder
+func (t *Transcoder) InitializeEmptyTranscoder() error {
 	var Metadata models.Metadata
 
 	var err error
@@ -218,7 +218,7 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 			return
 		}
 
-		// Run the pipe-in command if it's been set
+		// Run the pipe-in command if it has been set
 		if t.mediafile.InputPipeCommand() != nil {
 			err = t.mediafile.InputPipeCommand().Run()
 			if err != nil {
