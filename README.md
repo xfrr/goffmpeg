@@ -76,16 +76,16 @@ func main() {
 }
 ```
 
-## How to pipe in data using the (pipe protocol)[https://ffmpeg.org/ffmpeg-protocols.html#pipe]
+## How to pipe in data using the [pipe protocol](https://ffmpeg.org/ffmpeg-protocols.html#pipe)
 ```go
 func main() {
 
 	// Create new instance of transcoder
-    trans := new(transcoder.Transcoder)
+    	trans := new(transcoder.Transcoder)
 
 	// Initialize an empty transcoder
-    err := trans.InitializeEmptyTranscoder()
-    // Handle error...
+    	err := trans.InitializeEmptyTranscoder()
+    	// Handle error...
 
 	// Set the output path on the transcoder
 	trans.SetOutputPath("/tmp/data/out/output.mp4")
