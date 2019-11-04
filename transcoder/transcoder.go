@@ -13,8 +13,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/muhammadharis/goffmpeg/models"
 	"github.com/xfrr/goffmpeg/ffmpeg"
+	"github.com/xfrr/goffmpeg/models"
 	"github.com/xfrr/goffmpeg/utils"
 )
 
