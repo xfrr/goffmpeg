@@ -76,7 +76,7 @@ func main() {
 }
 ```
 
-## How to pipe in data using the (pipe protocol)[https://ffmpeg.org/ffmpeg-protocols.html#pipe]
+## How to pipe in data using the [pipe protocol](https://ffmpeg.org/ffmpeg-protocols.html#pipe)
 ```go
 func main() {
 
