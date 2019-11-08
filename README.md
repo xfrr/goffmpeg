@@ -14,7 +14,7 @@ FFMPEG wrapper written in GO which allows to obtain the progress.
  - Windows
 
 # Getting started
-How to transcode a media file
+## How to transcode a media file
 ```shell
 go get github.com/xfrr/goffmpeg
 ```
@@ -47,7 +47,7 @@ func main() {
 
 }
 ```
-How to get the transcoding progress
+## How to get the transcoding progress
 ```go
 ...
 func main() {
@@ -75,8 +75,36 @@ func main() {
 
 }
 ```
+
+## How to pipe in data using the [pipe protocol](https://ffmpeg.org/ffmpeg-protocols.html#pipe)
+```go
+func main() {
+
+	// Create new instance of transcoder
+    	trans := new(transcoder.Transcoder)
+
+	// Initialize an empty transcoder
+    	err := trans.InitializeEmptyTranscoder()
+    	// Handle error...
+
+	// Set the output path on the transcoder
+	trans.SetOutputPath("/tmp/data/out/output.mp4")
+
+	// Set a command such that its output should be passed as stdin to ffmpeg
+	err = trans.CreateInputPipe(exec.Command("cat", "/tmp/data/testmpeg"))
+	// Handle error...
+
+	// Start transcoder process without checking progress
+	done := trans.Run(true)
+
+	// This channel is used to wait for the transcoding process to end
+	err = <-done
+
+}
+```
+
 # Progress properties
-```golang
+```go
 type Progress struct {
 	FramesProcessed string
 	CurrentTime     string

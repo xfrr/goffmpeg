@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"os/exec"
 	"reflect"
 	"strconv"
 	"strings"
@@ -40,6 +41,7 @@ type Mediafile struct {
 	seekUsingTsInput      bool
 	seekTimeInput         string
 	inputPath             string
+	inputPipeCommand      *exec.Cmd
 	hideBanner            bool
 	outputPath            string
 	outputFormat          string
@@ -196,6 +198,10 @@ func (m *Mediafile) SetCopyTs(val bool) {
 
 func (m *Mediafile) SetInputPath(val string) {
 	m.inputPath = val
+}
+
+func (m *Mediafile) SetInputPipeCommand(command *exec.Cmd) {
+	m.inputPipeCommand = command
 }
 
 func (m *Mediafile) SetHideBanner(val bool) {
@@ -409,6 +415,10 @@ func (m *Mediafile) InputPath() string {
 	return m.inputPath
 }
 
+func (m *Mediafile) InputPipeCommand() *exec.Cmd {
+	return m.inputPipeCommand
+}
+
 func (m *Mediafile) HideBanner() bool {
 	return m.hideBanner
 }
@@ -481,6 +491,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"RtmpLive",
 		"InputInitialOffset",
 		"InputPath",
+		"InputPipeCommand",
 		"HideBanner",
 
 		"Aspect",
@@ -569,7 +580,17 @@ func (m *Mediafile) ObtainAspect() []string {
 }
 
 func (m *Mediafile) ObtainInputPath() []string {
-	return []string{"-i", m.inputPath}
+	if m.inputPath != "" {
+		return []string{"-i", m.inputPath}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainInputPipeCommand() []string {
+	if m.inputPipeCommand != nil {
+		return []string{"-i", "pipe:0"}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainHideBanner() []string {

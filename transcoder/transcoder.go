@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -76,6 +77,51 @@ func (t Transcoder) GetCommand() []string {
 	media := t.mediafile
 	rcommand := append([]string{"-y"}, media.ToStrCommand()...)
 	return rcommand
+}
+
+// InitializeEmptyTranscoder initializes the fields necessary for a blank transcoder
+func (t *Transcoder) InitializeEmptyTranscoder() error {
+	var Metadata models.Metadata
+
+	var err error
+	cfg := t.configuration
+	if len(cfg.FfmpegBin) == 0 || len(cfg.FfprobeBin) == 0 {
+		cfg, err = ffmpeg.Configure()
+		if err != nil {
+			return err
+		}
+	}
+	// Set new Mediafile
+	MediaFile := new(models.Mediafile)
+	MediaFile.SetMetadata(Metadata)
+
+	// Set transcoder configuration
+	t.SetMediaFile(MediaFile)
+	t.SetConfiguration(cfg)
+	return nil
+}
+
+// SetInputPath sets the input path for transcoding
+func (t *Transcoder) SetInputPath(inputPath string) error {
+	if t.mediafile.InputPipeCommand() != nil {
+		return errors.New("cannot set an input path when an input pipe command has been set")
+	}
+	t.mediafile.SetInputPath(inputPath)
+	return nil
+}
+
+// CreateInputPipe creates an input pipe for the transcoding process
+func (t *Transcoder) CreateInputPipe(cmd *exec.Cmd) error {
+	if t.mediafile.InputPath() != "" {
+		return errors.New("cannot set an input pipe when an input path exists")
+	}
+	t.mediafile.SetInputPipeCommand(cmd)
+	return nil
+}
+
+// SetOutputPath sets the output path for transcoding
+func (t *Transcoder) SetOutputPath(outputPath string) {
+	t.mediafile.SetOutputPath(outputPath)
 }
 
 // Initialize Init the transcoding process
@@ -156,6 +202,12 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 		proc.Stdout = out
 	}
 
+	// If an input pipe has been set, we get the command and set it as stdin for the transcoding
+	if t.mediafile.InputPipeCommand() != nil {
+		proc.Stdin, err = t.mediafile.InputPipeCommand().StdoutPipe()
+		proc.Stdout = os.Stdout
+	}
+
 	err = proc.Start()
 
 	t.SetProcess(proc)
@@ -165,6 +217,15 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 			close(done)
 			return
 		}
+
+		// Run the pipe-in command if it has been set
+		if t.mediafile.InputPipeCommand() != nil {
+			err = t.mediafile.InputPipeCommand().Run()
+			if err != nil {
+				err = fmt.Errorf("Failed execution of pipe-in command (%s) with %s", t.mediafile.InputPipeCommand().Args, err)
+			}
+		}
+
 		err = proc.Wait()
 		if err != nil {
 			err = fmt.Errorf("Failed Finish FFMPEG (%s) with %s message %s", command, err, out.String())
