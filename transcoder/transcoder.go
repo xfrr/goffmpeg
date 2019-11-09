@@ -220,8 +220,7 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 
 		// Run the pipe-in command if it has been set
 		if t.mediafile.InputPipeCommand() != nil {
-			err = t.mediafile.InputPipeCommand().Run()
-			if err != nil {
+			if err := t.mediafile.InputPipeCommand().Run(); err != nil {
 				done <- fmt.Errorf("Failed execution of pipe-in command (%s) with %s", t.mediafile.InputPipeCommand().Args, err)
 				close(done)
 				return
