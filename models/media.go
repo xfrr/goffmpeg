@@ -666,13 +666,16 @@ func (m *Mediafile) ObtainAudioCodec() []string {
 }
 
 func (m *Mediafile) ObtainAudioBitRate() []string {
-	if m.audioVariableBitrate {
-		return []string{"-q:a", m.audioBitrate}
-	}
-	if m.audioBitrate != "" {
+	switch {
+	case !m.audioVariableBitrate && m.audioBitrate != "":
 		return []string{"-b:a", m.audioBitrate}
+	case m.audioVariableBitrate && m.audioBitrate != "":
+		return []string{"-q:a", m.audioBitrate}
+	case m.audioVariableBitrate:
+		return []string{"-q:a", "0"}
+	default:
+		return nil
 	}
-	return nil
 }
 
 func (m *Mediafile) ObtainAudioChannels() []string {
