@@ -25,6 +25,7 @@ type Mediafile struct {
 	audioCodec            string
 	audioBitrate          string
 	audioChannels         int
+	audioVariableBitrate  bool
 	bufferSize            int
 	threads               int
 	preset                string
@@ -114,6 +115,10 @@ func (m *Mediafile) SetFrameRate(v int) {
 
 func (m *Mediafile) SetAudioRate(v int) {
 	m.audioRate = v
+}
+
+func (m *Mediafile) SetAudioVariableBitrate() {
+	m.audioVariableBitrate = true
 }
 
 func (m *Mediafile) SetMaxKeyFrame(v int) {
@@ -661,6 +666,9 @@ func (m *Mediafile) ObtainAudioCodec() []string {
 }
 
 func (m *Mediafile) ObtainAudioBitRate() []string {
+	if m.audioVariableBitrate {
+		return []string{"-q:a", m.audioBitrate}
+	}
 	if m.audioBitrate != "" {
 		return []string{"-b:a", m.audioBitrate}
 	}
