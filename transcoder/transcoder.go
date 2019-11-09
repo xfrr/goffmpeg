@@ -175,6 +175,7 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 func (t *Transcoder) Run(progress bool) <-chan error {
 	done := make(chan error)
 	command := t.GetCommand()
+	fmt.Println(command)
 
 	if !progress {
 		command = append([]string{"-nostats", "-loglevel", "0"}, command...)
@@ -222,7 +223,9 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 		if t.mediafile.InputPipeCommand() != nil {
 			err = t.mediafile.InputPipeCommand().Run()
 			if err != nil {
-				err = fmt.Errorf("Failed execution of pipe-in command (%s) with %s", t.mediafile.InputPipeCommand().Args, err)
+				done <- fmt.Errorf("Failed execution of pipe-in command (%s) with %s", t.mediafile.InputPipeCommand().Args, err)
+				close(done)
+				return
 			}
 		}
 
