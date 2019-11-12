@@ -80,7 +80,7 @@ func main() {
 Creating an input pipe will return [\*io.PipeReader](https://golang.org/pkg/io/#PipeReader), and creating an output pipe will return [\*io.PipeWriter](https://golang.org/pkg/io/#PipeWriter). An example is shown which uses `cat` to pipe in data, and [ioutil.ReadAll](https://golang.org/pkg/io/ioutil/#ReadAll) to read data as bytes from the pipe.
 ```go
 func main() {
-	
+
 	// Create new instance of transcoder
     	trans := new(transcoder.Transcoder)
 
