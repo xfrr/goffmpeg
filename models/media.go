@@ -2,7 +2,7 @@ package models
 
 import (
 	"fmt"
-	"os/exec"
+	"io"
 	"reflect"
 	"strconv"
 	"strings"
@@ -41,7 +41,13 @@ type Mediafile struct {
 	seekUsingTsInput      bool
 	seekTimeInput         string
 	inputPath             string
-	inputPipeCommand      *exec.Cmd
+	inputPipe             bool
+	inputPipeReader       *io.PipeReader
+	inputPipeWriter       *io.PipeWriter
+	outputPipe            bool
+	outputPipeReader      *io.PipeReader
+	outputPipeWriter      *io.PipeWriter
+	movFlags              string
 	hideBanner            bool
 	outputPath            string
 	outputFormat          string
@@ -200,8 +206,32 @@ func (m *Mediafile) SetInputPath(val string) {
 	m.inputPath = val
 }
 
-func (m *Mediafile) SetInputPipeCommand(command *exec.Cmd) {
-	m.inputPipeCommand = command
+func (m *Mediafile) SetInputPipe(val bool) {
+	m.inputPipe = val
+}
+
+func (m *Mediafile) SetInputPipeReader(r *io.PipeReader) {
+	m.inputPipeReader = r
+}
+
+func (m *Mediafile) SetInputPipeWriter(w *io.PipeWriter) {
+	m.inputPipeWriter = w
+}
+
+func (m *Mediafile) SetOutputPipe(val bool) {
+	m.outputPipe = val
+}
+
+func (m *Mediafile) SetOutputPipeReader(r *io.PipeReader) {
+	m.outputPipeReader = r
+}
+
+func (m *Mediafile) SetOutputPipeWriter(w *io.PipeWriter) {
+	m.outputPipeWriter = w
+}
+
+func (m *Mediafile) SetMovFlags(val string) {
+	m.movFlags = val
 }
 
 func (m *Mediafile) SetHideBanner(val bool) {
@@ -415,8 +445,32 @@ func (m *Mediafile) InputPath() string {
 	return m.inputPath
 }
 
-func (m *Mediafile) InputPipeCommand() *exec.Cmd {
-	return m.inputPipeCommand
+func (m *Mediafile) InputPipe() bool {
+	return m.inputPipe
+}
+
+func (m *Mediafile) InputPipeReader() *io.PipeReader {
+	return m.inputPipeReader
+}
+
+func (m *Mediafile) InputPipeWriter() *io.PipeWriter {
+	return m.inputPipeWriter
+}
+
+func (m *Mediafile) OutputPipe() bool {
+	return m.outputPipe
+}
+
+func (m *Mediafile) OutputPipeReader() *io.PipeReader {
+	return m.outputPipeReader
+}
+
+func (m *Mediafile) OutputPipeWriter() *io.PipeWriter {
+	return m.outputPipeWriter
+}
+
+func (m *Mediafile) MovFlags() string {
+	return m.movFlags
 }
 
 func (m *Mediafile) HideBanner() bool {
@@ -491,7 +545,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"RtmpLive",
 		"InputInitialOffset",
 		"InputPath",
-		"InputPipeCommand",
+		"InputPipe",
 		"HideBanner",
 
 		"Aspect",
@@ -524,7 +578,9 @@ func (m *Mediafile) ToStrCommand() []string {
 		"Duration",
 		"CopyTs",
 		"StreamIds",
+		"MovFlags",
 		"OutputFormat",
+		"OutputPipe",
 		"HlsListSize",
 		"HlsSegmentDuration",
 		"HlsPlaylistType",
@@ -586,9 +642,23 @@ func (m *Mediafile) ObtainInputPath() []string {
 	return nil
 }
 
-func (m *Mediafile) ObtainInputPipeCommand() []string {
-	if m.inputPipeCommand != nil {
+func (m *Mediafile) ObtainInputPipe() []string {
+	if m.inputPipe {
 		return []string{"-i", "pipe:0"}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainOutputPipe() []string {
+	if m.outputPipe {
+		return []string{"pipe:1"}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainMovFlags() []string {
+	if m.movFlags != "" {
+		return []string{"-movflags", m.movFlags}
 	}
 	return nil
 }
@@ -608,7 +678,10 @@ func (m *Mediafile) ObtainNativeFramerateInput() []string {
 }
 
 func (m *Mediafile) ObtainOutputPath() []string {
-	return []string{m.outputPath}
+	if m.outputPath != "" {
+		return []string{m.outputPath}
+	}
+	return nil
 }
 
 func (m *Mediafile) ObtainVideoCodec() []string {
