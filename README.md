@@ -77,29 +77,54 @@ func main() {
 ```
 
 ## How to pipe in data using the [pipe protocol](https://ffmpeg.org/ffmpeg-protocols.html#pipe)
+Creating an input pipe will return [\*io.PipeReader](https://golang.org/pkg/io/#PipeReader), and creating an output pipe will return [\*io.PipeWriter](https://golang.org/pkg/io/#PipeWriter). An example is shown which uses `cat` to pipe in data, and [ioutil.ReadAll](https://golang.org/pkg/io/ioutil/#ReadAll) to read data as bytes from the pipe.
 ```go
 func main() {
-
+	
 	// Create new instance of transcoder
     	trans := new(transcoder.Transcoder)
-
+	
 	// Initialize an empty transcoder
     	err := trans.InitializeEmptyTranscoder()
     	// Handle error...
+	
+	// Create a command such that its output should be passed as stdin to ffmpeg
+	cmd := exec.Command("cat", "/path/to/file")
+	
+	// Create an input pipe to write to, which will return *io.PipeWriter
+	w, err := trans.CreateInputPipe()
+	
+	cmd.Stdout = w
 
-	// Set the output path on the transcoder
-	trans.SetOutputPath("/tmp/data/out/output.mp4")
+	// Create an output pipe to read from, which will return *io.PipeReader.
+	// Must also specify the output container format
+	r, err := trans.CreateOutputPipe("mp4")
 
-	// Set a command such that its output should be passed as stdin to ffmpeg
-	err = trans.CreateInputPipe(exec.Command("cat", "/tmp/data/testmpeg"))
-	// Handle error...
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+	go func() {
+		defer r.Close()
+		defer wg.Done()
 
+		// Read data from output pipe
+		data, err := ioutil.ReadAll(r)
+		// Handle error and data...
+	}()
+
+	go func() {
+		defer w.Close()
+		err := cmd.Run()
+		// Handle error...
+	}()
+	
 	// Start transcoder process without checking progress
-	done := trans.Run(true)
-
+	done := trans.Run(false)
+	
 	// This channel is used to wait for the transcoding process to end
 	err = <-done
+	// Handle error...
 
+	wg.Wait()
 }
 ```
 
