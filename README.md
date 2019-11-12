@@ -83,17 +83,17 @@ func main() {
 	
 	// Create new instance of transcoder
     	trans := new(transcoder.Transcoder)
-	
+
 	// Initialize an empty transcoder
     	err := trans.InitializeEmptyTranscoder()
     	// Handle error...
-	
+
 	// Create a command such that its output should be passed as stdin to ffmpeg
 	cmd := exec.Command("cat", "/path/to/file")
-	
+
 	// Create an input pipe to write to, which will return *io.PipeWriter
 	w, err := trans.CreateInputPipe()
-	
+
 	cmd.Stdout = w
 
 	// Create an output pipe to read from, which will return *io.PipeReader.
@@ -116,10 +116,10 @@ func main() {
 		err := cmd.Run()
 		// Handle error...
 	}()
-	
+
 	// Start transcoder process without checking progress
 	done := trans.Run(false)
-	
+
 	// This channel is used to wait for the transcoding process to end
 	err = <-done
 	// Handle error...
