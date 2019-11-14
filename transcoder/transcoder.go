@@ -148,7 +148,7 @@ func (t *Transcoder) CreateOutputPipe(containerFormat string) (*io.PipeReader, e
 // Initialize Init the transcoding process
 func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 	var err error
-	var out bytes.Buffer
+	var outb, errb bytes.Buffer
 	var Metadata models.Metadata
 
 	cfg := t.configuration
@@ -167,14 +167,15 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 	command := []string{"-i", inputPath, "-print_format", "json", "-show_format", "-show_streams", "-show_error"}
 
 	cmd := exec.Command(cfg.FfprobeBin, command...)
-	cmd.Stdout = &out
+	cmd.Stdout = &outb
+	cmd.Stderr = &errb
 
 	err = cmd.Run()
 	if err != nil {
-		return fmt.Errorf("error executing (%s) | error: %s", command, err)
+		return fmt.Errorf("error executing (%s) | error: %s | message: %s %s", command, err, outb.String(), errb.String())
 	}
 
-	if err = json.Unmarshal([]byte(out.String()), &Metadata); err != nil {
+	if err = json.Unmarshal([]byte(outb.String()), &Metadata); err != nil {
 		return err
 	}
 
