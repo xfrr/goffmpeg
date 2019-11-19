@@ -35,6 +35,7 @@ type Mediafile struct {
 	duration              string
 	durationInput         string
 	seekTime              string
+	qscale                int
 	quality               int
 	strict                int
 	muxDelay              string
@@ -184,6 +185,11 @@ func (m *Mediafile) SetSeekTime(v string) {
 
 func (m *Mediafile) SetSeekTimeInput(v string) {
 	m.seekTimeInput = v
+}
+
+// Q Scale must be integer between 1 to 31 - https://trac.ffmpeg.org/wiki/Encode/MPEG-4
+func (m *Mediafile) SetQScale(v int) {
+	m.qscale = v
 }
 
 func (m *Mediafile) SetQuality(v int) {
@@ -421,6 +427,10 @@ func (m *Mediafile) SeekTimeInput() string {
 	return m.seekTimeInput
 }
 
+func (m *Mediafile) QScale() int {
+	return m.qscale
+}
+
 func (m *Mediafile) Quality() int {
 	return m.quality
 }
@@ -566,6 +576,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"AudioProfile",
 		"SkipAudio",
 		"Quality",
+		"QScale",
 		"Strict",
 		"BufferSize",
 		"MuxDelay",
@@ -841,6 +852,13 @@ func (m *Mediafile) ObtainTune() []string {
 func (m *Mediafile) ObtainQuality() []string {
 	if m.quality != 0 {
 		return []string{"-crf", fmt.Sprintf("%d", m.quality)}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainQScale() []string {
+	if m.qscale != 0 {
+		return []string{"-qscale", fmt.Sprintf("%d", m.qscale)}
 	}
 	return nil
 }
