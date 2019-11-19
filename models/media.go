@@ -35,7 +35,7 @@ type Mediafile struct {
 	duration              string
 	durationInput         string
 	seekTime              string
-	qscale                int
+	qscale                uint32
 	quality               int
 	strict                int
 	muxDelay              string
@@ -188,7 +188,7 @@ func (m *Mediafile) SetSeekTimeInput(v string) {
 }
 
 // Q Scale must be integer between 1 to 31 - https://trac.ffmpeg.org/wiki/Encode/MPEG-4
-func (m *Mediafile) SetQScale(v int) {
+func (m *Mediafile) SetQScale(v uint32) {
 	m.qscale = v
 }
 
@@ -427,7 +427,7 @@ func (m *Mediafile) SeekTimeInput() string {
 	return m.seekTimeInput
 }
 
-func (m *Mediafile) QScale() int {
+func (m *Mediafile) QScale() uint32 {
 	return m.qscale
 }
 
