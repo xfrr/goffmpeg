@@ -11,7 +11,7 @@ import (
 type Mediafile struct {
 	aspect                string
 	resolution            string
-	videoBitRate          int
+	videoBitRate          string
 	videoBitRateTolerance int
 	videoMaxBitRate       int
 	videoMinBitrate       int
@@ -90,7 +90,7 @@ func (m *Mediafile) SetResolution(v string) {
 	m.resolution = v
 }
 
-func (m *Mediafile) SetVideoBitRate(v int) {
+func (m *Mediafile) SetVideoBitRate(v string) {
 	m.videoBitRate = v
 }
 
@@ -321,7 +321,7 @@ func (m *Mediafile) Resolution() string {
 	return m.resolution
 }
 
-func (m *Mediafile) VideoBitrate() int {
+func (m *Mediafile) VideoBitrate() string {
 	return m.videoBitRate
 }
 
@@ -720,8 +720,8 @@ func (m *Mediafile) ObtainResolution() []string {
 }
 
 func (m *Mediafile) ObtainVideoBitRate() []string {
-	if m.videoBitRate != 0 {
-		return []string{"-b:v", fmt.Sprintf("%d", m.videoBitRate)}
+	if m.videoBitRate != "" {
+		return []string{"-b:v", m.videoBitRate}
 	}
 	return nil
 }
