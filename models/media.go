@@ -61,6 +61,7 @@ type Mediafile struct {
 	hlsSegmentDuration    int
 	httpMethod            string
 	httpKeepAlive         bool
+	hwaccel               string
 	streamIds             map[int]string
 	metadata              Metadata
 	videoFilter           string
@@ -282,6 +283,10 @@ func (m *Mediafile) SetHttpMethod(val string) {
 
 func (m *Mediafile) SetHttpKeepAlive(val bool) {
 	m.httpKeepAlive = val
+}
+
+func (m *Mediafile) SetHardwareAcceleration(val string) {
+	m.hwaccel = val
 }
 
 func (m *Mediafile) SetInputInitialOffset(val string) {
@@ -527,6 +532,10 @@ func (m *Mediafile) HttpKeepAlive() bool {
 	return m.httpKeepAlive
 }
 
+func (m *Mediafile) HardwareAcceleration() string {
+	return m.hwaccel
+}
+
 func (m *Mediafile) StreamIds() map[int]string {
 	return m.streamIds
 }
@@ -554,6 +563,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"DurationInput",
 		"RtmpLive",
 		"InputInitialOffset",
+		"HardwareAcceleration",
 		"InputPath",
 		"InputPipe",
 		"HideBanner",
@@ -642,6 +652,13 @@ func (m *Mediafile) ObtainAspect() []string {
 
 	if m.aspect != "" {
 		return []string{"-aspect", m.aspect}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainHardwareAcceleration() []string {
+	if m.hwaccel != "" {
+		return []string{"-hwaccel", m.hwaccel}
 	}
 	return nil
 }
