@@ -26,6 +26,7 @@ type Mediafile struct {
 	audioBitrate          string
 	audioChannels         int
 	bufferSize            int
+	threadset             bool
 	threads               int
 	preset                string
 	tune                  string
@@ -153,6 +154,7 @@ func (m *Mediafile) SetBufferSize(v int) {
 }
 
 func (m *Mediafile) SetThreads(v int) {
+	m.threadset = true
 	m.threads = v
 }
 
@@ -804,7 +806,7 @@ func (m *Mediafile) ObtainVideoBitRateTolerance() []string {
 }
 
 func (m *Mediafile) ObtainThreads() []string {
-	if m.threads != 0 {
+	if m.threadset {
 		return []string{"-threads", fmt.Sprintf("%d", m.threads)}
 	}
 	return nil
