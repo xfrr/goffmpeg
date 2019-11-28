@@ -195,7 +195,7 @@ func (m *Mediafile) SetQScale(v uint32) {
 	m.qscale = v
 }
 
-func (m *Mediafile) SetCRF(v int) {
+func (m *Mediafile) SetCRF(v uint32) {
 	m.crf = v
 }
 
