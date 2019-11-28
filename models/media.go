@@ -35,7 +35,7 @@ type Mediafile struct {
 	duration              string
 	durationInput         string
 	seekTime              string
-	quality               int
+	crf                   uint32
 	strict                int
 	muxDelay              string
 	seekUsingTsInput      bool
@@ -186,8 +186,8 @@ func (m *Mediafile) SetSeekTimeInput(v string) {
 	m.seekTimeInput = v
 }
 
-func (m *Mediafile) SetQuality(v int) {
-	m.quality = v
+func (m *Mediafile) SetCRF(v uint32) {
+	m.crf = v
 }
 
 func (m *Mediafile) SetStrict(v int) {
@@ -421,8 +421,8 @@ func (m *Mediafile) SeekTimeInput() string {
 	return m.seekTimeInput
 }
 
-func (m *Mediafile) Quality() int {
-	return m.quality
+func (m *Mediafile) CRF() uint32 {
+	return m.crf
 }
 
 func (m *Mediafile) Strict() int {
@@ -565,7 +565,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"AudioChannels",
 		"AudioProfile",
 		"SkipAudio",
-		"Quality",
+		"CRF",
 		"Strict",
 		"BufferSize",
 		"MuxDelay",
@@ -838,9 +838,9 @@ func (m *Mediafile) ObtainTune() []string {
 	return nil
 }
 
-func (m *Mediafile) ObtainQuality() []string {
-	if m.quality != 0 {
-		return []string{"-crf", fmt.Sprintf("%d", m.quality)}
+func (m *Mediafile) ObtainCRF() []string {
+	if m.crf != 0 {
+		return []string{"-crf", fmt.Sprintf("%d", m.crf)}
 	}
 	return nil
 }
