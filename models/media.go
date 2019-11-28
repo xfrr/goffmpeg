@@ -11,7 +11,7 @@ import (
 type Mediafile struct {
 	aspect                string
 	resolution            string
-	videoBitRate          int
+	videoBitRate          string
 	videoBitRateTolerance int
 	videoMaxBitRate       int
 	videoMinBitrate       int
@@ -26,6 +26,7 @@ type Mediafile struct {
 	audioBitrate          string
 	audioChannels         int
 	bufferSize            int
+	threadset             bool
 	threads               int
 	preset                string
 	tune                  string
@@ -35,6 +36,7 @@ type Mediafile struct {
 	duration              string
 	durationInput         string
 	seekTime              string
+	qscale                uint32
 	crf                   uint32
 	strict                int
 	muxDelay              string
@@ -60,6 +62,7 @@ type Mediafile struct {
 	hlsSegmentDuration    int
 	httpMethod            string
 	httpKeepAlive         bool
+	hwaccel               string
 	streamIds             map[int]string
 	metadata              Metadata
 	videoFilter           string
@@ -90,7 +93,7 @@ func (m *Mediafile) SetResolution(v string) {
 	m.resolution = v
 }
 
-func (m *Mediafile) SetVideoBitRate(v int) {
+func (m *Mediafile) SetVideoBitRate(v string) {
 	m.videoBitRate = v
 }
 
@@ -151,6 +154,7 @@ func (m *Mediafile) SetBufferSize(v int) {
 }
 
 func (m *Mediafile) SetThreads(v int) {
+	m.threadset = true
 	m.threads = v
 }
 
@@ -186,7 +190,12 @@ func (m *Mediafile) SetSeekTimeInput(v string) {
 	m.seekTimeInput = v
 }
 
-func (m *Mediafile) SetCRF(v uint32) {
+// Q Scale must be integer between 1 to 31 - https://trac.ffmpeg.org/wiki/Encode/MPEG-4
+func (m *Mediafile) SetQScale(v uint32) {
+	m.qscale = v
+}
+
+func (m *Mediafile) SetCRF(v int) {
 	m.crf = v
 }
 
@@ -278,6 +287,10 @@ func (m *Mediafile) SetHttpKeepAlive(val bool) {
 	m.httpKeepAlive = val
 }
 
+func (m *Mediafile) SetHardwareAcceleration(val string) {
+	m.hwaccel = val
+}
+
 func (m *Mediafile) SetInputInitialOffset(val string) {
 	m.inputInitialOffset = val
 }
@@ -321,7 +334,7 @@ func (m *Mediafile) Resolution() string {
 	return m.resolution
 }
 
-func (m *Mediafile) VideoBitrate() int {
+func (m *Mediafile) VideoBitrate() string {
 	return m.videoBitRate
 }
 
@@ -421,6 +434,10 @@ func (m *Mediafile) SeekTimeInput() string {
 	return m.seekTimeInput
 }
 
+func (m *Mediafile) QScale() uint32 {
+	return m.qscale
+}
+
 func (m *Mediafile) CRF() uint32 {
 	return m.crf
 }
@@ -517,6 +534,10 @@ func (m *Mediafile) HttpKeepAlive() bool {
 	return m.httpKeepAlive
 }
 
+func (m *Mediafile) HardwareAcceleration() string {
+	return m.hwaccel
+}
+
 func (m *Mediafile) StreamIds() map[int]string {
 	return m.streamIds
 }
@@ -544,6 +565,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"DurationInput",
 		"RtmpLive",
 		"InputInitialOffset",
+		"HardwareAcceleration",
 		"InputPath",
 		"InputPipe",
 		"HideBanner",
@@ -566,6 +588,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"AudioProfile",
 		"SkipAudio",
 		"CRF",
+		"QScale",
 		"Strict",
 		"BufferSize",
 		"MuxDelay",
@@ -631,6 +654,13 @@ func (m *Mediafile) ObtainAspect() []string {
 
 	if m.aspect != "" {
 		return []string{"-aspect", m.aspect}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainHardwareAcceleration() []string {
+	if m.hwaccel != "" {
+		return []string{"-hwaccel", m.hwaccel}
 	}
 	return nil
 }
@@ -720,8 +750,8 @@ func (m *Mediafile) ObtainResolution() []string {
 }
 
 func (m *Mediafile) ObtainVideoBitRate() []string {
-	if m.videoBitRate != 0 {
-		return []string{"-b:v", fmt.Sprintf("%d", m.videoBitRate)}
+	if m.videoBitRate != "" {
+		return []string{"-b:v", m.videoBitRate}
 	}
 	return nil
 }
@@ -776,7 +806,7 @@ func (m *Mediafile) ObtainVideoBitRateTolerance() []string {
 }
 
 func (m *Mediafile) ObtainThreads() []string {
-	if m.threads != 0 {
+	if m.threadset {
 		return []string{"-threads", fmt.Sprintf("%d", m.threads)}
 	}
 	return nil
@@ -841,6 +871,13 @@ func (m *Mediafile) ObtainTune() []string {
 func (m *Mediafile) ObtainCRF() []string {
 	if m.crf != 0 {
 		return []string{"-crf", fmt.Sprintf("%d", m.crf)}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainQScale() []string {
+	if m.qscale != 0 {
+		return []string{"-qscale", fmt.Sprintf("%d", m.qscale)}
 	}
 	return nil
 }
