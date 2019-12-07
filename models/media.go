@@ -53,6 +53,8 @@ type Mediafile struct {
 	hlsPlaylistType       string
 	hlsListSize           int
 	hlsSegmentDuration    int
+	hlsMasterPlaylistName string
+	hlsSegmentFilename    string
 	httpMethod            string
 	httpKeepAlive         bool
 	streamIds             map[int]string
@@ -61,6 +63,8 @@ type Mediafile struct {
 	audioFilter           string
 	skipVideo             bool
 	skipAudio             bool
+	movflags              string
+	bframe                int
 }
 
 /*** SETTERS ***/
@@ -245,6 +249,14 @@ func (m *Mediafile) SetHlsPlaylistType(val string) {
 	m.hlsPlaylistType = val
 }
 
+func (m *Mediafile) SetHlsMasterPlaylistName(val string) {
+	m.hlsMasterPlaylistName = val
+}
+
+func (m *Mediafile) SetHlsSegmentFilename(val string) {
+	m.hlsSegmentFilename = val
+}
+
 func (m *Mediafile) SetHttpMethod(val string) {
 	m.httpMethod = val
 }
@@ -271,6 +283,14 @@ func (m *Mediafile) SetSkipAudio(val bool) {
 
 func (m *Mediafile) SetMetadata(v Metadata) {
 	m.metadata = v
+}
+
+func (m *Mediafile) SetMovFlags(v string) {
+	m.movflags = v
+}
+
+func (m *Mediafile) SetBframe(v int) {
+	m.bframe = v
 }
 
 /*** GETTERS ***/
@@ -452,6 +472,14 @@ func (m *Mediafile) HlsSegmentDuration() int {
 	return m.hlsSegmentDuration
 }
 
+func (m *Mediafile) HlsMasterPlaylistName() string {
+	return m.hlsMasterPlaylistName
+}
+
+func (m *Mediafile) HlsSegmentFilename() string {
+	return m.hlsSegmentFilename
+}
+
 func (m *Mediafile) HlsPlaylistType() string {
 	return m.hlsPlaylistType
 }
@@ -533,11 +561,15 @@ func (m *Mediafile) ToStrCommand() []string {
 		"HlsListSize",
 		"HlsSegmentDuration",
 		"HlsPlaylistType",
+		"HlsMasterPlaylistName",
+		"HlsSegmentFilename",
 		"AudioFilter",
 		"VideoFilter",
 		"HttpMethod",
 		"HttpKeepAlive",
 		"OutputPath",
+		"Bframe",
+		"MovFlags",
 	}
 	for _, name := range opts {
 		opt := reflect.ValueOf(m).MethodByName(fmt.Sprintf("Obtain%s", name))
@@ -868,6 +900,22 @@ func (m *Mediafile) ObtainHlsSegmentDuration() []string {
 	}
 }
 
+func (m *Mediafile) ObtainHlsMasterPlaylistName() []string {
+	if m.hlsMasterPlaylistName != "" {
+		return []string{"-master_pl_name", fmt.Sprintf("%s", m.hlsMasterPlaylistName)}
+	} else {
+		return nil
+	}
+}
+
+func (m *Mediafile) ObtainHlsSegmentFilename() []string {
+	if m.hlsSegmentFilename != "" {
+		return []string{"-hls_segment_filename", fmt.Sprintf("%s", m.hlsSegmentFilename)}
+	} else {
+		return nil
+	}
+}
+
 func (m *Mediafile) ObtainHttpMethod() []string {
 	if m.httpMethod != "" {
 		return []string{"-method", m.httpMethod}
@@ -907,6 +955,20 @@ func (m *Mediafile) ObtainStreamIds() []string {
 			result = append(result, []string{"-streamid", fmt.Sprintf("%d:%s", i, val)}...)
 		}
 		return result
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainBframe() []string {
+	if m.bframe != 0 {
+		return []string{"-bf", fmt.Sprintf("%d", m.bframe)}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainMovFlags() []string {
+	if m.movflags != "" {
+		return []string{"-movflags", m.movflags}
 	}
 	return nil
 }
