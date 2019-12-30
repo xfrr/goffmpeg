@@ -61,6 +61,8 @@ type Mediafile struct {
 	audioFilter           string
 	skipVideo             bool
 	skipAudio             bool
+	compressionLevel      int
+	mapMetadata           string
 }
 
 /*** SETTERS ***/
@@ -271,6 +273,14 @@ func (m *Mediafile) SetSkipAudio(val bool) {
 
 func (m *Mediafile) SetMetadata(v Metadata) {
 	m.metadata = v
+}
+
+func (m *Mediafile) SetCompressionLevel(val int) {
+	m.compressionLevel = val
+}
+
+func (m *Mediafile) SetMapMetadata(val string) {
+	m.mapMetadata = val
 }
 
 /*** GETTERS ***/
@@ -484,6 +494,14 @@ func (m *Mediafile) Metadata() Metadata {
 	return m.metadata
 }
 
+func (m *Mediafile) CompressionLevel() int {
+	return m.compressionLevel
+}
+
+func (m *Mediafile) MapMetadata() string {
+	return m.mapMetadata
+}
+
 /** OPTS **/
 func (m *Mediafile) ToStrCommand() []string {
 	var strCommand []string
@@ -537,6 +555,8 @@ func (m *Mediafile) ToStrCommand() []string {
 		"VideoFilter",
 		"HttpMethod",
 		"HttpKeepAlive",
+		"CompressionLevel",
+		"MapMetadata",
 		"OutputPath",
 	}
 	for _, name := range opts {
@@ -907,6 +927,20 @@ func (m *Mediafile) ObtainStreamIds() []string {
 			result = append(result, []string{"-streamid", fmt.Sprintf("%d:%s", i, val)}...)
 		}
 		return result
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainCompressionLevel() []string {
+	if m.compressionLevel != 0 {
+		return []string{"-compression_level", fmt.Sprintf("%d", m.compressionLevel)}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainMapMetadata() []string {
+	if m.mapMetadata != "" {
+		return []string{"-map_metadata", m.mapMetadata}
 	}
 	return nil
 }

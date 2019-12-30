@@ -160,6 +160,16 @@ SetHttpMethod
 SetHttpKeepAlive
 SetOutputPath
 SetOutputFormat
+SetAudioFilter
+SetAudioVariableBitrate
+SetCompressionLevel
+SetFilter
+SetInputInitialOffset
+SetInputPipeCommand
+SetMapMetadata
+SetMetadata
+SetStreamIds
+SetVideoFilter
 ```
 Example
 ```golang
