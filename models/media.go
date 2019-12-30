@@ -63,6 +63,7 @@ type Mediafile struct {
 	skipAudio             bool
 	compressionLevel      int
 	mapMetadata           string
+	tags                  map[string]string
 }
 
 /*** SETTERS ***/
@@ -281,6 +282,10 @@ func (m *Mediafile) SetCompressionLevel(val int) {
 
 func (m *Mediafile) SetMapMetadata(val string) {
 	m.mapMetadata = val
+}
+
+func (m *Mediafile) SetTags(val map[string]string) {
+	m.tags = val
 }
 
 /*** GETTERS ***/
@@ -502,6 +507,10 @@ func (m *Mediafile) MapMetadata() string {
 	return m.mapMetadata
 }
 
+func (m *Mediafile) Tags() map[string]string {
+	return m.tags
+}
+
 /** OPTS **/
 func (m *Mediafile) ToStrCommand() []string {
 	var strCommand []string
@@ -557,6 +566,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"HttpKeepAlive",
 		"CompressionLevel",
 		"MapMetadata",
+		"Tags",
 		"OutputPath",
 	}
 	for _, name := range opts {
@@ -941,6 +951,17 @@ func (m *Mediafile) ObtainCompressionLevel() []string {
 func (m *Mediafile) ObtainMapMetadata() []string {
 	if m.mapMetadata != "" {
 		return []string{"-map_metadata", m.mapMetadata}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainTags() []string {
+	if m.tags != nil && len(m.tags) != 0 {
+		result := []string{}
+		for key, val := range m.tags {
+			result = append(result, []string{"-metadata", fmt.Sprintf("%s=%s", key, val)}...)
+		}
+		return result
 	}
 	return nil
 }

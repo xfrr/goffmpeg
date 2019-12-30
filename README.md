@@ -169,6 +169,7 @@ SetInputPipeCommand
 SetMapMetadata
 SetMetadata
 SetStreamIds
+SetTags
 SetVideoFilter
 ```
 Example
