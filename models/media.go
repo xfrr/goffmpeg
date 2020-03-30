@@ -72,6 +72,9 @@ type Mediafile struct {
 	audioFilter           string
 	skipVideo             bool
 	skipAudio             bool
+	compressionLevel      int
+	mapMetadata           string
+	tags                  map[string]string
 	encryptionKey         string
 	movflags              string
 	bframe                int
@@ -332,6 +335,18 @@ func (m *Mediafile) SetSkipAudio(val bool) {
 
 func (m *Mediafile) SetMetadata(v Metadata) {
 	m.metadata = v
+}
+
+func (m *Mediafile) SetCompressionLevel(val int) {
+	m.compressionLevel = val
+}
+
+func (m *Mediafile) SetMapMetadata(val string) {
+	m.mapMetadata = val
+}
+
+func (m *Mediafile) SetTags(val map[string]string) {
+	m.tags = val
 }
 
 func (m *Mediafile) SetMovFlags(v string) {
@@ -597,6 +612,18 @@ func (m *Mediafile) Metadata() Metadata {
 	return m.metadata
 }
 
+func (m *Mediafile) CompressionLevel() int {
+	return m.compressionLevel
+}
+
+func (m *Mediafile) MapMetadata() string {
+	return m.mapMetadata
+}
+
+func (m *Mediafile) Tags() map[string]string {
+	return m.tags
+}
+
 func (m *Mediafile) SetEncryptionKey(v string) {
 	m.encryptionKey = v
 }
@@ -620,7 +647,6 @@ func (m *Mediafile) ToStrCommand() []string {
 		"InputPath",
 		"InputPipe",
 		"HideBanner",
-
 		"Aspect",
 		"Resolution",
 		"FrameRate",
@@ -665,11 +691,15 @@ func (m *Mediafile) ToStrCommand() []string {
 		"VideoFilter",
 		"HttpMethod",
 		"HttpKeepAlive",
+		"CompressionLevel",
+		"MapMetadata",
+		"Tags",
 		"EncryptionKey",
 		"OutputPath",
 		"Bframe",
 		"MovFlags",
 	}
+
 	for _, name := range opts {
 		opt := reflect.ValueOf(m).MethodByName(fmt.Sprintf("Obtain%s", name))
 		if (opt != reflect.Value{}) {
@@ -1097,6 +1127,20 @@ func (m *Mediafile) ObtainStreamIds() []string {
 	return nil
 }
 
+func (m *Mediafile) ObtainCompressionLevel() []string {
+	if m.compressionLevel != 0 {
+		return []string{"-compression_level", fmt.Sprintf("%d", m.compressionLevel)}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainMapMetadata() []string {
+	if m.mapMetadata != "" {
+		return []string{"-map_metadata", m.mapMetadata}
+  }
+  return nil
+}
+    
 func (m *Mediafile) ObtainEncryptionKey() []string {
 	return []string{"-hls_key_info_file", m.encryptionKey}
 }
@@ -1106,6 +1150,17 @@ func (m *Mediafile) ObtainBframe() []string {
 		return []string{"-bf", fmt.Sprintf("%d", m.bframe)}
 	}
 	return nil
+}
+
+func (m *Mediafile) ObtainTags() []string {
+	if m.tags != nil && len(m.tags) != 0 {
+		result := []string{}
+		for key, val := range m.tags {
+			result = append(result, []string{"-metadata", fmt.Sprintf("%s=%s", key, val)}...)
+		}
+		return result
+  }
+  return nil
 }
 
 func (m *Mediafile) ObtainMovFlags() []string {
