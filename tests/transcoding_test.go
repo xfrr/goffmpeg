@@ -1,8 +1,12 @@
 package test
 
 import (
+	"io/ioutil"
 	"os/exec"
+	"sync"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/xfrr/goffmpeg/transcoder"
 )
@@ -230,29 +234,6 @@ func TestTranscodingWMV(t *testing.T) {
 	}
 }
 
-func TestTranscodingInputPipe(t *testing.T) {
-
-	// Tests pipe with input mpeg, output mp4 using cat command for pipe-in
-	var outputPath = "/data/out/testmp4.mp4"
-
-	trans := new(transcoder.Transcoder)
-	err := trans.InitializeEmptyTranscoder()
-	trans.SetOutputPath(outputPath)
-	trans.CreateInputPipe(exec.Command("cat", "/data/testmpeg"))
-
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	done := trans.Run(false)
-	err = <-done
-	if err != nil {
-		t.Error(err)
-		return
-	}
-}
-
 func TestTranscodingProgress(t *testing.T) {
 
 	var inputPath = "/data/testavi"
@@ -278,4 +259,41 @@ func TestTranscodingProgress(t *testing.T) {
 		t.Error(err)
 		return
 	}
+}
+
+func TestTranscodePipes(t *testing.T) {
+	c1 := exec.Command("cat", "/tmp/data/testmkv")
+
+	trans := new(transcoder.Transcoder)
+
+	err := trans.InitializeEmptyTranscoder()
+	assert.Nil(t, err)
+
+	w, err := trans.CreateInputPipe()
+	assert.Nil(t, err)
+	c1.Stdout = w
+
+	r, err := trans.CreateOutputPipe("mp4")
+	assert.Nil(t, err)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+	go func() {
+		_, err := ioutil.ReadAll(r)
+		assert.Nil(t, err)
+
+		r.Close()
+		wg.Done()
+	}()
+
+	go func() {
+		err := c1.Run()
+		assert.Nil(t, err)
+		w.Close()
+	}()
+	done := trans.Run(false)
+	err = <-done
+	assert.Nil(t, err)
+
+	wg.Wait()
 }

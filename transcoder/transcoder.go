@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -103,31 +102,53 @@ func (t *Transcoder) InitializeEmptyTranscoder() error {
 
 // SetInputPath sets the input path for transcoding
 func (t *Transcoder) SetInputPath(inputPath string) error {
-	if t.mediafile.InputPipeCommand() != nil {
+	if t.mediafile.InputPipe() {
 		return errors.New("cannot set an input path when an input pipe command has been set")
 	}
 	t.mediafile.SetInputPath(inputPath)
 	return nil
 }
 
-// CreateInputPipe creates an input pipe for the transcoding process
-func (t *Transcoder) CreateInputPipe(cmd *exec.Cmd) error {
-	if t.mediafile.InputPath() != "" {
-		return errors.New("cannot set an input pipe when an input path exists")
+// SetOutputPath sets the output path for transcoding
+func (t *Transcoder) SetOutputPath(inputPath string) error {
+	if t.mediafile.OutputPipe() {
+		return errors.New("cannot set an input path when an input pipe command has been set")
 	}
-	t.mediafile.SetInputPipeCommand(cmd)
+	t.mediafile.SetOutputPath(inputPath)
 	return nil
 }
 
-// SetOutputPath sets the output path for transcoding
-func (t *Transcoder) SetOutputPath(outputPath string) {
-	t.mediafile.SetOutputPath(outputPath)
+// CreateInputPipe creates an input pipe for the transcoding process
+func (t *Transcoder) CreateInputPipe() (*io.PipeWriter, error) {
+	if t.mediafile.InputPath() != "" {
+		return nil, errors.New("cannot set an input pipe when an input path exists")
+	}
+	inputPipeReader, inputPipeWriter := io.Pipe()
+	t.mediafile.SetInputPipe(true)
+	t.mediafile.SetInputPipeReader(inputPipeReader)
+	t.mediafile.SetInputPipeWriter(inputPipeWriter)
+	return inputPipeWriter, nil
+}
+
+// CreateOutputPipe creates an output pipe for the transcoding process
+func (t *Transcoder) CreateOutputPipe(containerFormat string) (*io.PipeReader, error) {
+	if t.mediafile.OutputPath() != "" {
+		return nil, errors.New("cannot set an output pipe when an output path exists")
+	}
+	t.mediafile.SetOutputFormat(containerFormat)
+
+	t.mediafile.SetMovFlags("frag_keyframe")
+	outputPipeReader, outputPipeWriter := io.Pipe()
+	t.mediafile.SetOutputPipe(true)
+	t.mediafile.SetOutputPipeReader(outputPipeReader)
+	t.mediafile.SetOutputPipeWriter(outputPipeWriter)
+	return outputPipeReader, nil
 }
 
 // Initialize Init the transcoding process
 func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 	var err error
-	var out bytes.Buffer
+	var outb, errb bytes.Buffer
 	var Metadata models.Metadata
 
 	cfg := t.configuration
@@ -146,14 +167,15 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 	command := []string{"-i", inputPath, "-print_format", "json", "-show_format", "-show_streams", "-show_error"}
 
 	cmd := exec.Command(cfg.FfprobeBin, command...)
-	cmd.Stdout = &out
+	cmd.Stdout = &outb
+	cmd.Stderr = &errb
 
 	err = cmd.Run()
 	if err != nil {
-		return fmt.Errorf("error executing (%s) | error: %s", command, err)
+		return fmt.Errorf("error executing (%s) | error: %s | message: %s %s", command, err, outb.String(), errb.String())
 	}
 
-	if err = json.Unmarshal([]byte(out.String()), &Metadata); err != nil {
+	if err = json.Unmarshal([]byte(outb.String()), &Metadata); err != nil {
 		return err
 	}
 
@@ -190,6 +212,7 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 		}
 	}
 
+	// Set the stdinPipe in case we need to stop the transcoding
 	stdin, err := proc.StdinPipe()
 	if nil != err {
 		fmt.Println("Stdin not available: " + err.Error())
@@ -197,23 +220,29 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 
 	t.stdStdinPipe = stdin
 
-	out := &bytes.Buffer{}
+	// If the user has requested progress, we send it to them on a Buffer
+	var outb, errb bytes.Buffer
 	if progress {
-		proc.Stdout = out
+		proc.Stdout = &outb
+		proc.Stderr = &errb
 	}
 
-	// If an input pipe has been set, we get the command and set it as stdin for the transcoding
-	if t.mediafile.InputPipeCommand() != nil {
-		proc.Stdin, err = t.mediafile.InputPipeCommand().StdoutPipe()
-		proc.Stdout = os.Stdout
+	// If an input pipe has been set, we set it as stdin for the transcoding
+	if t.mediafile.InputPipe() {
+		proc.Stdin = t.mediafile.InputPipeReader()
+	}
+
+	// If an output pipe has been set, we set it as stdout for the transcoding
+	if t.mediafile.OutputPipe() {
+		proc.Stdout = t.mediafile.OutputPipeWriter()
 	}
 
 	err = proc.Start()
 
 	t.SetProcess(proc)
-	go func(err error, out *bytes.Buffer) {
+	go func(err error) {
 		if err != nil {
-			done <- fmt.Errorf("Failed Start FFMPEG (%s) with %s, message %s", command, err, out.String())
+			done <- fmt.Errorf("Failed Start FFMPEG (%s) with %s, message %s %s", command, err, outb.String(), errb.String())
 			close(done)
 			return
 		}
@@ -228,12 +257,13 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 		}
 
 		err = proc.Wait()
+		go t.closePipes()
 		if err != nil {
-			err = fmt.Errorf("Failed Finish FFMPEG (%s) with %s message %s", command, err, out.String())
+			err = fmt.Errorf("Failed Finish FFMPEG (%s) with %s message %s %s", command, err, outb.String(), errb.String())
 		}
 		done <- err
 		close(done)
-	}(err, out)
+	}(err)
 
 	return done
 }
@@ -344,4 +374,13 @@ func (t Transcoder) Output() <-chan models.Progress {
 	}()
 
 	return out
+}
+
+func (t *Transcoder) closePipes() {
+	if t.mediafile.InputPipe() {
+		t.mediafile.InputPipeReader().Close()
+	}
+	if t.mediafile.OutputPipe() {
+		t.mediafile.OutputPipeWriter().Close()
+	}
 }
