@@ -62,6 +62,7 @@ type Mediafile struct {
 	skipVideo             bool
 	skipAudio             bool
 	encryptionKey         string
+	pixFmt                string
 }
 
 /*** SETTERS ***/
@@ -144,6 +145,10 @@ func (m *Mediafile) SetAudioBitRate(v string) {
 
 func (m *Mediafile) SetAudioChannels(v int) {
 	m.audioChannels = v
+}
+
+func (m *Mediafile) SetPixFmt(v string) {
+	m.pixFmt = v
 }
 
 func (m *Mediafile) SetBufferSize(v int) {
@@ -323,6 +328,10 @@ func (m *Mediafile) Vframes() int {
 
 func (m *Mediafile) FrameRate() int {
 	return m.frameRate
+}
+
+func (m *Mediafile) GetPixFmt() string {
+	return m.pixFmt
 }
 
 func (m *Mediafile) AudioRate() int {
@@ -532,6 +541,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"Threads",
 		"KeyframeInterval",
 		"Preset",
+		"PixFmt",
 		"Tune",
 		"Target",
 		"SeekTime",
@@ -886,6 +896,14 @@ func (m *Mediafile) ObtainHttpMethod() []string {
 	}
 }
 
+func (m *Mediafile) ObtainPixFmt() []string {
+	if m.pixFmt != "" {
+		return []string{"-pix_fmt", m.pixFmt}
+	} else {
+		return nil
+	}
+}
+
 func (m *Mediafile) ObtainHttpKeepAlive() []string {
 	if m.httpKeepAlive {
 		return []string{"-multiple_requests", "1"}
@@ -921,6 +939,5 @@ func (m *Mediafile) ObtainStreamIds() []string {
 	return nil
 }
 func (m *Mediafile) ObtainEncryptionKey() []string {
-	fmt.Println(m.encryptionKey)
 	return []string{"-hls_key_info_file", m.encryptionKey}
 }
