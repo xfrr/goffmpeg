@@ -221,5 +221,39 @@ func main() {
 }
 ```
 
+Example with AES encryption :
+
+More information about [HLS encryption with FFMPEG](https://hlsbook.net/how-to-encrypt-hls-video-with-ffmpeg/)
+
+```bash
+# Generate key
+openssl rand 16 > enc.key
+```
+
+Create key file info :
+
+```enc.keyinfo
+Key URI
+Path to key file
+```
+
+```golang
+func main() {
+
+	trans := new(transcoder.Transcoder)
+
+	err := trans.Initialize(inputPath, outputPath)
+
+	trans.MediaFile().SetVideoCodec("libx264")
+	
+	trans.MediaFile().SetHlsSegmentDuration(4)
+
+	trans.MediaFile().SetEncryptionKey(keyinfoPath)
+
+	progress := trans.Output()
+	
+	err = <-done
+}
+
 ----
 > Building...

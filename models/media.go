@@ -72,6 +72,7 @@ type Mediafile struct {
 	audioFilter           string
 	skipVideo             bool
 	skipAudio             bool
+	encryptionKey         string
 	movflags              string
 	bframe                int
 	pixFmt                string
@@ -596,6 +597,14 @@ func (m *Mediafile) Metadata() Metadata {
 	return m.metadata
 }
 
+func (m *Mediafile) SetEncryptionKey(v string) {
+	m.encryptionKey = v
+}
+
+func (m *Mediafile) EncryptionKey() string {
+	return m.encryptionKey
+}
+
 /** OPTS **/
 func (m *Mediafile) ToStrCommand() []string {
 	var strCommand []string
@@ -656,6 +665,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"VideoFilter",
 		"HttpMethod",
 		"HttpKeepAlive",
+		"EncryptionKey",
 		"OutputPath",
 		"Bframe",
 		"MovFlags",
@@ -1085,6 +1095,10 @@ func (m *Mediafile) ObtainStreamIds() []string {
 		return result
 	}
 	return nil
+}
+
+func (m *Mediafile) ObtainEncryptionKey() []string {
+	return []string{"-hls_key_info_file", m.encryptionKey}
 }
 
 func (m *Mediafile) ObtainBframe() []string {
