@@ -181,6 +181,8 @@ SetRtmpLive
 SetHlsListSize
 SetHlsSegmentDuration
 SetHlsPlaylistType
+SetHlsMasterPlaylistName
+SetHlsSegmentFilename
 SetHttpMethod
 SetHttpKeepAlive
 SetOutputPath
