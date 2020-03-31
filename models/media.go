@@ -349,10 +349,6 @@ func (m *Mediafile) SetTags(val map[string]string) {
 	m.tags = val
 }
 
-func (m *Mediafile) SetMovFlags(v string) {
-	m.movflags = v
-}
-
 func (m *Mediafile) SetBframe(v int) {
 	m.bframe = v
 }
