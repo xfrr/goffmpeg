@@ -1158,10 +1158,3 @@ func (m *Mediafile) ObtainTags() []string {
   }
   return nil
 }
-
-func (m *Mediafile) ObtainMovFlags() []string {
-	if m.movflags != "" {
-		return []string{"-movflags", m.movflags}
-	}
-	return nil
-}
