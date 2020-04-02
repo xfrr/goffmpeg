@@ -3,7 +3,6 @@ package models
 import (
 	"fmt"
 	"io"
-	"os/exec"
 	"reflect"
 	"strconv"
 	"strings"
@@ -49,7 +48,6 @@ type Mediafile struct {
 	inputPipeReader       *io.PipeReader
 	inputPipeWriter       *io.PipeWriter
 	outputPipe            bool
-	inputPipeCommand      *exec.Cmd
 	outputPipeReader      *io.PipeReader
 	outputPipeWriter      *io.PipeWriter
 	movFlags              string
@@ -237,10 +235,6 @@ func (m *Mediafile) SetInputPath(val string) {
 
 func (m *Mediafile) SetInputPipe(val bool) {
 	m.inputPipe = val
-}
-
-func (m *Mediafile) SetInputPipeCommand(command *exec.Cmd) {
-	m.inputPipeCommand = command
 }
 
 func (m *Mediafile) SetInputPipeReader(r *io.PipeReader) {
@@ -518,10 +512,6 @@ func (m *Mediafile) InputPipe() bool {
 	return m.inputPipe
 }
 
-func (m *Mediafile) InputPipeCommand() *exec.Cmd {
-	return m.inputPipeCommand
-}
-
 func (m *Mediafile) InputPipeReader() *io.PipeReader {
 	return m.inputPipeReader
 }
@@ -652,7 +642,6 @@ func (m *Mediafile) ToStrCommand() []string {
 		"HardwareAcceleration",
 		"InputPath",
 		"InputPipe",
-		"InputPipeCommand",
 		"HideBanner",
 		"Aspect",
 		"Resolution",
@@ -766,7 +755,7 @@ func (m *Mediafile) ObtainInputPath() []string {
 	return nil
 }
 
-func (m *Mediafile) ObtainInputPipeCommand() []string {
+func (m *Mediafile) ObtainInputPipe() []string {
 	if m.inputPipe {
 		return []string{"-i", "pipe:0"}
 	}
@@ -1144,10 +1133,10 @@ func (m *Mediafile) ObtainCompressionLevel() []string {
 func (m *Mediafile) ObtainMapMetadata() []string {
 	if m.mapMetadata != "" {
 		return []string{"-map_metadata", m.mapMetadata}
-	}
-	return nil
+  }
+  return nil
 }
-
+    
 func (m *Mediafile) ObtainEncryptionKey() []string {
 	return []string{"-hls_key_info_file", m.encryptionKey}
 }
@@ -1166,6 +1155,6 @@ func (m *Mediafile) ObtainTags() []string {
 			result = append(result, []string{"-metadata", fmt.Sprintf("%s=%s", key, val)}...)
 		}
 		return result
-	}
-	return nil
+  }
+  return nil
 }
