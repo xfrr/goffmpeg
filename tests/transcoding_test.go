@@ -13,239 +13,174 @@ import (
 
 func TestInputNotFound(t *testing.T) {
 
-	var inputPath = "/data/testmkv"
-	var outputPath = "/data/out/testmp4.mp4"
+	var inputPath = "/tmp/ffmpeg/nf"
+	var outputPath = "/tmp/ffmpeg/out/nf.mp4"
 
 	trans := new(transcoder.Transcoder)
 
 	err := trans.Initialize(inputPath, outputPath)
-	if err != nil {
-		return
-	}
+	assert.NotNil(t, err)
 }
 
 func TestTranscoding3GP(t *testing.T) {
 
-	var inputPath = "/data/test3gp"
-	var outputPath = "/data/testmp4.mp4"
+	var inputPath = "/tmp/ffmpeg/3gp"
+	var outputPath = "/tmp/ffmpeg/out/3gp.mp4"
 
 	trans := new(transcoder.Transcoder)
 
 	err := trans.Initialize(inputPath, outputPath)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 
 	done := trans.Run(false)
 	err = <-done
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 }
 
 func TestTranscodingAVI(t *testing.T) {
 
-	var inputPath = "/data/testavi"
-	var outputPath = "/data/out/testmp4.mp4"
+	var inputPath = "/tmp/ffmpeg/avi"
+	var outputPath = "/tmp/ffmpeg/out/avi.mp4"
 
 	trans := new(transcoder.Transcoder)
 
 	err := trans.Initialize(inputPath, outputPath)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 
 	done := trans.Run(false)
 	err = <-done
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 }
 
 func TestTranscodingFLV(t *testing.T) {
 
-	var inputPath = "/data/testflv"
-	var outputPath = "/data/out/testmp4.mp4"
+	var inputPath = "/tmp/ffmpeg/flv"
+	var outputPath = "/tmp/ffmpeg/out/flv.mp4"
 
 	trans := new(transcoder.Transcoder)
 
 	err := trans.Initialize(inputPath, outputPath)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 
 	done := trans.Run(false)
 	err = <-done
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 }
 
 func TestTranscodingMKV(t *testing.T) {
 
-	var inputPath = "/data/testmkv"
-	var outputPath = "/data/out/testmp4.mp4"
+	var inputPath = "/tmp/ffmpeg/mkv"
+	var outputPath = "/tmp/ffmpeg/out/mkv.mp4"
 
 	trans := new(transcoder.Transcoder)
 
 	err := trans.Initialize(inputPath, outputPath)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 
 	done := trans.Run(false)
 	err = <-done
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 }
 
 func TestTranscodingMOV(t *testing.T) {
 
-	var inputPath = "/data/testmov"
-	var outputPath = "/data/out/testmp4.mp4"
+	var inputPath = "/tmp/ffmpeg/mov"
+	var outputPath = "/tmp/ffmpeg/out/mov.mp4"
 
 	trans := new(transcoder.Transcoder)
 
 	err := trans.Initialize(inputPath, outputPath)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 
 	done := trans.Run(false)
 	err = <-done
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 }
 
 func TestTranscodingMPEG(t *testing.T) {
 
-	var inputPath = "/data/testmpeg"
-	var outputPath = "/data/out/testmp4.mp4"
+	var inputPath = "/tmp/ffmpeg/mpeg"
+	var outputPath = "/tmp/ffmpeg/out/mpeg.mp4"
 
 	trans := new(transcoder.Transcoder)
 
 	err := trans.Initialize(inputPath, outputPath)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 
 	done := trans.Run(false)
 	err = <-done
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 }
 
 func TestTranscodingOGG(t *testing.T) {
 
-	var inputPath = "/data/testogg"
-	var outputPath = "/data/out/testmp4.mp4"
+	var inputPath = "/tmp/ffmpeg/ogg"
+	var outputPath = "/tmp/ffmpeg/out/ogg.mp4"
 
 	trans := new(transcoder.Transcoder)
 
 	err := trans.Initialize(inputPath, outputPath)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 
 	done := trans.Run(false)
 	err = <-done
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 }
 
 func TestTranscodingWAV(t *testing.T) {
 
-	var inputPath = "/data/testwav"
-	var outputPath = "/data/out/testmp4.mp4"
+	var inputPath = "/tmp/ffmpeg/wav"
+	var outputPath = "/tmp/ffmpeg/out/wav.mp4"
 
 	trans := new(transcoder.Transcoder)
 
 	err := trans.Initialize(inputPath, outputPath)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 
 	done := trans.Run(false)
 	err = <-done
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 }
 
 func TestTranscodingWEBM(t *testing.T) {
 
-	var inputPath = "/data/testwebm"
-	var outputPath = "/data/out/testmp4.mp4"
+	var inputPath = "/tmp/ffmpeg/webm"
+	var outputPath = "/tmp/ffmpeg/out/webm.mp4"
 
 	trans := new(transcoder.Transcoder)
 
 	err := trans.Initialize(inputPath, outputPath)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 
 	done := trans.Run(false)
 	err = <-done
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 }
 
 func TestTranscodingWMV(t *testing.T) {
 
-	var inputPath = "/data/testwmv"
-	var outputPath = "/data/out/testmp4.mp4"
+	var inputPath = "/tmp/ffmpeg/wmv"
+	var outputPath = "/tmp/ffmpeg/out/wmv.mp4"
 
 	trans := new(transcoder.Transcoder)
 
 	err := trans.Initialize(inputPath, outputPath)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 
 	done := trans.Run(false)
 	err = <-done
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 }
 
 func TestTranscodingProgress(t *testing.T) {
 
-	var inputPath = "/data/testavi"
-	var outputPath = "/data/out/testmp4.mp4"
+	var inputPath = "/tmp/ffmpeg/avi"
+	var outputPath = "/tmp/ffmpeg/out/avi.mp4"
 
 	trans := new(transcoder.Transcoder)
 
 	err := trans.Initialize(inputPath, outputPath)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 
 	done := trans.Run(true)
 	for val := range trans.Output() {
@@ -255,14 +190,11 @@ func TestTranscodingProgress(t *testing.T) {
 	}
 
 	err = <-done
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.Nil(t, err)
 }
 
 func TestTranscodePipes(t *testing.T) {
-	c1 := exec.Command("cat", "/tmp/data/testmkv")
+	c1 := exec.Command("cat", "/tmp/ffmpeg/mkv")
 
 	trans := new(transcoder.Transcoder)
 

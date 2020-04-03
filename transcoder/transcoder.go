@@ -240,6 +240,7 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 	err = proc.Start()
 
 	t.SetProcess(proc)
+
 	go func(err error) {
 		if err != nil {
 			done <- fmt.Errorf("Failed Start FFMPEG (%s) with %s, message %s %s", command, err, outb.String(), errb.String())
@@ -247,17 +248,10 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 			return
 		}
 
-		// Run the pipe-in command if it has been set
-		if t.mediafile.InputPipeCommand() != nil {
-			if err := t.mediafile.InputPipeCommand().Run(); err != nil {
-				done <- fmt.Errorf("Failed execution of pipe-in command (%s) with %s", t.mediafile.InputPipeCommand().Args, err)
-				close(done)
-				return
-			}
-		}
-
 		err = proc.Wait()
+
 		go t.closePipes()
+
 		if err != nil {
 			err = fmt.Errorf("Failed Finish FFMPEG (%s) with %s message %s %s", command, err, outb.String(), errb.String())
 		}

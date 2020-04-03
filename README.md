@@ -32,11 +32,11 @@ var outputPath = "/data/testmp4.mp4"
 func main() {
 
 	// Create new instance of transcoder
-    	trans := new(transcoder.Transcoder)
+    trans := new(transcoder.Transcoder)
 
 	// Initialize transcoder passing the input file path and output file path
-    	err := trans.Initialize( inputPath, outputPath )
-    	// Handle error...
+    err := trans.Initialize( inputPath, outputPath )
+    // Handle error...
 
 	// Start transcoder process without checking progress
 	done := trans.Run(false)
@@ -53,11 +53,11 @@ func main() {
 func main() {
 
 	// Create new instance of transcoder
-    	trans := new(transcoder.Transcoder)
+    trans := new(transcoder.Transcoder)
 
 	// Initialize transcoder passing the input file path and output file path
-    	err := trans.Initialize( inputPath, outputPath )
-    	// Handle error...
+    err := trans.Initialize( inputPath, outputPath )
+    // Handle error...
 
 	// Start transcoder process with progress checking
 	done := trans.Run(true)
@@ -82,11 +82,11 @@ Creating an input pipe will return [\*io.PipeReader](https://golang.org/pkg/io/#
 func main() {
 
 	// Create new instance of transcoder
-    	trans := new(transcoder.Transcoder)
+    trans := new(transcoder.Transcoder)
 
 	// Initialize an empty transcoder
-    	err := trans.InitializeEmptyTranscoder()
-    	// Handle error...
+    err := trans.InitializeEmptyTranscoder()
+    // Handle error...
 
 	// Create a command such that its output should be passed as stdin to ffmpeg
 	cmd := exec.Command("cat", "/path/to/file")
