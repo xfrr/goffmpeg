@@ -268,3 +268,20 @@ func main() {
 
 ----
 > Building...
+```
+
+# Development
+
+## Testing
+
+Run all tests in docker:
+
+```shell
+make tdd
+```
+
+Run tests for specified directory in docker:
+
+```shell
+make tdd -e TEST_DIRECTORY=transcoder/...
+```

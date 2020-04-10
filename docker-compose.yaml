@@ -1,0 +1,8 @@
+version: "3"
+services:
+  goffmpeg:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/usr/share/app
