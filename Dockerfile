@@ -1,6 +1,5 @@
 FROM golang:1.14-alpine as mod
 
-# Define build-time arguments
 WORKDIR /usr/share/app
 
 RUN apk add --update \
