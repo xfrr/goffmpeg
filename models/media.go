@@ -79,7 +79,7 @@ type Mediafile struct {
 	movflags              string
 	bframe                int
 	pixFmt                string
-	plays                 *int
+	customFlags           []string
 }
 
 /*** SETTERS ***/
@@ -87,8 +87,8 @@ func (m *Mediafile) SetAudioFilter(v string) {
 	m.audioFilter = v
 }
 
-func (m *Mediafile) SetPlays(v int) {
-	m.plays = &v
+func (m *Mediafile) SetCustomFlags(v []string) {
+	m.customFlags = v
 }
 
 func (m *Mediafile) SetVideoFilter(v string) {
@@ -381,8 +381,8 @@ func (m *Mediafile) Resolution() string {
 	return m.resolution
 }
 
-func (m *Mediafile) Plays() *int {
-	return m.plays
+func (m *Mediafile) CustomFlags() []string {
+	return m.customFlags
 }
 
 func (m *Mediafile) VideoBitrate() string {
@@ -703,7 +703,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"OutputPath",
 		"Bframe",
 		"MovFlags",
-		"Plays",
+		"CustomFlags",
 	}
 
 	for _, name := range opts {
@@ -1139,11 +1139,8 @@ func (m *Mediafile) ObtainCompressionLevel() []string {
 	}
 	return nil
 }
-func (m *Mediafile) ObtainPlays() []string {
-	if m.plays != nil {
-		return []string{"-plays", fmt.Sprintf("%d", *m.plays)}
-	}
-	return nil
+func (m *Mediafile) ObtainCustomFlags() []string {
+	return m.customFlags
 }
 
 func (m *Mediafile) ObtainMapMetadata() []string {
