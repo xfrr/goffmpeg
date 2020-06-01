@@ -51,6 +51,7 @@ type Mediafile struct {
 	outputPipeReader      *io.PipeReader
 	outputPipeWriter      *io.PipeWriter
 	movFlags              string
+	vsync                 string
 	hideBanner            bool
 	outputPath            string
 	outputFormat          string
@@ -259,6 +260,10 @@ func (m *Mediafile) SetOutputPipeWriter(w *io.PipeWriter) {
 
 func (m *Mediafile) SetMovFlags(val string) {
 	m.movFlags = val
+}
+
+func (m *Mediafile) SetVsync(val string) {
+	m.vsync = val
 }
 
 func (m *Mediafile) SetHideBanner(val bool) {
@@ -536,6 +541,10 @@ func (m *Mediafile) MovFlags() string {
 	return m.movFlags
 }
 
+func (m *Mediafile) Vsync() string {
+	return m.vsync
+}
+
 func (m *Mediafile) HideBanner() bool {
 	return m.hideBanner
 }
@@ -694,6 +703,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"OutputPath",
 		"Bframe",
 		"MovFlags",
+		"Vsync",
 	}
 
 	for _, name := range opts {
@@ -807,6 +817,13 @@ func (m *Mediafile) ObtainVideoCodec() []string {
 func (m *Mediafile) ObtainVframes() []string {
 	if m.vframes != 0 {
 		return []string{"-vframes", fmt.Sprintf("%d", m.vframes)}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainVsync() []string {
+	if m.vsync != "" {
+		return []string{"-vsync", fmt.Sprintf("%s", m.vframes)}
 	}
 	return nil
 }
@@ -1133,10 +1150,10 @@ func (m *Mediafile) ObtainCompressionLevel() []string {
 func (m *Mediafile) ObtainMapMetadata() []string {
 	if m.mapMetadata != "" {
 		return []string{"-map_metadata", m.mapMetadata}
-  }
-  return nil
+	}
+	return nil
 }
-    
+
 func (m *Mediafile) ObtainEncryptionKey() []string {
 	return []string{"-hls_key_info_file", m.encryptionKey}
 }
@@ -1155,6 +1172,6 @@ func (m *Mediafile) ObtainTags() []string {
 			result = append(result, []string{"-metadata", fmt.Sprintf("%s=%s", key, val)}...)
 		}
 		return result
-  }
-  return nil
+	}
+	return nil
 }
