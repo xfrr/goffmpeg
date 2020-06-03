@@ -79,6 +79,7 @@ type Mediafile struct {
 	movflags              string
 	bframe                int
 	pixFmt                string
+	vtag                  string
 }
 
 /*** SETTERS ***/
@@ -351,6 +352,10 @@ func (m *Mediafile) SetTags(val map[string]string) {
 
 func (m *Mediafile) SetBframe(v int) {
 	m.bframe = v
+}
+
+func (m *Mediafile) SetVTag(val string) {
+	m.vtag = val
 }
 
 /*** GETTERS ***/
@@ -628,6 +633,10 @@ func (m *Mediafile) EncryptionKey() string {
 	return m.encryptionKey
 }
 
+func (m *Mediafile) VTag() string {
+	return m.vtag
+}
+
 /** OPTS **/
 func (m *Mediafile) ToStrCommand() []string {
 	var strCommand []string
@@ -694,6 +703,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"OutputPath",
 		"Bframe",
 		"MovFlags",
+		"VTag",
 	}
 
 	for _, name := range opts {
@@ -1133,10 +1143,10 @@ func (m *Mediafile) ObtainCompressionLevel() []string {
 func (m *Mediafile) ObtainMapMetadata() []string {
 	if m.mapMetadata != "" {
 		return []string{"-map_metadata", m.mapMetadata}
-  }
-  return nil
+	}
+	return nil
 }
-    
+
 func (m *Mediafile) ObtainEncryptionKey() []string {
 	return []string{"-hls_key_info_file", m.encryptionKey}
 }
@@ -1155,6 +1165,14 @@ func (m *Mediafile) ObtainTags() []string {
 			result = append(result, []string{"-metadata", fmt.Sprintf("%s=%s", key, val)}...)
 		}
 		return result
-  }
-  return nil
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainVTag() []string {
+	if m.vtag != "" {
+		return []string{"-vtag", m.vtag}
+	} else {
+		return nil
+	}
 }
