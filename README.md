@@ -198,6 +198,7 @@ SetMetadata
 SetStreamIds
 SetTags
 SetVideoFilter
+SetVTags
 ```
 Example
 ```golang
