@@ -671,6 +671,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"SkipAudio",
 		"CRF",
 		"QScale",
+		"VTag",
 		"Strict",
 		"BufferSize",
 		"MuxDelay",
@@ -703,7 +704,6 @@ func (m *Mediafile) ToStrCommand() []string {
 		"OutputPath",
 		"Bframe",
 		"MovFlags",
-		"VTag",
 	}
 
 	for _, name := range opts {
