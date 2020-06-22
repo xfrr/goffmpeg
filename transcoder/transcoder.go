@@ -224,7 +224,6 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 	var outb, errb bytes.Buffer
 	if progress {
 		proc.Stdout = &outb
-		proc.Stderr = &errb
 	}
 
 	// If an input pipe has been set, we set it as stdin for the transcoding
