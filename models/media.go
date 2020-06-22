@@ -45,11 +45,11 @@ type Mediafile struct {
 	seekTimeInput         string
 	inputPath             string
 	inputPipe             bool
-	inputPipeReader       *io.PipeReader
-	inputPipeWriter       *io.PipeWriter
+	inputPipeReader       io.ReadCloser
+	inputPipeWriter       io.Writer
 	outputPipe            bool
-	outputPipeReader      *io.PipeReader
-	outputPipeWriter      *io.PipeWriter
+	outputPipeReader      io.Reader
+	outputPipeWriter      io.WriteCloser
 	movFlags              string
 	hideBanner            bool
 	outputPath            string
@@ -237,11 +237,11 @@ func (m *Mediafile) SetInputPipe(val bool) {
 	m.inputPipe = val
 }
 
-func (m *Mediafile) SetInputPipeReader(r *io.PipeReader) {
+func (m *Mediafile) SetInputPipeReader(r io.ReadCloser) {
 	m.inputPipeReader = r
 }
 
-func (m *Mediafile) SetInputPipeWriter(w *io.PipeWriter) {
+func (m *Mediafile) SetInputPipeWriter(w io.Writer) {
 	m.inputPipeWriter = w
 }
 
@@ -249,11 +249,11 @@ func (m *Mediafile) SetOutputPipe(val bool) {
 	m.outputPipe = val
 }
 
-func (m *Mediafile) SetOutputPipeReader(r *io.PipeReader) {
+func (m *Mediafile) SetOutputPipeReader(r io.Reader) {
 	m.outputPipeReader = r
 }
 
-func (m *Mediafile) SetOutputPipeWriter(w *io.PipeWriter) {
+func (m *Mediafile) SetOutputPipeWriter(w io.WriteCloser) {
 	m.outputPipeWriter = w
 }
 
@@ -512,11 +512,11 @@ func (m *Mediafile) InputPipe() bool {
 	return m.inputPipe
 }
 
-func (m *Mediafile) InputPipeReader() *io.PipeReader {
+func (m *Mediafile) InputPipeReader() io.ReadCloser {
 	return m.inputPipeReader
 }
 
-func (m *Mediafile) InputPipeWriter() *io.PipeWriter {
+func (m *Mediafile) InputPipeWriter() io.Writer {
 	return m.inputPipeWriter
 }
 
@@ -524,11 +524,11 @@ func (m *Mediafile) OutputPipe() bool {
 	return m.outputPipe
 }
 
-func (m *Mediafile) OutputPipeReader() *io.PipeReader {
+func (m *Mediafile) OutputPipeReader() io.Reader {
 	return m.outputPipeReader
 }
 
-func (m *Mediafile) OutputPipeWriter() *io.PipeWriter {
+func (m *Mediafile) OutputPipeWriter() io.WriteCloser {
 	return m.outputPipeWriter
 }
 
