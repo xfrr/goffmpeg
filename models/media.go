@@ -79,6 +79,8 @@ type Mediafile struct {
 	movflags              string
 	bframe                int
 	pixFmt                string
+	rawInputArgs          []string
+	rawOutputArgs         []string
 }
 
 /*** SETTERS ***/
@@ -351,6 +353,14 @@ func (m *Mediafile) SetTags(val map[string]string) {
 
 func (m *Mediafile) SetBframe(v int) {
 	m.bframe = v
+}
+
+func (m *Mediafile) SetRawInputArgs(args []string) {
+	m.rawInputArgs = args
+}
+
+func (m *Mediafile) SetRawOutputArgs(args []string) {
+	m.rawOutputArgs = args
 }
 
 /*** GETTERS ***/
@@ -628,6 +638,14 @@ func (m *Mediafile) EncryptionKey() string {
 	return m.encryptionKey
 }
 
+func (m *Mediafile) RawInputArgs() []string {
+	return m.rawInputArgs
+}
+
+func (m *Mediafile) RawOutputArgs() []string {
+	return m.rawOutputArgs
+}
+
 /** OPTS **/
 func (m *Mediafile) ToStrCommand() []string {
 	var strCommand []string
@@ -640,6 +658,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"RtmpLive",
 		"InputInitialOffset",
 		"HardwareAcceleration",
+		"RawInputArgs",
 		"InputPath",
 		"InputPipe",
 		"HideBanner",
@@ -676,6 +695,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"CopyTs",
 		"StreamIds",
 		"MovFlags",
+		"RawOutputArgs",
 		"OutputFormat",
 		"OutputPipe",
 		"HlsListSize",
@@ -1155,6 +1175,14 @@ func (m *Mediafile) ObtainTags() []string {
 			result = append(result, []string{"-metadata", fmt.Sprintf("%s=%s", key, val)}...)
 		}
 		return result
-  }
-  return nil
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainRawInputArgs() []string {
+	return m.rawInputArgs
+}
+
+func (m *Mediafile) ObtainRawOutputArgs() []string {
+	return m.rawOutputArgs
 }
