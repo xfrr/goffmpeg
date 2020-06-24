@@ -24,6 +24,7 @@ type Transcoder struct {
 	process       *exec.Cmd
 	mediafile     *models.Mediafile
 	configuration ffmpeg.Configuration
+	whiteListProtocols []string
 }
 
 // SetProcessStderrPipe Set the STDERR pipe
@@ -51,6 +52,10 @@ func (t *Transcoder) SetConfiguration(v ffmpeg.Configuration) {
 	t.configuration = v
 }
 
+func (t *Transcoder) SetWhiteListProtocols(availableProtocols []string) {
+	t.whiteListProtocols = availableProtocols
+}
+
 // Process Get transcoding process
 func (t Transcoder) Process() *exec.Cmd {
 	return t.process
@@ -75,6 +80,11 @@ func (t Transcoder) FFprobeExec() string {
 func (t Transcoder) GetCommand() []string {
 	media := t.mediafile
 	rcommand := append([]string{"-y"}, media.ToStrCommand()...)
+
+	if t.whiteListProtocols != nil {
+		rcommand = append([]string{"-protocol_whitelist", strings.Join(t.whiteListProtocols, ",")}, rcommand...)
+	}
+
 	return rcommand
 }
 
@@ -165,6 +175,10 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 	}
 
 	command := []string{"-i", inputPath, "-print_format", "json", "-show_format", "-show_streams", "-show_error"}
+
+	if t.whiteListProtocols != nil {
+		command = append([]string{"-protocol_whitelist", strings.Join(t.whiteListProtocols, ",")}, command...)
+	}
 
 	cmd := exec.Command(cfg.FfprobeBin, command...)
 	cmd.Stdout = &outb
