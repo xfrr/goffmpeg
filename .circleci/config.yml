@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       # specify the version
-      - image: circleci/golang:1.11
+      - image: circleci/golang:1.14-buster
         environment:
           GO111MODULE: "on"
 
@@ -12,5 +12,6 @@ jobs:
       - checkout
 
       # specify any bash command here prefixed with `run: `
-      - run: go mod vendor
-      - run: go test -v ./tests/...
+      - run: sudo apt-get update && sudo apt-get install ffmpeg
+      - run: go mod download
+      - run: go test -failfast -v -run=. ./...
