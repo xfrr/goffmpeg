@@ -121,7 +121,7 @@ func (t *Transcoder) SetInputPath(inputPath string) error {
 	var Metadata models.Metadata
 
 	if inputPath == "" {
-		return errors.New("error on transcoder.Initialize: inputPath missing")
+		return errors.New("error on transcoder.SetInputPath: inputPath missing")
 	}
 
 	command := []string{"-i", inputPath, "-print_format", "json", "-show_format", "-show_streams", "-show_error"}
