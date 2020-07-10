@@ -115,7 +115,37 @@ func (t *Transcoder) SetInputPath(inputPath string) error {
 	if t.mediafile.InputPipe() {
 		return errors.New("cannot set an input path when an input pipe command has been set")
 	}
+
+	var err error
+	var outb, errb bytes.Buffer
+	var Metadata models.Metadata
+
+	if inputPath == "" {
+		return errors.New("error on transcoder.Initialize: inputPath missing")
+	}
+
+	command := []string{"-i", inputPath, "-print_format", "json", "-show_format", "-show_streams", "-show_error"}
+
+	if t.whiteListProtocols != nil {
+		command = append([]string{"-protocol_whitelist", strings.Join(t.whiteListProtocols, ",")}, command...)
+	}
+
+	cmd := exec.Command(t.configuration.FfprobeBin, command...)
+	cmd.Stdout = &outb
+	cmd.Stderr = &errb
+
+	err = cmd.Run()
+	if err != nil {
+		return fmt.Errorf("error executing (%s) | error: %s | message: %s %s", command, err, outb.String(), errb.String())
+	}
+
+	if err = json.Unmarshal([]byte(outb.String()), &Metadata); err != nil {
+		return err
+	}
+
+	t.mediafile.SetMetadata(Metadata)
 	t.mediafile.SetInputPath(inputPath)
+
 	return nil
 }
 
