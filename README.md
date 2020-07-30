@@ -3,6 +3,10 @@
 
 FFMPEG wrapper written in GO which allows to obtain the progress.
 
+## V2
+New implementation with an easy-to-use API and interfaces to extend the transcoding capabilities.
+> https://github.com/floostack/transcoder
+
 # Dependencies
 - [FFmpeg](https://www.ffmpeg.org/)
 - [FFProbe](https://www.ffmpeg.org/ffprobe.html)
@@ -265,6 +269,4 @@ func main() {
 	
 	err = <-done
 }
-
-----
-> Building...
+```
