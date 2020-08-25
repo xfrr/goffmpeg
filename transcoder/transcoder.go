@@ -306,12 +306,14 @@ func (t Transcoder) Output() <-chan models.Progress {
 			if atEOF && len(data) == 0 {
 				return 0, nil, nil
 			}
-			if i := bytes.IndexByte(data, '\n'); i >= 0 {
-				// We have a full newline-terminated line.
-				return i + 1, data[0:i], nil
-			}
+			//windows \r\n
+			//so  first \r and then \n can remove unexpected line break
 			if i := bytes.IndexByte(data, '\r'); i >= 0 {
 				// We have a cr terminated line
+				return i + 1, data[0:i], nil
+			}
+			if i := bytes.IndexByte(data, '\n'); i >= 0 {
+				// We have a full newline-terminated line.
 				return i + 1, data[0:i], nil
 			}
 			if atEOF {
