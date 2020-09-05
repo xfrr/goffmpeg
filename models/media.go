@@ -40,7 +40,7 @@ type Mediafile struct {
 	qscale                uint32
 	crf                   uint32
 	strict                int
-	singleFile			  int
+	singleFile            int
 	muxDelay              string
 	seekUsingTsInput      bool
 	seekTimeInput         string
