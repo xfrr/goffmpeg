@@ -39,7 +39,7 @@ type Mediafile struct {
 	seekTime              string
 	qscale                uint32
 	crf                   uint32
-	strict                int
+	strict                string
 	muxDelay              string
 	seekUsingTsInput      bool
 	seekTimeInput         string
@@ -219,7 +219,7 @@ func (m *Mediafile) SetCRF(v uint32) {
 	m.crf = v
 }
 
-func (m *Mediafile) SetStrict(v int) {
+func (m *Mediafile) SetStrict(v string) {
 	m.strict = v
 }
 
@@ -498,7 +498,7 @@ func (m *Mediafile) CRF() uint32 {
 	return m.crf
 }
 
-func (m *Mediafile) Strict() int {
+func (m *Mediafile) Strict() string {
 	return m.strict
 }
 
@@ -992,8 +992,8 @@ func (m *Mediafile) ObtainQScale() []string {
 }
 
 func (m *Mediafile) ObtainStrict() []string {
-	if m.strict != 0 {
-		return []string{"-strict", fmt.Sprintf("%d", m.strict)}
+	if m.strict != "" {
+		return []string{"-strict", m.strict}
 	}
 	return nil
 }
@@ -1156,7 +1156,7 @@ func (m *Mediafile) ObtainMapMetadata() []string {
   }
   return nil
 }
-    
+
 func (m *Mediafile) ObtainEncryptionKey() []string {
 	if m.encryptionKey != "" {
 		return []string{"-hls_key_info_file", m.encryptionKey}
