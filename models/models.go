@@ -11,12 +11,13 @@ type Metadata struct {
 }
 
 type Streams struct {
-	Index              int
+	Index              int         `json:"index"`
 	ID                 string      `json:"id"`
 	CodecName          string      `json:"codec_name"`
 	CodecLongName      string      `json:"codec_long_name"`
 	Profile            string      `json:"profile"`
 	CodecType          string      `json:"codec_type"`
+	Channels           int         `json:"channels"`
 	CodecTimeBase      string      `json:"codec_time_base"`
 	CodecTagString     string      `json:"codec_tag_string"`
 	CodecTag           string      `json:"codec_tag"`
@@ -39,7 +40,9 @@ type Streams struct {
 	DurationTs         int         `json:"duration_ts"`
 	Duration           string      `json:"duration"`
 	Disposition        Disposition `json:"disposition"`
+	Tags               Tags        `json:"tags"`
 	BitRate            string      `json:"bit_rate"`
+	SampleRate         string      `json:"sample_rate"`
 }
 
 type Disposition struct {
@@ -77,5 +80,9 @@ type Progress struct {
 }
 
 type Tags struct {
-	Encoder string `json:"ENCODER"`
+	Encoder      string `json:"encoder"`
+	CreationTime string `josn:"creation_time"`
+	HandlerName  string `json:"handler_name"`
+	Language     string `json:"language"`
+	Duration     string `json:"duration"`
 }
