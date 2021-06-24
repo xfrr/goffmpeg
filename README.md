@@ -176,6 +176,7 @@ SetSeekTimeInput
 SetSeekUsingTsInput
 SetQuality
 SetStrict
+SetSingleFile
 SetCopyTs
 SetMuxDelay
 SetHideBanner

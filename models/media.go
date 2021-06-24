@@ -40,6 +40,7 @@ type Mediafile struct {
 	qscale                uint32
 	crf                   uint32
 	strict                int
+	singleFile            int
 	muxDelay              string
 	seekUsingTsInput      bool
 	seekTimeInput         string
@@ -221,6 +222,10 @@ func (m *Mediafile) SetCRF(v uint32) {
 
 func (m *Mediafile) SetStrict(v int) {
 	m.strict = v
+}
+
+func (m *Mediafile) SetSingleFile(v int) {
+	m.singleFile = v
 }
 
 func (m *Mediafile) SetSeekUsingTsInput(val bool) {
@@ -502,6 +507,10 @@ func (m *Mediafile) Strict() int {
 	return m.strict
 }
 
+func (m *Mediafile) SingleFile() int {
+	return m.singleFile
+}
+
 func (m *Mediafile) MuxDelay() string {
 	return m.muxDelay
 }
@@ -682,6 +691,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"CRF",
 		"QScale",
 		"Strict",
+		"SingleFile",
 		"BufferSize",
 		"MuxDelay",
 		"Threads",
@@ -994,6 +1004,13 @@ func (m *Mediafile) ObtainQScale() []string {
 func (m *Mediafile) ObtainStrict() []string {
 	if m.strict != 0 {
 		return []string{"-strict", fmt.Sprintf("%d", m.strict)}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainSingleFile() []string {
+	if m.singleFile != 0 {
+		return []string{"-single_file", fmt.Sprintf("%d", m.singleFile)}
 	}
 	return nil
 }
