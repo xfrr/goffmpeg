@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"fmt"
 	"os/exec"
 	"runtime"
 	"strconv"
@@ -86,7 +87,7 @@ func TestCmd(command string, args string) (bytes.Buffer, error) {
 
 	err := cmd.Run()
 	if err != nil {
-		return out, err
+		return out, fmt.Errorf("%s: %s", cmd.String(), err)
 	}
 
 	return out, nil
