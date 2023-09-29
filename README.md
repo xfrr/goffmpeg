@@ -7,9 +7,6 @@
 
 FFMPEG wrapper written in GO
 
-> New implementation with an easy-to-use API and interfaces to extend the transcoding capabilities.
-> https://github.com/floostack/transcoder
-
 ## Features
 
 - [x] Transcoding
