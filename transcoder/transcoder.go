@@ -3,6 +3,7 @@ package transcoder
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -12,18 +13,18 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/xfrr/goffmpeg/ffmpeg"
-	"github.com/xfrr/goffmpeg/models"
-	"github.com/xfrr/goffmpeg/utils"
+	"github.com/xfrr/goffmpeg"
+	"github.com/xfrr/goffmpeg/media"
+	"github.com/xfrr/goffmpeg/pkg/duration"
 )
 
 // Transcoder Main struct
 type Transcoder struct {
-	stdErrPipe    io.ReadCloser
-	stdStdinPipe  io.WriteCloser
-	process       *exec.Cmd
-	mediafile     *models.Mediafile
-	configuration ffmpeg.Configuration
+	stdErrPipe         io.ReadCloser
+	stdStdinPipe       io.WriteCloser
+	process            *exec.Cmd
+	mediafile          *media.File
+	configuration      goffmpeg.Configuration
 	whiteListProtocols []string
 }
 
@@ -43,12 +44,12 @@ func (t *Transcoder) SetProcess(cmd *exec.Cmd) {
 }
 
 // SetMediaFile Set the media file
-func (t *Transcoder) SetMediaFile(v *models.Mediafile) {
+func (t *Transcoder) SetMediaFile(v *media.File) {
 	t.mediafile = v
 }
 
 // SetConfiguration Set the transcoding configuration
-func (t *Transcoder) SetConfiguration(v ffmpeg.Configuration) {
+func (t *Transcoder) SetConfiguration(v goffmpeg.Configuration) {
 	t.configuration = v
 }
 
@@ -62,18 +63,18 @@ func (t Transcoder) Process() *exec.Cmd {
 }
 
 // MediaFile Get the ttranscoding media file.
-func (t Transcoder) MediaFile() *models.Mediafile {
+func (t Transcoder) MediaFile() *media.File {
 	return t.mediafile
 }
 
 // FFmpegExec Get FFmpeg Bin path
 func (t Transcoder) FFmpegExec() string {
-	return t.configuration.FfmpegBin
+	return t.configuration.FFmpegBinPath()
 }
 
 // FFprobeExec Get FFprobe Bin path
 func (t Transcoder) FFprobeExec() string {
-	return t.configuration.FfprobeBin
+	return t.configuration.FFprobeBinPath()
 }
 
 // GetCommand Build and get command
@@ -90,18 +91,18 @@ func (t Transcoder) GetCommand() []string {
 
 // InitializeEmptyTranscoder initializes the fields necessary for a blank transcoder
 func (t *Transcoder) InitializeEmptyTranscoder() error {
-	var Metadata models.Metadata
+	var Metadata media.Metadata
 
 	var err error
 	cfg := t.configuration
-	if len(cfg.FfmpegBin) == 0 || len(cfg.FfprobeBin) == 0 {
-		cfg, err = ffmpeg.Configure()
+	if len(cfg.FFmpegBinPath()) == 0 || len(cfg.FFprobeBinPath()) == 0 {
+		cfg, err = goffmpeg.Configure(context.Background())
 		if err != nil {
 			return err
 		}
 	}
-	// Set new Mediafile
-	MediaFile := new(models.Mediafile)
+	// Set new File
+	MediaFile := new(media.File)
 	MediaFile.SetMetadata(Metadata)
 
 	// Set transcoder configuration
@@ -159,12 +160,12 @@ func (t *Transcoder) CreateOutputPipe(containerFormat string) (*io.PipeReader, e
 func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 	var err error
 	var outb, errb bytes.Buffer
-	var Metadata models.Metadata
+	var Metadata media.Metadata
 
 	cfg := t.configuration
 
-	if len(cfg.FfmpegBin) == 0 || len(cfg.FfprobeBin) == 0 {
-		cfg, err = ffmpeg.Configure()
+	if len(cfg.FFmpegBinPath()) == 0 || len(cfg.FFprobeBinPath()) == 0 {
+		cfg, err = goffmpeg.Configure(context.Background())
 		if err != nil {
 			return err
 		}
@@ -180,7 +181,7 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 		command = append([]string{"-protocol_whitelist", strings.Join(t.whiteListProtocols, ",")}, command...)
 	}
 
-	cmd := exec.Command(cfg.FfprobeBin, command...)
+	cmd := exec.Command(cfg.FFprobeBinPath(), command...)
 	cmd.Stdout = &outb
 	cmd.Stderr = &errb
 
@@ -189,12 +190,12 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 		return fmt.Errorf("error executing (%s) | error: %s | message: %s %s", command, err, outb.String(), errb.String())
 	}
 
-	if err = json.Unmarshal([]byte(outb.String()), &Metadata); err != nil {
+	if err = json.Unmarshal(outb.Bytes(), &Metadata); err != nil {
 		return err
 	}
 
-	// Set new Mediafile
-	MediaFile := new(models.Mediafile)
+	// Set new File
+	MediaFile := new(media.File)
 	MediaFile.SetMetadata(Metadata)
 	MediaFile.SetInputPath(inputPath)
 	MediaFile.SetOutputPath(outputPath)
@@ -216,7 +217,7 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 		command = append([]string{"-nostats", "-loglevel", "0"}, command...)
 	}
 
-	proc := exec.Command(t.configuration.FfmpegBin, command...)
+	proc := exec.Command(t.configuration.FFmpegBinPath(), command...)
 	if progress {
 		errStream, err := proc.StderrPipe()
 		if err != nil {
@@ -256,7 +257,7 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 
 	go func(err error) {
 		if err != nil {
-			done <- fmt.Errorf("Failed Start FFMPEG (%s) with %s, message %s %s", command, err, outb.String(), errb.String())
+			done <- fmt.Errorf("failed start ffmpeg (%s) with %s, message %s %s", command, err, outb.String(), errb.String())
 			close(done)
 			return
 		}
@@ -266,7 +267,7 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 		go t.closePipes()
 
 		if err != nil {
-			err = fmt.Errorf("Failed Finish FFMPEG (%s) with %s message %s %s", command, err, outb.String(), errb.String())
+			err = fmt.Errorf("failed finish ffmpeg (%s) with %s message %s %s", command, err, outb.String(), errb.String())
 		}
 		done <- err
 		close(done)
@@ -288,13 +289,13 @@ func (t *Transcoder) Stop() error {
 }
 
 // Output Returns the transcoding progress channel
-func (t Transcoder) Output() <-chan models.Progress {
-	out := make(chan models.Progress)
+func (t Transcoder) Output() <-chan Progress {
+	out := make(chan Progress)
 
 	go func() {
 		defer close(out)
 		if t.stdErrPipe == nil {
-			out <- models.Progress{}
+			out <- Progress{}
 			return
 		}
 
@@ -328,7 +329,7 @@ func (t Transcoder) Output() <-chan models.Progress {
 		scanner.Buffer(buf, bufio.MaxScanTokenSize)
 
 		for scanner.Scan() {
-			Progress := new(models.Progress)
+			Progress := new(Progress)
 			line := scanner.Text()
 			if strings.Contains(line, "frame=") && strings.Contains(line, "time=") && strings.Contains(line, "bitrate=") {
 				var re = regexp.MustCompile(`=\s+`)
@@ -365,7 +366,7 @@ func (t Transcoder) Output() <-chan models.Progress {
 					}
 				}
 
-				timesec := utils.DurToSec(currentTime)
+				timesec := duration.DurToSec(currentTime)
 				dursec, _ := strconv.ParseFloat(t.MediaFile().Metadata().Format.Duration, 64)
 				//live stream check
 				if dursec != 0 {
