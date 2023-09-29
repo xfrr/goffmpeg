@@ -25,5 +25,6 @@ coverage.out
 .vscode
 .idea
 
-# test results
-test_results
+# Test results
+*/test_results/*
+!*.gitkeep

@@ -263,12 +263,12 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 		}
 
 		err = proc.Wait()
-
-		go t.closePipes()
-
 		if err != nil {
 			err = fmt.Errorf("failed finish ffmpeg (%s) with %s message %s %s", command, err, outb.String(), errb.String())
 		}
+
+		go t.closePipes()
+
 		done <- err
 		close(done)
 	}(err)
