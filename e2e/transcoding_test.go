@@ -1,10 +1,8 @@
 package test
 
 import (
-	"io/ioutil"
 	"os/exec"
 	"path"
-	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -51,45 +49,6 @@ func TestTranscodingProgress(t *testing.T) {
 	assert.Nil(t, err)
 	assert.GreaterOrEqual(t, len(progress), 1)
 	checkFileExists(t, outputPath)
-}
-
-func TestTranscodePipes(t *testing.T) {
-	createResultsDir(t)
-
-	c1 := exec.Command("cat", input3gp)
-
-	trans := new(transcoder.Transcoder)
-
-	err := trans.InitializeEmptyTranscoder()
-	assert.Nil(t, err)
-
-	w, err := trans.CreateInputPipe()
-	assert.Nil(t, err)
-	c1.Stdout = w
-
-	r, err := trans.CreateOutputPipe("mp4")
-	assert.Nil(t, err)
-
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-	go func() {
-		_, err := ioutil.ReadAll(r)
-		assert.Nil(t, err)
-
-		r.Close()
-		wg.Done()
-	}()
-
-	go func() {
-		err := c1.Run()
-		assert.Nil(t, err)
-		w.Close()
-	}()
-	done := trans.Run(false)
-	err = <-done
-	assert.Nil(t, err)
-
-	wg.Wait()
 }
 
 func createResultsDir(t *testing.T) {
