@@ -1,0 +1,25 @@
+name: Go
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21.x"
+      - name: Install dependencies
+        run: go get .
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install ffmpeg
+      - name: Build
+        run: go build -v ./...
+      - name: Test with the Go CLI
+        run: go test --failfast -v ./...
