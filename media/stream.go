@@ -1,14 +1,4 @@
-package models
-
-type Ffmpeg struct {
-	FfmpegBinPath  string
-	FfprobeBinPath string
-}
-
-type Metadata struct {
-	Streams []Streams `json:"streams"`
-	Format  Format    `json:"format"`
-}
+package media
 
 type Streams struct {
 	Index              int
@@ -53,29 +43,4 @@ type Disposition struct {
 	HearingImpaired int `json:"hearing_impaired"`
 	VisualImpaired  int `json:"visual_impaired"`
 	CleanEffects    int `json:"clean_effects"`
-}
-
-type Format struct {
-	Filename       string
-	NbStreams      int    `json:"nb_streams"`
-	NbPrograms     int    `json:"nb_programs"`
-	FormatName     string `json:"format_name"`
-	FormatLongName string `json:"format_long_name"`
-	Duration       string `json:"duration"`
-	Size           string `json:"size"`
-	BitRate        string `json:"bit_rate"`
-	ProbeScore     int    `json:"probe_score"`
-	Tags           Tags   `json:"tags"`
-}
-
-type Progress struct {
-	FramesProcessed string
-	CurrentTime     string
-	CurrentBitrate  string
-	Progress        float64
-	Speed           string
-}
-
-type Tags struct {
-	Encoder string `json:"ENCODER"`
 }

@@ -1,9 +1,10 @@
 package transcoder
 
 import (
-	"github.com/stretchr/testify/require"
-	"github.com/xfrr/goffmpeg/models"
 	"testing"
+
+	"github.com/stretchr/testify/require"
+	"github.com/xfrr/goffmpeg/media"
 )
 
 func TestTranscoder(t *testing.T) {
@@ -11,7 +12,7 @@ func TestTranscoder(t *testing.T) {
 		t.Run("Should not set -protocol_whitelist option if it isn't present", func(t *testing.T) {
 			ts := Transcoder{}
 
-			ts.SetMediaFile(&models.Mediafile{})
+			ts.SetMediaFile(&media.File{})
 			require.NotEqual(t, ts.GetCommand()[0:2], []string{"-protocol_whitelist", "file,http,https,tcp,tls"})
 			require.NotContains(t, ts.GetCommand(), "protocol_whitelist")
 		})
@@ -19,8 +20,8 @@ func TestTranscoder(t *testing.T) {
 		t.Run("Should set -protocol_whitelist option if it's present", func(t *testing.T) {
 			ts := Transcoder{}
 
-			ts.SetMediaFile(&models.Mediafile{})
-			ts.SetWhiteListProtocols([]string{"file","http","https","tcp","tls"})
+			ts.SetMediaFile(&media.File{})
+			ts.SetWhiteListProtocols([]string{"file", "http", "https", "tcp", "tls"})
 
 			require.Equal(t, ts.GetCommand()[0:2], []string{"-protocol_whitelist", "file,http,https,tcp,tls"})
 		})
