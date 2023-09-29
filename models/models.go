@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type Ffmpeg struct {
 	FfmpegBinPath  string
 	FfprobeBinPath string
@@ -38,8 +40,10 @@ type Streams struct {
 	TimeBase           string      `json:"time_base"`
 	DurationTs         int         `json:"duration_ts"`
 	Duration           string      `json:"duration"`
-	Disposition        Disposition `json:"disposition"`
 	BitRate            string      `json:"bit_rate"`
+	Disposition        Disposition `json:"disposition"`
+	SideDataList       []SideData  `json:"side_data_list"`
+	Tags               *StreamTags `json:"tags"`
 }
 
 type Disposition struct {
@@ -66,6 +70,32 @@ type Format struct {
 	BitRate        string `json:"bit_rate"`
 	ProbeScore     int    `json:"probe_score"`
 	Tags           Tags   `json:"tags"`
+}
+
+type SideData struct {
+	SideDataType  *string `json:"side_data_type"`
+	DisplayMatrix *string `json:"displaymatrix"`
+	Rotation      *int    `json:"rotation"`
+	MaxContent    *int    `json:"max_content"`
+	MaxAverage    *int    `json:"max_average"`
+	RedX          *string `json:"red_x"`
+	RedY          *string `json:"red_y"`
+	GreenX        *string `json:"green_x"`
+	GreenY        *string `json:"green_y"`
+	BlueX         *string `json:"blue_x"`
+	BlueY         *string `json:"blue_y"`
+	WhitePointX   *string `json:"white_point_x"`
+	WhitePointY   *string `json:"white_point_y"`
+	MinLuminance  *string `json:"min_luminance"`
+	MaxLuminance  *string `json:"max_luminance"`
+}
+
+type StreamTags struct {
+	CreationTime *time.Time `json:"creation_time"`
+	Language     *string    `json:"language"`
+	HandlerName  *string    `json:"handler_name"`
+	VendorID     *string    `json:"vendor_id"`
+	Encoder      *string    `json:"encoder"`
 }
 
 type Progress struct {
