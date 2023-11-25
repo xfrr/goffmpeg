@@ -1,25 +1,34 @@
 name: Build & Test
 on:
   push:
-    branches: [master]
+    branches:
+      - v2
   pull_request:
-    branches: [master]
+    branches:
+      - v2
 
 jobs:
-  build:
+  build_and_test:
+    name: Build & Test
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
+      - name: Install FFmpeg
+        run: |-
+          sudo add-apt-repository ppa:ubuntuhandbook1/ffmpeg6 -y
+          sudo apt-get update -y
+          sudo apt-get install ffmpeg -y
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.21.x"
+          go-version: '1.21.x'
       - name: Install dependencies
-        run: go get .
-      - name: Install FFmpeg
-        run: sudo apt-get update && sudo apt-get install ffmpeg
+        run: go mod download
       - name: Build
-        run: go build -v ./...
-      - name: Test with the Go CLI
-        run: go test --failfast -v ./...
+        run: go build -ldflags="-s -w" -o ./bin/ ./...
+      - name: Test with coverage
+        run: go test --failfast -v ./... -coverprofile=coverage.out -covermode=atomic -coverpkg=./...
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
