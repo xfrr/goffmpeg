@@ -6,10 +6,15 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"regexp"
 	"strings"
 	"time"
 
 	fferror "github.com/xfrr/goffmpeg/v2/ffmpeg/error"
+)
+
+var (
+	cleanRegex = regexp.MustCompile(`\s+`)
 )
 
 // Reader sets the interface for reading progress from ffmpeg.
@@ -42,50 +47,75 @@ func (dr *reader) Read(ctx context.Context, r io.Reader, progress chan<- Progres
 		case <-ctx.Done():
 			return ctx.Err()
 		default:
-			line := scanner.Text()
-
+			line := strings.ToLower(scanner.Text())
 			if err := checkError(line); err != nil {
 				return err
 			}
 
-			if strings.HasPrefix(line, "frame=") {
-				p.FramesProcessed = parseFrame(line)
-				continue
+			line = cleanLine(line)
+
+			if p.FramesProcessed == 0 {
+				fp := parseInt64("frame", line)
+				if fp != 0 {
+					p.FramesProcessed = fp
+					continue
+				}
 			}
 
-			if strings.HasPrefix(line, "fps=") {
-				p.Fps = parseFps(line)
-				continue
+			if p.Fps == 0 {
+				fps := parseFloat64("fps", line)
+				if fps != 0 {
+					p.Fps = fps
+					continue
+				}
 			}
 
-			if strings.HasPrefix(line, "bitrate=") {
-				p.Bitrate = parseBitrate(line)
-				continue
+			if p.Bitrate == 0 {
+				bitrate := parseFloat64("bitrate", line)
+				if bitrate != 0 {
+					p.Bitrate = bitrate
+					continue
+				}
 			}
 
-			if strings.HasPrefix(line, "total_size=") {
-				p.Size = parseSize(line)
-				continue
+			if p.Size == 0 {
+				size := parseInt64("total_size", line)
+				if size != 0 {
+					p.Size = size
+					continue
+				}
 			}
 
-			if strings.HasPrefix(line, "out_time_ms=") {
-				p.Duration = parseOutTimeMs(line)
-				continue
+			if p.Duration == 0 {
+				duration := parseDurationMs("out_time_ms", line)
+				if duration != 0 {
+					p.Duration = duration
+					continue
+				}
 			}
 
-			if strings.HasPrefix(line, "dup_frames=") {
-				p.Dup = parseDupFrames(line)
-				continue
+			if p.Drop == 0 {
+				drop := parseInt64("drop_frames", line)
+				if drop != 0 {
+					p.Drop = drop
+					continue
+				}
 			}
 
-			if strings.HasPrefix(line, "drop_frames=") {
-				p.Drop = parseDropFrames(line)
-				continue
+			if p.Dup == 0 {
+				dup := parseInt64("dup_frames", line)
+				if dup != 0 {
+					p.Dup = dup
+					continue
+				}
 			}
 
-			if strings.HasPrefix(line, "speed=") {
-				p.Speed = parseSpeed(line)
-				continue
+			if p.Speed == 0 {
+				speed := parseFloat64("speed", line)
+				if speed != 0 {
+					p.Speed = speed
+					continue
+				}
 			}
 
 			if strings.Contains(line, "progress=continue") {
@@ -104,21 +134,30 @@ func (dr *reader) Read(ctx context.Context, r io.Reader, progress chan<- Progres
 	return scanner.Err()
 }
 
+// checkError checks if the line contains any of well known errors.
 func checkError(line string) error {
-	if strings.Contains(line, "Unable to find a suitable output format") {
+	if strings.Contains(line, "unable to find a suitable output format") {
 		return fferror.ErrUnableToFindOutputFormat
 	}
 
-	if strings.Contains(line, "No such file or directory") {
-		return fferror.ErrInputFileNotFound
+	if strings.Contains(line, "no such file or directory") {
+		return fferror.ErrFileNotFound
+	}
+
+	if strings.Contains(line, "invalid data found when processing input") {
+		return fferror.ErrInvalidDataFoundWhenProcessingInput
+	}
+
+	if strings.Contains(line, "invalid argument") {
+		return fferror.ErrInvalidArgument
 	}
 
 	return nil
 }
 
-func parseFrame(line string) int64 {
+func parseInt64(key, line string) int64 {
 	var i int64
-	_, err := fmt.Sscanf(line, "frame=%d", &i)
+	_, err := fmt.Sscanf(line, fmt.Sprintf("%s=", key)+"%d", &i)
 	if err != nil {
 		return 0
 	}
@@ -126,9 +165,9 @@ func parseFrame(line string) int64 {
 	return i
 }
 
-func parseFps(line string) float64 {
+func parseFloat64(key, line string) float64 {
 	var f float64
-	_, err := fmt.Sscanf(line, "fps=%f", &f)
+	_, err := fmt.Sscanf(line, fmt.Sprintf("%s=", key)+"%f", &f)
 	if err != nil {
 		return 0
 	}
@@ -136,64 +175,15 @@ func parseFps(line string) float64 {
 	return f
 }
 
-func parseBitrate(line string) float64 {
-	var f float64
-	_, err := fmt.Sscanf(line, "bitrate=%f", &f)
-	if err != nil {
-		return 0
-	}
-
-	return f
-}
-
-func parseSize(line string) int64 {
-	var s int64
-	_, err := fmt.Sscanf(line, "total_size=%d", &s)
-	if err != nil {
-		return 0
-	}
-
-	return s
-}
-
-func parseOutTimeMs(line string) time.Duration {
+func parseDurationMs(key, line string) time.Duration {
 	var i int64
-	_, err := fmt.Sscanf(line, "out_time_ms=%d", &i)
+	_, err := fmt.Sscanf(line, fmt.Sprintf("%s=", key)+"%d", &i)
 	if err != nil {
 		return 0
 	}
 
-	return time.Duration(i/1000) * time.Millisecond
-}
-
-func parseDupFrames(line string) int32 {
-	var i int32
-	_, err := fmt.Sscanf(line, "dup_frames=%d", &i)
-	if err != nil {
-		return 0
-	}
-
-	return i
-}
-
-func parseDropFrames(line string) int32 {
-	var i int32
-	_, err := fmt.Sscanf(line, "drop_frames=%d", &i)
-	if err != nil {
-		return 0
-	}
-
-	return i
-}
-
-func parseSpeed(line string) float64 {
-	var f float64
-	_, err := fmt.Sscanf(line, "speed=%f", &f)
-	if err != nil {
-		return 0
-	}
-
-	return f
+	dms := time.Duration(i/1000) * time.Millisecond
+	return dms
 }
 
 func splitFunc(data []byte, atEOF bool) (advance int, token []byte, spliterror error) {
@@ -215,4 +205,18 @@ func splitFunc(data []byte, atEOF bool) (advance int, token []byte, spliterror e
 	}
 
 	return 0, nil, nil
+}
+
+func cleanLine(line string) string {
+	// Remove whitespace
+	cleanedString := strings.ReplaceAll(line, " ", "")
+
+	// Remove non-word characters (using regular expression)
+	cleanedString = cleanRegex.ReplaceAllString(cleanedString, "")
+
+	// Remove break lines and new lines
+	cleanedString = strings.ReplaceAll(cleanedString, "\n", "")
+	cleanedString = strings.ReplaceAll(cleanedString, "\r", "")
+
+	return cleanedString
 }

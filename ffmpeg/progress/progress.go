@@ -8,7 +8,7 @@ type Progress struct {
 	Speed           float64
 	Size            int64
 	Fps             float64
-	Drop            int32
-	Dup             int32
+	Drop            int64
+	Dup             int64
 	Duration        time.Duration
 }
