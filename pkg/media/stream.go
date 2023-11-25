@@ -1,6 +1,6 @@
 package media
 
-type Streams struct {
+type FileStream struct {
 	Index              int
 	ID                 string      `json:"id"`
 	CodecName          string      `json:"codec_name"`

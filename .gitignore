@@ -3,6 +3,10 @@
 *.dll
 *.so
 *.dylib
+*.key
+*.keyinfo
+*.pem
+*.pub
 
 # Test binary, build with `go test -c`
 *.test
@@ -16,10 +20,6 @@
 # main test
 main-test.go
 
-# binary
-goffmpeg
-coverage.out
-
 # IDE
 .DS_Store
 .vscode
@@ -27,7 +27,21 @@ coverage.out
 
 # Go
 vendor
+bin
+build
+*.log
+*.out
+*.test
+*.prof
+*.cover
 
-# Test results
-*/test_results/*
-!*.gitkeep
+# OS
+*.DS_Store
+*.swp
+*.lock
+*.tmp
+*.bak
+
+# others
+**/results
+**/*.json

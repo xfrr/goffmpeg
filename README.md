@@ -1,22 +1,20 @@
 ﻿# Goffmpeg
-[![Build & Test](https://github.com/xfrr/goffmpeg/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/xfrr/goffmpeg/actions/workflows/build_and_test.yml)
+[![Build & Test](https://github.com/xfrr/goffmpeg/v2/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/xfrr/goffmpeg/v2/actions/workflows/build_and_test.yml)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/93e018e5008b4439acbb30d715b22e7f)](https://www.codacy.com/app/francisco.romero/goffmpeg?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=xfrr/goffmpeg&amp;utm_campaign=Badge_Grade)
-[![Go Report Card](https://goreportcard.com/badge/github.com/xfrr/goffmpeg)](https://goreportcard.com/report/github.com/xfrr/goffmpeg)
-[![GoDoc](https://godoc.org/github.com/xfrr/goffmpeg?status.svg)](https://godoc.org/github.com/xfrr/goffmpeg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/xfrr/goffmpeg/v2)](https://goreportcard.com/report/github.com/xfrr/goffmpeg/v2)
+[![GoDoc](https://godoc.org/github.com/xfrr/goffmpeg/v2?status.svg)](https://godoc.org/github.com/xfrr/goffmpeg/v2)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-FFMPEG wrapper written in GO
+FFMPEG wrapper written in the Go
 
-## Features
+## Supported features
 
-- [x] Transcoding
-- [x] Streaming
-- [x] Progress
-- [x] Filters
-- [x] Thumbnails
-- [x] Watermark
-- [ ] Concatenation
-- [ ] Subtitles
+- [x] Decode & Output Progress
+- [x] Get File Metadata
+- [x] Pipe Options
+- [x] Global Options
+- [x] Video Options
+- [x] Audio Options
 
 ## Dependencies
 - [FFmpeg](https://www.ffmpeg.org/)
@@ -31,7 +29,7 @@ FFMPEG wrapper written in GO
 ## Installation
 Install the package with the following command:
 ```shell
-go get github.com/xfrr/goffmpeg
+go get github.com/xfrr/goffmpeg/v2
 ```
 
 ## Usage
