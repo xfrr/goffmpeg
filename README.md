@@ -1,9 +1,10 @@
 ﻿# Goffmpeg
+
 [![Build & Test](https://github.com/xfrr/goffmpeg/actions/workflows/build_and_test.yml/badge.svg?branch=v2)](https://github.com/xfrr/goffmpeg/actions/workflows/build_and_test.yml)
 [![Code Quality](https://api.codacy.com/project/badge/Grade/93e018e5008b4439acbb30d715b22e7f)](https://www.codacy.com/app/francisco.romero/goffmpeg?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=xfrr/goffmpeg&amp;utm_campaign=Badge_Grade)
 [![Coverage](https://codecov.io/gh/xfrr/goffmpeg/graph/badge.svg?token=LjqrgDKO69)](https://codecov.io/gh/xfrr/goffmpeg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/xfrr/goffmpeg)](https://goreportcard.com/report/github.com/xfrr/goffmpeg)
-[![GoDoc](https://godoc.org/github.com/xfrr/goffmpeg/v2?status.svg)](https://godoc.org/github.com/xfrr/goffmpeg/v2)
+[![GoDoc](https://godoc.org/github.com/xfrr/goffmpeg/v2?status.svg)](https://godoc.org/github.com/xfrr/goffmpeg)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
 FFMPEG wrapper written in the Go
