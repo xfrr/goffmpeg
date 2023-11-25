@@ -1,14 +1,5 @@
 package main
 
-// Execute the following script to make it work:
-/*
-BASE_URL=${1:-'.'}
-openssl rand 16 > file.key
-echo $BASE_URL/file.key > file.keyinfo
-echo file.key >> file.keyinfo
-echo $(openssl rand -hex 16) >> file.keyinfo
-*/
-
 import (
 	"context"
 	"flag"
@@ -23,54 +14,61 @@ import (
 )
 
 var (
-	keyinfoPath = flag.String("k", "file.keyinfo", "Encryption key path")
-)
-
-var (
 	defaultInputPath = "../../testdata/input.mp4"
-	outputPath       = flag.String("o", "../results/hls.m3u8", "output path")
+	outputPath       = flag.String("o", "../results/pipes.mp4", "output path")
 )
 
 func main() {
 	flag.Parse()
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
 	inputPath := flag.Arg(0)
 	if inputPath == "" {
 		inputPath = defaultInputPath
 	}
 
-	err := createOutputDir(*outputPath)
+	inputFile, err := os.Open(inputPath)
 	if err != nil {
 		panic(err)
 	}
 
-	ctx := context.Background()
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
+	err = createOutputDir(*outputPath)
+	if err != nil {
+		panic(err)
+	}
 
-	mediafile, err := ffprobe.NewCommand().
-		WithInputPath(inputPath).
-		Run(ctx)
+	outputFile, err := os.Create(*outputPath)
 	if err != nil {
 		panic(err)
 	}
 
 	// the order of the arguments matters
 	cmd := ffmpeg.NewCommand().
-		WithInputPath(inputPath).
-		WithHLSKeyInfoPath(*keyinfoPath).
-		WithHLSSegmentTime(4).
-		WithOutputPath(*outputPath)
-
-	progress, err := cmd.Start(ctx)
-	if err != nil {
-		panic(err)
-	}
+		WithInputPipe(inputFile).
+		WithOutputFormat("mpeg").
+		WithOutputPipe(outputFile)
 
 	go func() {
-		for msg := range progress {
-			printProgress(msg, mediafile.GetDuration())
+		progress, err := cmd.Start(ctx)
+		if err != nil {
+			panic(err)
 		}
+
+		mediafile, err := ffprobe.NewCommand().
+			WithInputPath(inputPath).
+			Run(ctx)
+		if err != nil {
+			panic(err)
+		}
+
+		go func() {
+			for msg := range progress {
+				printProgress(msg, mediafile.GetDuration())
+			}
+		}()
 	}()
 
 	err = cmd.Wait()
