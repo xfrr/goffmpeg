@@ -17,8 +17,8 @@ FFMPEG wrapper written in the Go
 - [x] Video Options
 - [x] Audio Options
 
-## Dependencies
-- [FFmpeg](https://www.ffmpeg.org/) - 4.0 or higher
+## Requirements
+- [FFmpeg](https://www.ffmpeg.org/) - Supported versions: 4.0 ~ 6.0
 - [FFProbe](https://www.ffmpeg.org/ffprobe.html)
 
 ## Supported platforms
