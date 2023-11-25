@@ -69,7 +69,7 @@ func main() {
 
 	go func() {
 		for msg := range progress {
-			printProgress(msg, mediafile.GetDuration())
+			printProgress(msg, mediafile.Duration())
 		}
 	}()
 
@@ -80,28 +80,23 @@ func main() {
 }
 
 func printProgress(p progress.Progress, tdur time.Duration) {
-	// totalDurMs is the total duration in milliseconds
-	tdur = time.Duration(tdur.Milliseconds()) * time.Millisecond
+	// calculate the progress percentage
+	progressPct := fmt.Sprintf("%d%s", p.Duration().Milliseconds()/tdur.Milliseconds()*100, "%")
 
-	// rdur is the remaining duration in milliseconds
-	rdur := p.Duration - tdur
+	// convert the total duration to milliseconds
+	totalDuration := time.Duration(tdur.Milliseconds()) * time.Millisecond
 
-	// convert to positive if negative
-	if rdur < 0 {
-		rdur = -rdur
+	// calculate the remaining duration
+	remainingDuration := p.Duration() - totalDuration
+	if remainingDuration < 0 {
+		remainingDuration = -remainingDuration
 	}
-
-	// remainingTimeStr is the remaining time in the format 00:00:00.000
-	remainingTime := rdur.String()
-
-	// progress is the percentage of the progress
-	progress := int(float64(p.Duration.Milliseconds()) / float64(tdur.Milliseconds()) * 100)
 
 	fmt.Printf(`
 Progress:
-- Current Time: %s
-- Remaining Time: %s
-- Progress: %d%s
+- Progress: %s
+- Time Remaining: %s
+- Time Processed: %s
 - Frames Processed: %d
 - Current Bitrate: %f
 - Size: %d
@@ -110,16 +105,16 @@ Progress:
 - Dup: %d
 - Drop: %d
 `,
-		p.Duration,
-		remainingTime,
-		progress, "%",
-		p.FramesProcessed,
-		p.Bitrate,
-		p.Size,
-		p.Speed,
-		p.Fps,
-		p.Dup,
-		p.Drop,
+		progressPct,
+		remainingDuration,
+		p.Duration(),
+		p.FramesProcessed(),
+		p.Bitrate(),
+		p.Size(),
+		p.Speed(),
+		p.Fps(),
+		p.Dup(),
+		p.Drop(),
 	)
 }
 

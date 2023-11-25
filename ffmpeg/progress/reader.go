@@ -54,66 +54,66 @@ func (dr *reader) Read(ctx context.Context, r io.Reader, progress chan<- Progres
 
 			line = cleanLine(line)
 
-			if p.FramesProcessed == 0 {
+			if p.framesProcessed == 0 {
 				fp := parseInt64("frame", line)
 				if fp != 0 {
-					p.FramesProcessed = fp
+					p.framesProcessed = fp
 					continue
 				}
 			}
 
-			if p.Fps == 0 {
+			if p.fps == 0 {
 				fps := parseFloat64("fps", line)
 				if fps != 0 {
-					p.Fps = fps
+					p.fps = fps
 					continue
 				}
 			}
 
-			if p.Bitrate == 0 {
+			if p.bitrate == 0 {
 				bitrate := parseFloat64("bitrate", line)
 				if bitrate != 0 {
-					p.Bitrate = bitrate
+					p.bitrate = bitrate
 					continue
 				}
 			}
 
-			if p.Size == 0 {
+			if p.size == 0 {
 				size := parseInt64("total_size", line)
 				if size != 0 {
-					p.Size = size
+					p.size = size
 					continue
 				}
 			}
 
-			if p.Duration == 0 {
+			if p.duration == 0 {
 				duration := parseDurationMs("out_time_ms", line)
 				if duration != 0 {
-					p.Duration = duration
+					p.duration = duration
 					continue
 				}
 			}
 
-			if p.Drop == 0 {
+			if p.drop == 0 {
 				drop := parseInt64("drop_frames", line)
 				if drop != 0 {
-					p.Drop = drop
+					p.drop = drop
 					continue
 				}
 			}
 
-			if p.Dup == 0 {
+			if p.dup == 0 {
 				dup := parseInt64("dup_frames", line)
 				if dup != 0 {
-					p.Dup = dup
+					p.dup = dup
 					continue
 				}
 			}
 
-			if p.Speed == 0 {
+			if p.speed == 0 {
 				speed := parseFloat64("speed", line)
 				if speed != 0 {
-					p.Speed = speed
+					p.speed = speed
 					continue
 				}
 			}

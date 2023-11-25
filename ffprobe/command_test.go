@@ -138,12 +138,16 @@ func Test_Ffprobe_Command_Run(t *testing.T) {
 				return
 			}
 
-			if len(file.Streams) == 0 {
+			if file.Filename() == "" {
+				t.Errorf("expected filename, got none")
+			}
+
+			if len(file.Streams()) == 0 {
 				t.Errorf("expected streams, got none")
 			}
 
-			if !test.withInputReader && file.Format.Filename != inputPath {
-				t.Errorf("expected filename %s, got %s", inputPath, file.Format.Filename)
+			if !test.withInputReader && file.Filename() != inputPath {
+				t.Errorf("expected filename %s, got %s", inputPath, file.Filename())
 			}
 
 			if test.withOutputWriter {

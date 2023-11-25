@@ -11,9 +11,9 @@ build:
 	go build -ldflags="-s -w" -o ./bin/ ./...
 
 .PHONY: coverage-html
-coverage-html:
+open-coverage-html:
 	go tool cover -html=coverage.out
 
 .PHONY: coverage-total
-coverage-total:
+print-total-coverage:
 	go tool cover -func=coverage.out | grep total | awk '{print $$3}'

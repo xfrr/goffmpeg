@@ -50,7 +50,16 @@ func TestReader_Read(t *testing.T) {
 	}()
 
 	// Verify the progress updates
-	expectedProgress := []progress.Progress{
+	expectedProgress := []struct {
+		FramesProcessed int64
+		Fps             float64
+		Bitrate         float64
+		Size            int64
+		Duration        time.Duration
+		Dup             int64
+		Drop            int64
+		Speed           float64
+	}{
 		{
 			FramesProcessed: 100,
 			Fps:             25,
@@ -76,36 +85,36 @@ func TestReader_Read(t *testing.T) {
 	idx := 0
 	for p := range progressCh {
 		expected := expectedProgress[idx]
-		if p.FramesProcessed != expected.FramesProcessed {
-			t.Errorf("expected frames processed %d, got %d", expected.FramesProcessed, p.FramesProcessed)
+		if p.FramesProcessed() != expected.FramesProcessed {
+			t.Errorf("expected frames processed %d, got %d", expected.FramesProcessed, p.FramesProcessed())
 		}
 
-		if p.Fps != expected.Fps {
-			t.Errorf("expected fps %f, got %f", expected.Fps, p.Fps)
+		if p.Fps() != expected.Fps {
+			t.Errorf("expected fps %f, got %f", expected.Fps, p.Fps())
 		}
 
-		if p.Bitrate != expected.Bitrate {
-			t.Errorf("expected bitrate %f, got %f", expected.Bitrate, p.Bitrate)
+		if p.Bitrate() != expected.Bitrate {
+			t.Errorf("expected bitrate %f, got %f", expected.Bitrate, p.Bitrate())
 		}
 
-		if p.Size != expected.Size {
-			t.Errorf("expected size %d, got %d", expected.Size, p.Size)
+		if p.Size() != expected.Size {
+			t.Errorf("expected size %d, got %d", expected.Size, p.Size())
 		}
 
-		if p.Duration.String() != expected.Duration.String() {
-			t.Errorf("expected duration %s, got %s", expected.Duration, p.Duration)
+		if p.Duration().String() != expected.Duration.String() {
+			t.Errorf("expected duration %s, got %s", expected.Duration, p.Duration())
 		}
 
-		if p.Dup != expected.Dup {
-			t.Errorf("expected dup frames %d, got %d", expected.Dup, p.Dup)
+		if p.Dup() != expected.Dup {
+			t.Errorf("expected dup frames %d, got %d", expected.Dup, p.Dup())
 		}
 
-		if p.Drop != expected.Drop {
-			t.Errorf("expected drop frames %d, got %d", expected.Drop, p.Drop)
+		if p.Drop() != expected.Drop {
+			t.Errorf("expected drop frames %d, got %d", expected.Drop, p.Drop())
 		}
 
-		if p.Speed != expected.Speed {
-			t.Errorf("expected speed %f, got %f", expected.Speed, p.Speed)
+		if p.Speed() != expected.Speed {
+			t.Errorf("expected speed %f, got %f", expected.Speed, p.Speed())
 		}
 
 		idx++

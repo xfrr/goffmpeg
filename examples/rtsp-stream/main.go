@@ -62,24 +62,23 @@ func main() {
 func printProgress(p progress.Progress) {
 	fmt.Printf(`
 Progress:
-- Time Recorded: %s
+- Time Processed: %s
 - Frames Processed: %d
-- Bitrate: %f
+- Current Bitrate: %f
 - Size: %d
 - Speed: %f
 - Fps: %f
 - Dup: %d
 - Drop: %d
-
 `,
-		p.Duration,
-		p.FramesProcessed,
-		p.Bitrate,
-		p.Size,
-		p.Speed,
-		p.Fps,
-		p.Dup,
-		p.Drop,
+		p.Duration(),
+		p.FramesProcessed(),
+		p.Bitrate(),
+		p.Size(),
+		p.Speed(),
+		p.Fps(),
+		p.Dup(),
+		p.Drop(),
 	)
 }
 
